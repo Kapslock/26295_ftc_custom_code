@@ -70,6 +70,24 @@ public class ViperArmActions {
         return new MoveViperToSpecimenAction();
     }
 
+    public class MoveArmToNewClipMethod implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            _Arm.MoveToNewClipMethod();
+            return false;
+        }
+    }
+    public Action MoveArmToNewClipMethod() {return new MoveArmToNewClipMethod();}
+
+    public class MoveViperToNewClipMethod implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            _Viper.ExtendNewSpecimenClip(0.75);
+            return false;
+        }
+    }
+    public Action MoveViperToNewClipMethod() {return new MoveViperToNewClipMethod();}
+
     //Moves Arm to Home
     public class MoveArmToHomeAction implements Action {
         @Override
@@ -81,6 +99,15 @@ public class ViperArmActions {
     public Action MoveArmToHome() {
         return new MoveArmToHomeAction();
     }
+
+    public class MoveArmToFastHomeAction implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            _Arm.MoveToFastHome();
+            return false;
+        }
+    }
+    public Action MoveArmToFastHome() {return new MoveArmToFastHomeAction();}
 
     //Moves Arm to SlowDown
     public class MoveArmToSlowDownAction implements Action {
@@ -94,6 +121,14 @@ public class ViperArmActions {
         return new MoveArmToSlowDownAction();
     }
 
+    public class MoveViperToShortExtendAction implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            _Viper.ExtendShort(1);
+            return false;
+        }
+    }
+    public Action MoveViperToShortExtend() {return new MoveViperToShortExtendAction();}
     //Moves Viper to Home
     public class MoveViperToHomeAction implements Action {
         @Override

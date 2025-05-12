@@ -24,10 +24,12 @@ public class Arm {
     //Total ticks in a revolution for 117 RPM motor: 1425.1
     //variables are in degrees
     final int homePosition = 0;
+    final int fastHomePosition = 0;
     final int slowDownPosition = 5;
-    final int hangOutPosition = 40;
-    final int hangInPosition = 35;
+    final int hangOutPosition = 52;
+    final int hangInPosition = 38;
     final int highBasketPosition = 95;
+    final int newClipMethod = 90;
     final double initialSpecimenPosition = 44;//used in auto and tele
     final double maxSpecimenPosition = 49;
     final double minSpecimenPosition = 39;
@@ -52,6 +54,7 @@ public class Arm {
     public boolean getIsArmHighBasketPosition() {return _armMotor.getCurrentPosition() > DegreeConverterToTicks(highBasketPosition);}
     public boolean getIsArmHomePosition() {return _armMotor.getCurrentPosition() < DegreeConverterToTicks(homePosition + 5);}
     public boolean getIsArmSpecimenPosition() {return _armMotor.getCurrentPosition() > DegreeConverterToTicks(specimenPosition);}
+    public boolean getIsArmNewClipMethodPosition() {return _armMotor.getCurrentPosition() > DegreeConverterToTicks(newClipMethod);}
     public boolean getIsArmHangOutPosition() {return _armMotor.getCurrentPosition() > DegreeConverterToTicks(hangOutPosition);}
     public boolean getIsArmHangInPosition() {return _armMotor.getCurrentPosition() < DegreeConverterToTicks(hangInPosition);}
     public boolean getIsArmSlowDownPosition() {return _armMotor.getCurrentPosition() < DegreeConverterToTicks(slowDownPosition);}
@@ -88,6 +91,7 @@ public class Arm {
     {
         ArmMotorCustom(homePosition, 0.25);
     }
+    public void MoveToFastHome() {ArmMotorCustom(fastHomePosition, 1);}
     public void MoveToSlowDown()
     {
         ArmMotorCustom(slowDownPosition, 0.75);
@@ -101,6 +105,7 @@ public class Arm {
     {
         ArmMotorCustom(highBasketPosition, 1);
     }
+    public void MoveToNewClipMethod() {ArmMotorCustom(newClipMethod, 1);}
     public void MoveToSpecimen()
     {
         MoveToSpecimen(1);

@@ -127,7 +127,7 @@ public class CompetitionTeleOp extends LinearOpMode{
         ChristmasLight _christmasLight = new ChristmasLight(this);
         odo = hardwareMap.get(GoBildaPinpointDriverRR.class,"pinpoint");
         GoBildaPinpointDriver.EncoderDirection xDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
-        GoBildaPinpointDriver.EncoderDirection yDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+        GoBildaPinpointDriver.EncoderDirection yDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         double encoderResolution = GoBildaPinpointDriverRR.goBILDA_4_BAR_POD;
         odo.setOffsets(DistanceUnit.MM.fromInches(xOffset), DistanceUnit.MM.fromInches(yOffset));
         odo.setEncoderResolution(encoderResolution);
