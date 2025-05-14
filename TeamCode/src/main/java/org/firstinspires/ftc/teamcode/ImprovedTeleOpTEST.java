@@ -131,7 +131,6 @@ public class ImprovedTeleOpTEST extends LinearOpMode {
             idle();
         }
     }
-
     // ----------------------- Helpers -----------------------
 
     /**
