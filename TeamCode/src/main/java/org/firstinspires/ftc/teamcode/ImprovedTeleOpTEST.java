@@ -186,7 +186,8 @@ public class ImprovedTeleOpTEST extends LinearOpMode {
         smoothedLateral += SMOOTHING_FACTOR * (targetLateral - smoothedLateral);
         smoothedYaw += SMOOTHING_FACTOR * (targetYaw - smoothedYaw);
     }
-
+// when i wrote lines 190-195, only god and i knew how they worked. now only god knows. so please update the following counter as needed
+    //hours wasted here: 1
     private boolean arePowersEqual(double[] p1, double[] p2) {
         for (int i = 0; i < p1.length; i++) {
             if (Math.abs(p1[i] - p2[i]) > 0.01) return false;
