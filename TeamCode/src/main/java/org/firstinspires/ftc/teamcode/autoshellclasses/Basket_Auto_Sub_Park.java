@@ -77,7 +77,7 @@ public class Basket_Auto_Sub_Park extends LinearOpMode {
         Action samplePickupMiddle = drive.actionBuilder(RedBasketPose.drop)
                 .strafeToLinearHeading(RedBasketPose.middle_sample.position, RedBasketPose.middle_sample.heading)
                 .build();
-        Action samplePickupOuter = drive.actionBuilder(RedBasketPose.drop)
+        Action samplePickupOuter = drive.actionBuilder(RedBasketPose.initialDrop)
                 .strafeToLinearHeading(RedBasketPose.outer_sample.position, RedBasketPose.outer_sample.heading)
                 .build();
 
@@ -95,7 +95,7 @@ public class Basket_Auto_Sub_Park extends LinearOpMode {
                         _ViperArmActions.DumpInHighBasketHalfExtend(),
                         samplePickupInner,
                         _WristClawActions.PickUpSample(),
-                        driveToDropFromOuterSample,
+                        driveToDropFromInnerSample,
                         _ViperArmActions.DumpInHighBasketHalfExtend(),
                         samplePickupMiddle,
                         _WristClawActions.CloseClaw(),
@@ -107,7 +107,7 @@ public class Basket_Auto_Sub_Park extends LinearOpMode {
                         _WristClawActions.CloseClaw(),
                         _WristClawActions.PickUpSample(),
                         _WristClawActions.WristUp(),
-                        driveToDropFromInnerSample,
+                        driveToDropFromOuterSample,
                         _ViperArmActions.DumpInHighBasket(),
                         _WristClawActions.WristUp(),
                         driveToSubmersiblePark
