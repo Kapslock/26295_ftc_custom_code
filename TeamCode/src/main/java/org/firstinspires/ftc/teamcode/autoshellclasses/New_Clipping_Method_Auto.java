@@ -74,18 +74,18 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
                 .afterTime(1, _ViperArmActions.MoveViperToLongSamplePickUp())
                 .splineToLinearHeading(new Pose2d(31.87,-47.51, Math.toRadians(48.48) ), Math.toRadians(90), new TranslationalVelConstraint(75))
                 .build();
-        sampleGrab2 = drive.actionBuilder(new Pose2d(31.87,-47.51,Math.toRadians(-45)))
+        sampleGrab2 = drive.actionBuilder(new Pose2d(31.87,-47.51,Math.toRadians(-40)))
                 .strafeToLinearHeading(new Vector2d(43.82,-49.29), Math.toRadians(56.38))
                 .build();
 
         sampleDrop1 = drive.actionBuilder(new Pose2d(31.87,-47.51,Math.toRadians(48.48)))
-                .turnTo(-45)
+                .turnTo(Math.toRadians(-40))
                 .build();
         sampleDrop2 = drive.actionBuilder(new Pose2d(43.82,-49.29,Math.toRadians(56.38)))
-                .turnTo(-45)
+                .turnTo(Math.toRadians(-43))
                 .build();
 
-        grabSpecimen2 = drive.actionBuilder(new Pose2d(43.82,-49.29,Math.toRadians(-45)))
+        grabSpecimen2 = drive.actionBuilder(new Pose2d(43.82,-49.29,Math.toRadians(-43)))
                 .strafeToLinearHeading(new Vector2d(46.68,-46.73), Math.toRadians(-85), new TranslationalVelConstraint(25))
                 .build();
 
