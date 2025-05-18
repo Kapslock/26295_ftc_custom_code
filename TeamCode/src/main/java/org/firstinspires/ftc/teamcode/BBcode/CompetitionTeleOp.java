@@ -319,17 +319,17 @@ public class CompetitionTeleOp extends LinearOpMode{
 
             switch (hangState) {
                 case Home:
-                    if (gamepad1.right_trigger > 0 && gamepad1.dpad_up) {
+                    if (gamepad1.left_trigger > 0 && gamepad1.dpad_up) {
                         arm.MoveToHangOut();
                         hangState = HangState.RaiseArmHang;
                     }
-                    else if (gamepad1.right_trigger > 0 && gamepad1.dpad_down) {
+                    else if (gamepad1.left_trigger > 0 && gamepad1.dpad_down) {
                         arm.MoveToHome();
                     }
                     break;
                 case RaiseArmHang:
                     if (arm.getIsArmHangOutPosition()) {
-                        viper.ExtendSpecimenhang(1);
+                        viper.ExtendOutHang(1);
                         hangState = HangState.ViperExtendHang;
                     }
                     break;
@@ -341,14 +341,14 @@ public class CompetitionTeleOp extends LinearOpMode{
                     break;
 
                 case Hang:
-                    if (gamepad1.right_trigger > 0 && gamepad1.dpad_down) {
-                        viper.ExtendClosed(1);
+                    if (gamepad1.left_trigger > 0 && gamepad1.dpad_down) {
+                        viper.ExtendInHang(1);
                         hangState = HangState.ViperDown;
                     }
                     break;
 
                 case ViperDown:
-                    if (viper.getIsViperExtendClosed()) {
+                    if (viper.getIsViperRetractedShort()) {
                         arm.MoveToHangIn();
                         hangState = HangState.ArmDown;
                     }
