@@ -342,6 +342,7 @@ public class CompetitionTeleOp extends LinearOpMode{
 
                 case Hang:
                     if (gamepad1.left_trigger > 0 && gamepad1.dpad_down) {
+                        arm.Stop();
                         viper.ExtendInHang(1);
                         hangState = HangState.ViperDown;
                     }
