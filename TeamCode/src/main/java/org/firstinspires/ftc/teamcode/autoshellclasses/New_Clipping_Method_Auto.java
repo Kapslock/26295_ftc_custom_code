@@ -55,48 +55,48 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
 
         clippingSpecimen1 = drive.actionBuilder(drive.pose)
                 .afterTime(0.25, _ViperArmActions.MoveArmToNewClipMethod())
-                .strafeToLinearHeading(new Vector2d(6,-26.5),Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(3,-28.5),Math.toRadians(-90))
                 .build();
         clippingSpecimen2 = drive.actionBuilder(new Pose2d(45.72,-48.73,Math.toRadians(-85)))
                 .afterTime(0.25, _ViperArmActions.MoveArmToNewClipMethod())
-                .strafeToLinearHeading(new Vector2d(5,-26.5),Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(2,-28.5),Math.toRadians(-90))
                 .build();
         clippingSpecimen3 = drive.actionBuilder(new Pose2d(38,-58,Math.toRadians(0)))
                 .afterTime(0.25, _ViperArmActions.MoveArmToNewClipMethod())
-                .strafeToLinearHeading(new Vector2d(4,-26.5),Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(1,-28.5),Math.toRadians(-90))
                 .build();
         clippingSpecimen4 = drive.actionBuilder(new Pose2d(38,-58,Math.toRadians(0)))
                 .afterTime(0.25, _ViperArmActions.MoveArmToNewClipMethod())
-                .strafeToLinearHeading(new Vector2d(3,-26.5),Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(0,-28.5),Math.toRadians(-90))
                 .build();
 
-        sampleGrab1 = drive.actionBuilder(new Pose2d(6,-26.5,Math.toRadians(-90)))
+        sampleGrab1 = drive.actionBuilder(new Pose2d(3,-28.5,Math.toRadians(-90)))
                 .afterTime(1, _ViperArmActions.MoveViperToLongSamplePickUp())
-                .splineToLinearHeading(new Pose2d(31.87,-47.51, Math.toRadians(48.48) ), Math.toRadians(90), new TranslationalVelConstraint(75))
+                .splineToLinearHeading(new Pose2d(29.87,-44, Math.toRadians(48.48) ), Math.toRadians(90), new TranslationalVelConstraint(75))
                 .build();
-        sampleGrab2 = drive.actionBuilder(new Pose2d(31.87,-47.51,Math.toRadians(-40)))
-                .strafeToLinearHeading(new Vector2d(43.82,-49.29), Math.toRadians(56.38))
+        sampleGrab2 = drive.actionBuilder(new Pose2d(29.87,-44,Math.toRadians(-40)))
+                .strafeToLinearHeading(new Vector2d(43.82,-47.29), Math.toRadians(56.38))
                 .build();
 
-        sampleDrop1 = drive.actionBuilder(new Pose2d(31.87,-47.51,Math.toRadians(48.48)))
+        sampleDrop1 = drive.actionBuilder(new Pose2d(29.87,-44,Math.toRadians(48.48)))
                 .turnTo(Math.toRadians(-40))
                 .build();
-        sampleDrop2 = drive.actionBuilder(new Pose2d(43.82,-49.29,Math.toRadians(56.38)))
+        sampleDrop2 = drive.actionBuilder(new Pose2d(43.82,-47.29,Math.toRadians(56.38)))
                 .turnTo(Math.toRadians(-43))
                 .build();
 
-        grabSpecimen2 = drive.actionBuilder(new Pose2d(43.82,-49.29,Math.toRadians(-43)))
-                .strafeToLinearHeading(new Vector2d(46.68,-46.73), Math.toRadians(-85), new TranslationalVelConstraint(25))
+        grabSpecimen2 = drive.actionBuilder(new Pose2d(43.82,-47.29,Math.toRadians(-43)))
+                .strafeToLinearHeading(new Vector2d(47.68,-48.5), Math.toRadians(-85), new TranslationalVelConstraint(25))
                 .build();
 
-        grabSpecimen3 = drive.actionBuilder(new Pose2d(5,-26.5,Math.toRadians(-90)))
+        grabSpecimen3 = drive.actionBuilder(new Pose2d(2,-28.5,Math.toRadians(-90)))
                 .strafeToLinearHeading(new Vector2d(38,-58), Math.toRadians(0))
                 .build();
-        grabSpecimen4 = drive.actionBuilder(new Pose2d(4,-26.5,Math.toRadians(-90)))
+        grabSpecimen4 = drive.actionBuilder(new Pose2d(1,-28.5,Math.toRadians(-90)))
                 .strafeToLinearHeading(new Vector2d(38,-58), Math.toRadians(0))
                 .build();
 
-        driveToPark = drive.actionBuilder(new Pose2d(3,-26.5,Math.toRadians(-90)))
+        driveToPark = drive.actionBuilder(new Pose2d(0,-28.5,Math.toRadians(-90)))
                 .strafeToLinearHeading(new Vector2d(60,-60),Math.toRadians(90))
                 .build();
 
