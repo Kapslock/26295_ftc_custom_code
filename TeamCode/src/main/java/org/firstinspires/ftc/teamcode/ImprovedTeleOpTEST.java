@@ -17,11 +17,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * An advanced TeleOp OpMode that supports:
  * - Field-centric driving using IMU
- * - Robot-centric and field-centric mode switching via Y button
- * - Threaded braking
+ * - Robot-centric and field-centric mode switching via Y button (with debounce)
+ * - Threaded braking with ABS simulation
  * - Smoothed joystick inputs
  * - Dynamic speed control with right trigger
- * - Anti-lock braking system (ABS) implementation
  */
 @TeleOp(name = "Dynamic Thread Field-Centric Omni OpMode", group = "Linear OpMode")
 public class ImprovedTeleOpTEST extends LinearOpMode {
@@ -35,7 +34,7 @@ public class ImprovedTeleOpTEST extends LinearOpMode {
 
     private BNO055IMU imu;
     private double headingOffset = 0;
-    private boolean isFieldCentric = true;  // Initial mode is Field-Centric
+    private boolean isFieldCentric = true;
 
     private double smoothedAxial = 0.0;
     private double smoothedLateral = 0.0;
@@ -49,7 +48,11 @@ public class ImprovedTeleOpTEST extends LinearOpMode {
     private static final double DEADBAND = 0.05;
     private static final double SMOOTHING_FACTOR = 0.15;
     private static final int BRAKE_DURATION_MS = 500;
-    private static final double BRAKE_MAX_INTENSITY = -0.8;  // Maximum brake intensity (scaled for ABS)
+    private static final double BRAKE_MAX_INTENSITY = -0.8;
+
+    // For button debounce
+    private boolean previousB = false;
+    private boolean previousY = false;
 
     @Override
     public void runOpMode() {
@@ -63,20 +66,28 @@ public class ImprovedTeleOpTEST extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            if (gamepad1.b) {
+            // Debounced B button: reset heading offset
+            boolean currentB = gamepad1.b;
+            if (currentB && !previousB) {
                 headingOffset = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle;
+                telemetry.addData("IMU", "Heading reset");
+                telemetry.update();
             }
+            previousB = currentB;
 
+            // Debounced Y button: toggle field-centric mode
+            boolean currentY = gamepad1.y;
+            if (currentY && !previousY) {
+                isFieldCentric = !isFieldCentric;
+            }
+            previousY = currentY;
+
+            // Braking with left trigger, in separate thread to avoid blocking
             if (gamepad1.left_trigger > 0.1 && isBraking.compareAndSet(false, true)) {
                 executor.submit(() -> {
                     applyBrake();
                     isBraking.set(false);
                 });
-            }
-
-            // Swap between field-centric and robot-centric on Y button press
-            if (gamepad1.y) {
-                isFieldCentric = !isFieldCentric;
             }
 
             double rawAxial = applyDeadzone(-gamepad1.left_stick_y);
@@ -105,8 +116,8 @@ public class ImprovedTeleOpTEST extends LinearOpMode {
             telemetry.addData("Heading (deg)", Math.toDegrees(heading));
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", powers[0], powers[1]);
             telemetry.addData("Back left/Right", "%4.2f, %4.2f", powers[2], powers[3]);
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Mode", isFieldCentric ? "Field-Centric" : "Robot-Centric");
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
 
@@ -127,18 +138,27 @@ public class ImprovedTeleOpTEST extends LinearOpMode {
 
     private void initializeIMU() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
+
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = null;
 
         imu.initialize(parameters);
+
+        telemetry.addData("IMU", "Calibrating... Please wait");
+        telemetry.update();
 
         while (!isStopRequested() && !imu.isGyroCalibrated()) {
             sleep(50);
             idle();
         }
+
+        telemetry.addData("IMU", "Calibration complete");
+        telemetry.update();
     }
 
     private double getHeadingRadians() {
@@ -175,10 +195,10 @@ public class ImprovedTeleOpTEST extends LinearOpMode {
     }
 
     private synchronized void setMotorPowers(double[] powers) {
-        leftFrontDrive.setPower(powers[0]);
-        rightFrontDrive.setPower(powers[1]);
-        leftBackDrive.setPower(powers[2]);
-        rightBackDrive.setPower(powers[3]);
+        leftFrontDrive.setPower(clamp(powers[0]));
+        rightFrontDrive.setPower(clamp(powers[1]));
+        leftBackDrive.setPower(clamp(powers[2]));
+        rightBackDrive.setPower(clamp(powers[3]));
     }
 
     private void updateJoystickInputs(double targetAxial, double targetLateral, double targetYaw) {
@@ -186,8 +206,7 @@ public class ImprovedTeleOpTEST extends LinearOpMode {
         smoothedLateral += SMOOTHING_FACTOR * (targetLateral - smoothedLateral);
         smoothedYaw += SMOOTHING_FACTOR * (targetYaw - smoothedYaw);
     }
-// when i wrote lines 190-195, only god and i knew how they worked. now only god knows. so please update the following counter as needed
-    //hours wasted here: 1
+
     private boolean arePowersEqual(double[] p1, double[] p2) {
         for (int i = 0; i < p1.length; i++) {
             if (Math.abs(p1[i] - p2[i]) > 0.01) return false;
@@ -196,38 +215,41 @@ public class ImprovedTeleOpTEST extends LinearOpMode {
     }
 
     /**
-     * Calculates and applies anti-lock braking to prevent wheel lockup.
-     * The brake power is applied in pulses to reduce the chances of wheel lock.
+     * Apply anti-lock braking with pulsed motor brake power scaled by speed.
      */
     private void applyBrake() {
         double currentSpeed = calculateCurrentSpeed();
-        double brakePower = BRAKE_MAX_INTENSITY * currentSpeed;  // Scale the brake power by current speed
+        double brakePower = clamp(BRAKE_MAX_INTENSITY * currentSpeed);
 
-        // Pulsed braking logic to simulate anti-lock braking system
-        long pulseInterval = 100; // milliseconds between brake power pulses
-        long pulseDuration = 50;  // milliseconds for each brake pulse
+        long pulseInterval = 100; // ms between pulses
+        long pulseDuration = 50;  // ms brake on duration
 
-        long pulseEndTime = (long) (runtime.milliseconds() + pulseInterval);
+        long endTime = System.currentTimeMillis() + BRAKE_DURATION_MS;
 
-        while (runtime.milliseconds() < pulseEndTime) {
+        while (System.currentTimeMillis() < endTime && opModeIsActive()) {
             setMotorPowers(new double[] {brakePower, brakePower, brakePower, brakePower});
             sleep(pulseDuration);
             setMotorPowers(new double[] {0.0, 0.0, 0.0, 0.0});
-            sleep(pulseInterval - pulseDuration); // Allow for a delay before next pulse
+            sleep(pulseInterval - pulseDuration);
         }
     }
 
     /**
-     * Calculate the current speed of the robot based on the motor powers.
-     * This will give a magnitude of the velocity based on the current motor power values.
-     * @return The robot's speed (0 to 1).
+     * Calculate current robot speed based on motor powers (normalized 0-1)
      */
     private double calculateCurrentSpeed() {
-        double totalSpeed = Math.sqrt(Math.pow(leftFrontDrive.getPower(), 2) +
-                Math.pow(leftBackDrive.getPower(), 2) +
-                Math.pow(rightFrontDrive.getPower(), 2) +
-                Math.pow(rightBackDrive.getPower(), 2));
-        return totalSpeed / 4.0;  // Normalize the speed to a scale from 0 to 1
+        double totalSpeed = Math.sqrt(
+                Math.pow(leftFrontDrive.getPower(), 2) +
+                        Math.pow(leftBackDrive.getPower(), 2) +
+                        Math.pow(rightFrontDrive.getPower(), 2) +
+                        Math.pow(rightBackDrive.getPower(), 2));
+        return totalSpeed / 2.0;  // max sqrt(4) = 2, so normalize by 2
+    }
+
+    /**
+     * Clamp motor power values to [-1, 1].
+     */
+    private double clamp(double value) {
+        return Math.max(-1.0, Math.min(1.0, value));
     }
 }
-// end
