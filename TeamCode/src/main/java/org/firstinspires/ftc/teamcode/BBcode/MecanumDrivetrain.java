@@ -27,7 +27,8 @@ public class MecanumDrivetrain {
     //TODO drop and target pose needs to be set based on start location red vs blue
     private static final Pose2d dropPose = RedBasketPose.drop;
     private static final Pose2d basketDropTargetPose = new Pose2d(dropPose.position.x+1.5, dropPose.position.y+1.5, dropPose.heading.toDouble());
-    private static final Pose2d specimenGrabTargetPose = new Pose2d(38,-58, Math.toRadians(0));
+    private static final Pose2d specimenGrabTargetPose = new Pose2d(38,-60, Math.toRadians(0));
+    private static Pose2d specimenClipTargetPose = new Pose2d(0, -36, Math.toRadians(-90));
     private static final double kpTranslation = 0.07;
     private static final double kpRotation = .7;
     private static final double angleToleranceDeg = 1;
@@ -118,14 +119,14 @@ public class MecanumDrivetrain {
                 targetPose = specimenGrabTargetPose;
             }
             if(gamepad1.right_trigger > 0) {
-                targetPose = SpecimenPose.current_Clip;
+                targetPose = specimenClipTargetPose;
             }
             if(gamepad1.dpad_left) {
                 if (!isDpad_LeftPressed) {
                     isDpad_LeftPressed = true;
-                    double newX = SpecimenPose.current_Clip.position.x;
+                    double newX = specimenClipTargetPose.position.x;
                     newX -= 1;
-                    SpecimenPose.current_Clip = new Pose2d(newX, SpecimenPose.current_Clip.position.y, SpecimenPose.current_Clip.heading.toDouble());
+                    specimenClipTargetPose = new Pose2d(newX, specimenClipTargetPose.position.y, specimenClipTargetPose.heading.toDouble());
                 }
             }
                 else {
@@ -134,9 +135,9 @@ public class MecanumDrivetrain {
             if(gamepad1.dpad_right) {
                 if (!isDpad_RightPressed) {
                     isDpad_RightPressed = true;
-                    double newX = SpecimenPose.current_Clip.position.x;
+                    double newX = specimenClipTargetPose.position.x;
                     newX += 1;
-                    SpecimenPose.current_Clip = new Pose2d(newX, SpecimenPose.current_Clip.position.y, SpecimenPose.current_Clip.heading.toDouble());
+                    specimenClipTargetPose = new Pose2d(newX, specimenClipTargetPose.position.y, specimenClipTargetPose.heading.toDouble());
                 }
             }
             else {

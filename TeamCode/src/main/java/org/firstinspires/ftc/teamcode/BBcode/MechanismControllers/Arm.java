@@ -29,7 +29,8 @@ public class Arm {
     final int hangOutPosition = 52;
     final int hangInPosition = 35;
     final int highBasketPosition = 95;
-    final int newClipMethod = 93;
+    final int newClipMethodForAuto = 93;
+    final int newClipMethodForTeleop = 97;
     final double initialSpecimenPosition = 44.25;//used in auto and tele
     final double maxSpecimenPosition = 49;
     final double minSpecimenPosition = 39;
@@ -54,7 +55,7 @@ public class Arm {
     public boolean getIsArmHighBasketPosition() {return _armMotor.getCurrentPosition() > DegreeConverterToTicks(highBasketPosition);}
     public boolean getIsArmHomePosition() {return _armMotor.getCurrentPosition() < DegreeConverterToTicks(homePosition + 5);}
     public boolean getIsArmSpecimenPosition() {return _armMotor.getCurrentPosition() > DegreeConverterToTicks(specimenPosition);}
-    public boolean getIsArmNewClipMethodPosition() {return _armMotor.getCurrentPosition() > DegreeConverterToTicks(newClipMethod);}
+    public boolean getIsArmNewClipMethodPosition() {return _armMotor.getCurrentPosition() > DegreeConverterToTicks(newClipMethodForTeleop);}
     public boolean getIsArmHangOutPosition() {return _armMotor.getCurrentPosition() > DegreeConverterToTicks(hangOutPosition);}
     public boolean getIsArmHangInPosition() {return _armMotor.getCurrentPosition() < DegreeConverterToTicks(hangInPosition);}
     public boolean getIsArmSlowDownPosition() {return _armMotor.getCurrentPosition() < DegreeConverterToTicks(slowDownPosition);}
@@ -105,7 +106,8 @@ public class Arm {
     {
         ArmMotorCustom(highBasketPosition, 1);
     }
-    public void MoveToNewClipMethod() {ArmMotorCustom(newClipMethod, 1);}
+    public void MoveToNewClipMethodForAuto() {ArmMotorCustom(newClipMethodForAuto, 1);}
+    public void MoveToNewClipMethodForTeleop() {ArmMotorCustom(newClipMethodForTeleop, 1);}
     public void MoveToSpecimen()
     {
         MoveToSpecimen(1);
