@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -13,7 +12,7 @@ import org.firstinspires.ftc.teamcode.BBcode.MechanismActionBuilders.ViperArmAct
 import org.firstinspires.ftc.teamcode.BBcode.MechanismActionBuilders.WristClawActions;
 import org.firstinspires.ftc.teamcode.BBcode.OpModeType;
 import org.firstinspires.ftc.teamcode.BBcode.PoseStorage;
-import org.firstinspires.ftc.teamcode.PinpointDrive;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Locale;
 
@@ -33,8 +32,8 @@ public class Basket_Auto_Obs_Park extends LinearOpMode {
 
         //Write the public FTCDesktop static fields back into the private static poses so FTCDesktop actually affects the values on restart of op mode
 
-        //Initializes Pinpoint
-        PinpointDrive drive = new PinpointDrive(hardwareMap, RedBasketPose.init);
+        //Initializes drive
+        MecanumDrive drive = new MecanumDrive(hardwareMap, RedBasketPose.init);
 
         //closes claw on init
         Actions.runBlocking(_WristClawActions.CloseClaw());
@@ -46,12 +45,8 @@ public class Basket_Auto_Obs_Park extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-
-        // Declare OpMode member for the Odometry Computer
-        GoBildaPinpointDriverRR odo;
-
         //drive to drop
-        Action driveToDropFromStart = drive.actionBuilder(drive.pose)
+        Action driveToDropFromStart = drive.actionBuilder(drive.localizer.getPose())
                 .strafeToLinearHeading(RedBasketPose.initialDrop.position, RedBasketPose.initialDrop.heading)
                 .build();
 
@@ -114,8 +109,7 @@ public class Basket_Auto_Obs_Park extends LinearOpMode {
 
                 )
         );
-        odo = hardwareMap.get(GoBildaPinpointDriverRR.class,"pinpoint");
-        PoseStorage.currentPose = odo.getPositionRR(); //save the pose for teleop
+        PoseStorage.currentPose = drive.localizer.getPose(); //save the pose for teleop
         telemetry.addData("Stored Pose: ", String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", PoseStorage.currentPose.position.x, PoseStorage.currentPose.position.y, Math.toDegrees(PoseStorage.currentPose.heading.toDouble())) );
         //odo.setOffsets(-84.0, -168.0); //these are tuned for 3110-0002-0001 Product Insight #1
         //odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);

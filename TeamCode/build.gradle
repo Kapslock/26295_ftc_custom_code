@@ -38,12 +38,13 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
     //implementation "com.acmerobotics.roadrunner:ftc:0.1.15"
 
+    implementation "com.acmerobotics.roadrunner:ftc:0.1.22"
     implementation "com.acmerobotics.roadrunner:core:1.0.1"
     implementation "com.acmerobotics.roadrunner:actions:1.0.1"
     implementation "com.acmerobotics.dashboard:dashboard:0.4.16"
     //implementation "com.github.jdhs-ftc:road-runner-ftc-otos:8e83c17ff7"
     //implementation "com.github.jdhs-ftc:road-runner-ftc-otos:88eb0ee" //https://github.com/jdhs-ftc/road-runner-ftc-otos/commits/master/
-    implementation "com.github.jdhs-ftc:road-runner-ftc-otos:88eb0ee1c148e5452e350a63e1851668be715ffc"
+    //implementation "com.github.jdhs-ftc:road-runner-ftc-otos:88eb0ee1c148e5452e350a63e1851668be715ffc"
     implementation project(':RoadRunnerTrajectories')
     testImplementation('junit:junit:4.13.2')
 //

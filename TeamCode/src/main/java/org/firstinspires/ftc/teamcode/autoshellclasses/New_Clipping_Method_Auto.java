@@ -7,17 +7,15 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.bluebananas.ftc.roadrunneractions.TrajectoryActionBuilders.RedBasketPose;
-import org.bluebananas.ftc.roadrunneractions.TrajectoryActionBuilders.SpecimenPose;
 import org.firstinspires.ftc.teamcode.BBcode.MechanismActionBuilders.ViperArmActions;
 import org.firstinspires.ftc.teamcode.BBcode.MechanismActionBuilders.WristClawActions;
 import org.firstinspires.ftc.teamcode.BBcode.OpModeType;
 import org.firstinspires.ftc.teamcode.BBcode.PoseStorage;
-import org.firstinspires.ftc.teamcode.PinpointDrive;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Locale;
 
@@ -34,9 +32,9 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
         WristClawActions _WristClawActions = new WristClawActions(this);
         ViperArmActions _ViperArmActions = new ViperArmActions(this);
 
-        //Initializes Pinpoint
+        //Initializes drive
         Pose2d initialPose = new Pose2d(7.5, -61.85, Math.toRadians(0));
-        PinpointDrive drive = new PinpointDrive(hardwareMap, initialPose);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         //closes claw on init
         Actions.runBlocking(_WristClawActions.CloseClaw());
@@ -48,12 +46,11 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
         //----------------------------------------------------------------------------------------------
 
         if (isStopRequested()) return;
-        // Declare OpMode member for the Odometry Computer
-        GoBildaPinpointDriverRR odo;
+
 
         Action clippingSpecimen1, sampleGrab1, sampleDrop1, sampleGrab2, sampleDrop2, grabSpecimen2, driveToClip2, clippingSpecimen2, grabSpecimen3, driveToClip3, clippingSpecimen3, grabSpecimen4, driveToClip4, clippingSpecimen4, driveToPark, clawCloseSpecimenWait1, clawCloseSpecimenWait2, clawCloseSpecimenWait3, clawCloseSampleWait1, clawCloseSampleWait2, clawOpenSampleWait1, clawOpenSampleWait2, viperOutWait, specimenFlipWaitTime, sampleTurnWait2, clawOpenSpecimenWait1, clawOpenSpecimenWait2, clawOpenSpecimenWait3, clawOpenSpecimenWait4, wristUpWait1, wristUpWait2, wristUpWait3, wristUpWait4, viperOutClipWait1,viperOutClipWait2, viperOutClipWait3, viperOutClipWait4, waitToClip1, waitToClip2, waitToClip3;
 
-        clippingSpecimen1 = drive.actionBuilder(drive.pose)
+        clippingSpecimen1 = drive.actionBuilder(drive.localizer.getPose())
                 .strafeToLinearHeading(new Vector2d(3,-28.5),Math.toRadians(-90))
                 .build();
         clippingSpecimen2 = drive.actionBuilder(new Pose2d(45.72,-48.73,Math.toRadians(-85)))
@@ -99,84 +96,84 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(60,-60),Math.toRadians(90))
                 .build();
 
-        clawCloseSpecimenWait1 = drive.actionBuilder(drive.pose)
+        clawCloseSpecimenWait1 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.3)
                 .build();
-        clawCloseSpecimenWait2 = drive.actionBuilder(drive.pose)
+        clawCloseSpecimenWait2 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.3)
                 .build();
-        clawCloseSpecimenWait3 = drive.actionBuilder(drive.pose)
+        clawCloseSpecimenWait3 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.3)
                 .build();
 
-        clawCloseSampleWait1 = drive.actionBuilder(drive.pose)
+        clawCloseSampleWait1 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.5)
                 .build();
-        clawCloseSampleWait2 = drive.actionBuilder(drive.pose)
+        clawCloseSampleWait2 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.2)
                 .build();
 
-        clawOpenSampleWait1 = drive.actionBuilder(drive.pose)
+        clawOpenSampleWait1 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.2)
                 .build();
-        clawOpenSampleWait2 = drive.actionBuilder(drive.pose)
+        clawOpenSampleWait2 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.35)
                 .build();
 
-        clawOpenSpecimenWait1 = drive.actionBuilder(drive.pose)
+        clawOpenSpecimenWait1 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.2)
                 .build();
-        clawOpenSpecimenWait2 = drive.actionBuilder(drive.pose)
+        clawOpenSpecimenWait2 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.2)
                 .build();
-        clawOpenSpecimenWait3 = drive.actionBuilder(drive.pose)
+        clawOpenSpecimenWait3 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.2)
                 .build();
-        clawOpenSpecimenWait4 = drive.actionBuilder(drive.pose)
+        clawOpenSpecimenWait4 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.2)
                 .build();
 
-        wristUpWait1 = drive.actionBuilder(drive.pose)
+        wristUpWait1 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.25)
                 .build();
-        wristUpWait2 = drive.actionBuilder(drive.pose)
+        wristUpWait2 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.25)
                 .build();
-        wristUpWait3 = drive.actionBuilder(drive.pose)
+        wristUpWait3 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.25)
                 .build();
 
-        viperOutWait = drive.actionBuilder(drive.pose)
+        viperOutWait = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.35)
                 .build();
 
-        viperOutClipWait1 = drive.actionBuilder(drive.pose)
+        viperOutClipWait1 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.5)
                 .build();
-        viperOutClipWait2 = drive.actionBuilder(drive.pose)
+        viperOutClipWait2 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.5)
                 .build();
-        viperOutClipWait3 = drive.actionBuilder(drive.pose)
+        viperOutClipWait3 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.5)
                 .build();
-        viperOutClipWait4 = drive.actionBuilder(drive.pose)
+        viperOutClipWait4 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.5)
                 .build();
 
-        specimenFlipWaitTime = drive.actionBuilder(drive.pose)
+        specimenFlipWaitTime = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.25)
                 .build();
-        sampleTurnWait2 = drive.actionBuilder(drive.pose)
+        sampleTurnWait2 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.75)
                 .build();
 
-        waitToClip1 = drive.actionBuilder(drive.pose)
+        waitToClip1 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.2)
                 .build();
-        waitToClip2 = drive.actionBuilder(drive.pose)
+        waitToClip2 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.2)
                 .build();
-        waitToClip3 = drive.actionBuilder(drive.pose)
+        waitToClip3 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.2)
                 .build();
 
@@ -252,8 +249,8 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
                         driveToPark
                 )
         );
-        odo = hardwareMap.get(GoBildaPinpointDriverRR.class,"pinpoint");
-        PoseStorage.currentPose = odo.getPositionRR(); //save the pose for teleop
+
+        PoseStorage.currentPose = drive.localizer.getPose(); //save the pose for teleop
         telemetry.addData("Stored Pose: ", String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", PoseStorage.currentPose.position.x, PoseStorage.currentPose.position.y, Math.toDegrees(PoseStorage.currentPose.heading.toDouble())) );
 
         while(opModeIsActive()) {

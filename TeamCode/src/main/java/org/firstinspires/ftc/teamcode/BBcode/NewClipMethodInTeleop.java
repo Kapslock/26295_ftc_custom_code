@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.BBcode;
 
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriver;
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -117,22 +115,10 @@ public class NewClipMethodInTeleop extends LinearOpMode{
         }
     }
 
-    GoBildaPinpointDriverRR odo; // Declare OpMode member for the Odometry Computer
-    public double xOffset = -6.693; //RRTune, -6.5; measured
-    public double yOffset = -0.63;
     @Override
     public void runOpMode() throws InterruptedException{
         // Initialization Code Goes Here
         ChristmasLight _christmasLight = new ChristmasLight(this);
-        odo = hardwareMap.get(GoBildaPinpointDriverRR.class,"pinpoint");
-
-        GoBildaPinpointDriver.EncoderDirection xDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
-        GoBildaPinpointDriver.EncoderDirection yDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
-        double encoderResolution = GoBildaPinpointDriverRR.goBILDA_4_BAR_POD;
-        odo.setOffsets(DistanceUnit.MM.fromInches(xOffset), DistanceUnit.MM.fromInches(yOffset));
-        odo.setEncoderResolution(encoderResolution);
-        odo.setEncoderDirections(xDirection, yDirection);
-        odo.resetPosAndIMU();
 
         //Init limelight
         _limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -152,18 +138,9 @@ public class NewClipMethodInTeleop extends LinearOpMode{
         wristTimer.reset();
 
         //Call the function to initialize telemetry functions
-//        telemetryHelper.initMotorTelemetry( viperMotor, "viperMotor");
         telemetryHelper.initGamepadTelemetry(gamepad1);
         telemetryHelper.initGamepadTelemetry(gamepad2);
-        //Not sure if this can be before or after waitForStart
-//        if (PoseStorage.hasRolloverPose()) {
-//            _christmasLight.off();
-//            odo.setPosition(PoseStorage.currentPose);
-//        }
-//        else {
-//            _christmasLight.red();
-//            //TODO setPose to a some other likely position??
-//        }
+
         //Where the start button is clicked, put some starting commands after
         boolean isDpadUpPressed = false;
         boolean isDpadDownPressed = false;
@@ -171,7 +148,7 @@ public class NewClipMethodInTeleop extends LinearOpMode{
         telemetry.addData("HasRolloverPose", PoseStorage::hasRolloverPose);
         if (PoseStorage.hasRolloverPose()) {
             _christmasLight.off();
-            odo.setPosition(PoseStorage.currentPose);
+            drivetrain.localizer.setPose(PoseStorage.currentPose);
             PoseStorage.hasFieldCentricDrive = true;
         } else {
             _christmasLight.yellow();
@@ -180,23 +157,15 @@ public class NewClipMethodInTeleop extends LinearOpMode{
         }
 
         arm.MoveToHome();
-        //odo.setPosition(PoseStorage.currentPose);
-        //Use the following line for measuring auto locations
-        //odo.setPosition(RedBasketPose.basket_init_old);
-        //odo.setPosition(PoseStorage.currentPose);
-        telemetry.addData("PoseStorage", ()-> PoseStorage.currentPose);
-        //telemetry.addData("PositionRR", ()-> getPinpoint(odo.getPositionRR()));
 
-        telemetry.addData("PositionRR", () -> String.format(Locale.US, "{X: %.2f, Y: %.2f, H: %.2f}", odo.getPositionRR().position.x, odo.getPositionRR().position.y, Math.toDegrees(odo.getPositionRR().heading.toDouble())));
+        telemetry.addData("PoseStorage", ()-> PoseStorage.currentPose);
         //telemetry.addData("LimeLightPose", () -> formatLimeLight(botPose));
         telemetry.addData("Specimen Angle (deg)", () -> arm.specimenPosition);
         telemetry.addData("Current Clip Position", () -> SpecimenPose.current_Clip);
-        //telemetry.addData("Position", ()-> getPinpoint(odo.getPosition()));
+
         boolean tagFound = false;
         double botYaw = 0;
         while(opModeIsActive()){ //while loop for when program is active
-            odo.update();
-
             //Manage LimeLight
             LLResult lLResult = _limelight.getLatestResult();
             if (lLResult != null && lLResult.isValid()) {
