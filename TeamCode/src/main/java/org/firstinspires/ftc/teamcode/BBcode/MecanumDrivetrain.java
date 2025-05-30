@@ -7,10 +7,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.bluebananas.ftc.roadrunneractions.TrajectoryActionBuilders.RedBasketPose;
 import org.bluebananas.ftc.roadrunneractions.TrajectoryActionBuilders.SpecimenPose;
+
+import java.util.Timer;
 
 public class MecanumDrivetrain {
     OpMode _opMode;
@@ -29,11 +32,18 @@ public class MecanumDrivetrain {
     private static final Pose2d basketDropTargetPose = new Pose2d(dropPose.position.x+1.5, dropPose.position.y+1.5, dropPose.heading.toDouble());
     private static final Pose2d specimenGrabTargetPose = new Pose2d(38,-58, Math.toRadians(0));
     private static final double kpTranslation = 0.07;
+    private static final double kdTranslation = 0.01;
     private static final double kpRotation = .7;
+    private static final double kdRotation = 0.1;
     private static final double angleToleranceDeg = 1;
     private static final double distanceToleranceInch = .25;
     private boolean isDpad_LeftPressed = false;
     private boolean isDpad_RightPressed = false;
+    ElapsedTime derivativeTimer;
+
+    double lastHeadingError;
+    double lastRobotRelativeX;
+    double lastRobotRelativeY;
 
     // Constructor
     public MecanumDrivetrain(OpMode opMode) {
@@ -56,6 +66,8 @@ public class MecanumDrivetrain {
             _rightFront.setDirection(DcMotor.Direction.REVERSE);
             _rightBack.setDirection(DcMotor.Direction.REVERSE);
         }
+        //init derivative timer
+        derivativeTimer = new ElapsedTime();
 
         _telemetryHelper.initMotorTelemetry( _leftFront, "LF");
         _telemetryHelper.initMotorTelemetry( _leftBack, "LB");
@@ -222,7 +234,6 @@ public class MecanumDrivetrain {
         double errorY = targetPose.position.y - currentPose.position.y;
         double distanceError = Math.hypot(errorX, errorY);
         double maxDrive = 1;
-        double targetSlowDownDistance = 18;
         double minDrive = 0.3;
         /*
          * For a mecanum drive, we want to translate the field-centric error vector into
@@ -234,13 +245,21 @@ public class MecanumDrivetrain {
         double robotRelativeY = -errorX * Math.sin(robotHeading) + errorY * Math.cos(robotHeading);
         robotRelativeY = -robotRelativeY;
         double errorYaw = targetPose.heading.toDouble() - robotHeading;
+        //calc derivative
+        double turnDerivative = (errorYaw - lastHeadingError) / derivativeTimer.seconds();
+        lastHeadingError = errorYaw;
+        double driveDerivative = (robotRelativeX - lastRobotRelativeX) / derivativeTimer.seconds();
+        lastRobotRelativeX = robotRelativeX;
+        double strafeDerivative = (robotRelativeY - lastRobotRelativeY) / derivativeTimer.seconds();
+        lastRobotRelativeY = robotRelativeY;
+
         if (distanceError < distanceToleranceInch && Math.abs(Math.toDegrees(errorYaw)) < angleToleranceDeg) {
             return new double[]{0, 0, 0, 0};
         } else {
 
-            double drive = robotRelativeX * kpTranslation;
-            double strafe = robotRelativeY * kpTranslation;
-            double turn = errorYaw * kpRotation;
+            double drive = (driveDerivative * kdTranslation) + (robotRelativeX * kpTranslation);
+            double strafe = (strafeDerivative * kdTranslation) + (robotRelativeY * kpTranslation);
+            double turn = (turnDerivative * kdRotation) + (errorYaw * kpRotation);
             // Calculate wheel powers.
 //        double leftFrontPower    =  x - y - yaw;
 //        double rightFrontPower   =  x + y + yaw;
@@ -260,12 +279,6 @@ public class MecanumDrivetrain {
             max = Math.max(max, Math.abs(leftBackPower));
             max = Math.max(max, Math.abs(rightBackPower));
 
-            if (distanceError < targetSlowDownDistance) {
-                maxDrive = distanceError / targetSlowDownDistance;
-                maxDrive = Math.max(maxDrive, minDrive);
-            } else {
-                maxDrive = 1;
-            }
             if (max > maxDrive) {
                 leftFrontPower = maxDrive * leftFrontPower / max;
                 rightFrontPower = maxDrive * rightFrontPower / max;
