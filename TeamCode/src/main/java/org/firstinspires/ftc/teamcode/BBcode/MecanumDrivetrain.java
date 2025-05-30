@@ -42,8 +42,7 @@ public class MecanumDrivetrain {
     ElapsedTime derivativeTimer;
 
     double lastHeadingError;
-    double lastRobotRelativeX;
-    double lastRobotRelativeY;
+    double lastDistanceError;
 
     // Constructor
     public MecanumDrivetrain(OpMode opMode) {
@@ -246,20 +245,17 @@ public class MecanumDrivetrain {
         robotRelativeY = -robotRelativeY;
         double errorYaw = targetPose.heading.toDouble() - robotHeading;
         //calc derivative
-        double turnDerivative = (errorYaw - lastHeadingError) / derivativeTimer.seconds();
+        double rotationDerivative = (errorYaw - lastHeadingError) / derivativeTimer.seconds();
         lastHeadingError = errorYaw;
-        double driveDerivative = (robotRelativeX - lastRobotRelativeX) / derivativeTimer.seconds();
-        lastRobotRelativeX = robotRelativeX;
-        double strafeDerivative = (robotRelativeY - lastRobotRelativeY) / derivativeTimer.seconds();
-        lastRobotRelativeY = robotRelativeY;
+        double translationDerivative = (distanceError - lastDistanceError) / derivativeTimer.seconds();
 
         if (distanceError < distanceToleranceInch && Math.abs(Math.toDegrees(errorYaw)) < angleToleranceDeg) {
             return new double[]{0, 0, 0, 0};
         } else {
 
-            double drive = (driveDerivative * kdTranslation) + (robotRelativeX * kpTranslation);
-            double strafe = (strafeDerivative * kdTranslation) + (robotRelativeY * kpTranslation);
-            double turn = (turnDerivative * kdRotation) + (errorYaw * kpRotation);
+            double drive = (translationDerivative * kdTranslation) + (robotRelativeX * kpTranslation);
+            double strafe = (translationDerivative * kdTranslation) + (robotRelativeY * kpTranslation);
+            double turn = (rotationDerivative * kdRotation) + (errorYaw * kpRotation);
             // Calculate wheel powers.
 //        double leftFrontPower    =  x - y - yaw;
 //        double rightFrontPower   =  x + y + yaw;
