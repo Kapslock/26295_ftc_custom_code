@@ -45,7 +45,8 @@ public class MecanumDrivetrain {
     ElapsedTime derivativeTimer;
 
     double lastHeadingError;
-    double lastDistanceError;
+    double lastRobotRelativeX;
+    double lastRobotRelativeY;
 
     // Constructor
     public MecanumDrivetrain(OpMode opMode) {
@@ -182,7 +183,6 @@ public class MecanumDrivetrain {
         double errorY = targetPose.position.y - currentPose.position.y;
         double distanceError = Math.hypot(errorX, errorY);
         double maxDrive = 1;
-        double minDrive = 0.3;
         /*
          * For a mecanum drive, we want to translate the field-centric error vector into
          * robot–centric coordinates. To do this, rotate the error vector by the negative
@@ -194,17 +194,21 @@ public class MecanumDrivetrain {
         robotRelativeY = -robotRelativeY;
         double errorYaw = targetPose.heading.toDouble() - robotHeading;
         //calc derivative
-        double rotationDerivative = (errorYaw - lastHeadingError) / derivativeTimer.seconds();
+        double turnDerivative = (errorYaw - lastHeadingError) / derivativeTimer.seconds();
         lastHeadingError = errorYaw;
-        double translationDerivative = (distanceError - lastDistanceError) / derivativeTimer.seconds();
+        double driveDerivative = (robotRelativeX - lastRobotRelativeX) / derivativeTimer.seconds();
+        lastRobotRelativeX = robotRelativeX;
+        double strafeDerivative = (robotRelativeY - lastRobotRelativeY) / derivativeTimer.seconds();
+        lastRobotRelativeY = robotRelativeY;
+        derivativeTimer.reset();
 
         if (distanceError < distanceToleranceInch && Math.abs(Math.toDegrees(errorYaw)) < angleToleranceDeg) {
             return new double[]{0, 0, 0, 0};
         } else {
 
-            double drive = (translationDerivative * kdTranslation) + (robotRelativeX * kpTranslation);
-            double strafe = (translationDerivative * kdTranslation) + (robotRelativeY * kpTranslation);
-            double turn = (rotationDerivative * kdRotation) + (errorYaw * kpRotation);
+            double drive = (driveDerivative * kdTranslation) + (robotRelativeX * kpTranslation);
+            double strafe = (strafeDerivative * kdTranslation) + (robotRelativeY * kpTranslation);
+            double turn = (turnDerivative * kdRotation) + (errorYaw * kpRotation);
 
             // Calculate individual motor powers for mecanum drive
             double leftFrontPower = strafe + drive - turn;
