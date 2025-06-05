@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.BBcode;
 
 
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -11,7 +10,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.bluebananas.ftc.roadrunneractions.TrajectoryActionBuilders.RedBasketPose;
-import org.bluebananas.ftc.roadrunneractions.TrajectoryActionBuilders.SpecimenPose;
+import org.firstinspires.ftc.teamcode.Localizer;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.PinpointLocalizer;
+
+import java.util.Locale;
 
 import java.util.Timer;
 
@@ -22,15 +25,14 @@ public class MecanumDrivetrain {
     DcMotorEx _leftBack;
     DcMotorEx _rightFront;
     DcMotorEx _rightBack;
-    GoBildaPinpointDriverRR pinpoint;
-    // Proportional control gains (tweak these values during testing)
+
     private static Pose2d previousPose = new Pose2d(0, 0, 0);
-    //private static final Pose2d testTargetPose = new Pose2d(-39.5, -43.5, 0);
-    //private static final Pose2d targetPose = new Pose2d(-53.9, -53.275, Math.toRadians(45));
     //TODO drop and target pose needs to be set based on start location red vs blue
     private static final Pose2d dropPose = RedBasketPose.drop;
     private static final Pose2d basketDropTargetPose = new Pose2d(dropPose.position.x+1.5, dropPose.position.y+1.5, dropPose.heading.toDouble());
-    private static final Pose2d specimenGrabTargetPose = new Pose2d(38,-58, Math.toRadians(0));
+    private static final Pose2d specimenGrabTargetPose = new Pose2d(38,-60, Math.toRadians(0));
+    private static Pose2d specimenClipTargetPose = new Pose2d(0, -36, Math.toRadians(-90));
+    // TODO adjust proportional control gains for tele-auto
     private static final double kpTranslation = 0.07;
     private static final double kdTranslation = 0.01;
     private static final double kpRotation = .7;
@@ -39,6 +41,7 @@ public class MecanumDrivetrain {
     private static final double distanceToleranceInch = .25;
     private boolean isDpad_LeftPressed = false;
     private boolean isDpad_RightPressed = false;
+    public final Localizer localizer;
     ElapsedTime derivativeTimer;
 
     double lastHeadingError;
@@ -48,12 +51,13 @@ public class MecanumDrivetrain {
     public MecanumDrivetrain(OpMode opMode) {
         _opMode = opMode;
         _telemetryHelper = new TelemetryHelper(opMode);
+        localizer = new PinpointLocalizer(_opMode.hardwareMap, MecanumDrive.PARAMS.inPerTick, previousPose);
         // Initialize the motors
         _leftFront = _opMode.hardwareMap.tryGet(DcMotorEx.class, "leftFront");
         _leftBack = _opMode.hardwareMap.tryGet(DcMotorEx.class, "leftBack");
         _rightFront = _opMode.hardwareMap.tryGet(DcMotorEx.class, "rightFront");
         _rightBack = _opMode.hardwareMap.tryGet(DcMotorEx.class, "rightBack");
-        pinpoint = _opMode.hardwareMap.get(GoBildaPinpointDriverRR.class,"pinpoint");
+
         double[] motorPowers = new double[]{0, 0, 0, 0};
         //For right now, just add a telemetry message but the code will still fail when it's accessed in code so gracefully handle the null case
         //This could be to exit the OpMode or to continue with the OpMode but not use the device. The latter requires checking for null in the code
@@ -72,53 +76,22 @@ public class MecanumDrivetrain {
         _telemetryHelper.initMotorTelemetry( _leftBack, "LB");
         _telemetryHelper.initMotorTelemetry( _rightFront, "RF");
         _telemetryHelper.initMotorTelemetry( _rightBack, "RB");
-//        opMode.telemetry.addData("Error X", ()->getErrorX(pinpoint.getPositionRR()));
-//        opMode.telemetry.addData("Error Y", ()->getErrorY(pinpoint.getPositionRR()));
-//        opMode.telemetry.addData("Error Yaw", ()->getErrorYaw(pinpoint.getPositionRR()));
-//        opMode.telemetry.addData("LF", ()-> calMotorPowers(previousPose, targetPose)[0]);
-//        opMode.telemetry.addData("RF", ()-> calMotorPowers(previousPose, targetPose)[1]);
-//        opMode.telemetry.addData("LB", ()-> calMotorPowers(previousPose, targetPose)[2]);
-//        opMode.telemetry.addData("RB", ()-> calMotorPowers(previousPose, targetPose)[3]);
-
+        opMode.telemetry.addData("Localizer Position", () -> String.format(Locale.US, "{X: %.2f, Y: %.2f, H: %.2f}", localizer.getPose().position.x, localizer.getPose().position.y, Math.toDegrees(localizer.getPose().heading.toDouble())));
     }
-    private double getErrorX(Pose2d currentPose) {
-        if (currentPose == null) {
-            return 0;
-        }
 
-        //get error from pinpoint stuff
-        double errorX = basketDropTargetPose.position.x - currentPose.position.x;
-        return errorX;
-    }
-    private double getErrorY(Pose2d currentPose) {
-        if (currentPose == null) {
-            return 0;
-        }
-
-        //get error from pinpoint stuff
-        double errorY = basketDropTargetPose.position.y - currentPose.position.y;
-        return errorY;
-    }
-    private double getErrorYaw(Pose2d currentPose) {
-        if (currentPose == null) {
-            return 0;
-        }
-
-        //get error from pinpoint stuff
-        double errorYaw = Math.toDegrees(basketDropTargetPose.heading.toDouble()) - Math.toDegrees(currentPose.heading.toDouble());
-        return errorYaw;
-    }
     public void Drive() {
         double drive;
         double turn;
         double strafe;
         double fLeftPow, fRightPow, bLeftPow, bRightPow;
+        //TODO Adjust teleop speed multipliers
         double speedMultiplier = 0.75;
         double turnSpeedMultiplier = 0.5;
-        double turnEasingExponet = 3, turnEasingYIntercept = 0.05;
+        double turnEasingExponent = 3, turnEasingYIntercept = 0.05;
 
+        localizer.update();
         Gamepad gamepad1 = _opMode.gamepad1;
-        previousPose = pinpoint.getPositionRR();
+        previousPose = localizer.getPose();
         Pose2d targetPose = null;
         if (PoseStorage.hasFieldCentricDrive) {
 
@@ -129,14 +102,14 @@ public class MecanumDrivetrain {
                 targetPose = specimenGrabTargetPose;
             }
             if(gamepad1.right_trigger > 0) {
-                targetPose = SpecimenPose.current_Clip;
+                targetPose = specimenClipTargetPose;
             }
             if(gamepad1.dpad_left) {
                 if (!isDpad_LeftPressed) {
                     isDpad_LeftPressed = true;
-                    double newX = SpecimenPose.current_Clip.position.x;
+                    double newX = specimenClipTargetPose.position.x;
                     newX -= 1;
-                    SpecimenPose.current_Clip = new Pose2d(newX, SpecimenPose.current_Clip.position.y, SpecimenPose.current_Clip.heading.toDouble());
+                    specimenClipTargetPose = new Pose2d(newX, specimenClipTargetPose.position.y, specimenClipTargetPose.heading.toDouble());
                 }
             }
                 else {
@@ -145,9 +118,9 @@ public class MecanumDrivetrain {
             if(gamepad1.dpad_right) {
                 if (!isDpad_RightPressed) {
                     isDpad_RightPressed = true;
-                    double newX = SpecimenPose.current_Clip.position.x;
+                    double newX = specimenClipTargetPose.position.x;
                     newX += 1;
-                    SpecimenPose.current_Clip = new Pose2d(newX, SpecimenPose.current_Clip.position.y, SpecimenPose.current_Clip.heading.toDouble());
+                    specimenClipTargetPose = new Pose2d(newX, specimenClipTargetPose.position.y, specimenClipTargetPose.heading.toDouble());
                 }
             }
             else {
@@ -157,7 +130,7 @@ public class MecanumDrivetrain {
         if (targetPose == null){
             //manual teleop drive
             drive = gamepad1.left_stick_y;
-            turn = turnSpeedMultiplier * (Math.pow((gamepad1.right_stick_x * -1), turnEasingExponet) + (Math.signum(gamepad1.right_stick_x * -1) * turnEasingYIntercept));
+            turn = turnSpeedMultiplier * (Math.pow((gamepad1.right_stick_x * -1), turnEasingExponent) + (Math.signum(gamepad1.right_stick_x * -1) * turnEasingYIntercept));
             strafe = gamepad1.left_stick_x * -1;
             if (gamepad1.left_trigger > 0) {
                 speedMultiplier = 0.25;
@@ -193,31 +166,7 @@ public class MecanumDrivetrain {
      * <p>
      * Positive Yaw is counter-clockwise
      */
-//    public void moveRobot1(double x, double y, double yaw) {
-//        // Calculate wheel powers.
-//        double leftFrontPower    =  x -y -yaw;
-//        double rightFrontPower   =  x +y +yaw;
-//        double leftBackPower     =  x +y -yaw;
-//        double rightBackPower    =  x -y +yaw;
-//
-//        // Normalize wheel powers to be less than 1.0
-//        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-//        max = Math.max(max, Math.abs(leftBackPower));
-//        max = Math.max(max, Math.abs(rightBackPower));
-//
-//        if (max > 1.0) {
-//            leftFrontPower /= max;
-//            rightFrontPower /= max;
-//            leftBackPower /= max;
-//            rightBackPower /= max;
-//        }
-//
-//        // Send powers to the wheels.
-//        _leftFront.setPower(leftFrontPower);
-//        _rightFront.setPower(rightFrontPower);
-//        _leftBack.setPower(leftBackPower);
-//        _rightBack.setPower(rightBackPower);
-//    }
+
     private void setMotorPowers(double[] powers) {
 
 
@@ -256,11 +205,6 @@ public class MecanumDrivetrain {
             double drive = (translationDerivative * kdTranslation) + (robotRelativeX * kpTranslation);
             double strafe = (translationDerivative * kdTranslation) + (robotRelativeY * kpTranslation);
             double turn = (rotationDerivative * kdRotation) + (errorYaw * kpRotation);
-            // Calculate wheel powers.
-//        double leftFrontPower    =  x - y - yaw;
-//        double rightFrontPower   =  x + y + yaw;
-//        double leftBackPower     =  x + y - yaw;
-//        double rightBackPower    =  x - y + yaw;
 
             // Calculate individual motor powers for mecanum drive
             double leftFrontPower = strafe + drive - turn;

@@ -19,8 +19,8 @@ import org.firstinspires.ftc.teamcode.BBcode.MechanismControllers.WristClaw;
 
 import java.util.Locale;
 
-@TeleOp(name = "Competition TeleOp")
-public class CompetitionTeleOp extends LinearOpMode{
+@TeleOp(name = " New Clip Method TeleOp")
+public class NewClipMethodInTeleop extends LinearOpMode{
     enum HighBasketState {
         Home,
         RisingArmSample,
@@ -48,14 +48,12 @@ public class CompetitionTeleOp extends LinearOpMode{
         Home,
         WristUp,
         RaiseArm,
-        ClawClamp,
         ViperExtend,
         SpecimenHang,
-        WristDown,
-        ViperExtendShort,
-        ViperExtendClosed,
-        ArmLowerToHome,
-        ArmAtHome
+        ClawOpen,
+        ViperClose,
+        LowerArm,
+        SpecimenPickup
     }
 
     enum SubmersiblePickupState {
@@ -78,7 +76,7 @@ public class CompetitionTeleOp extends LinearOpMode{
     Limelight3A _limelight;
     ElapsedTime wristTimer = new ElapsedTime();
 
-    final double wristFlipTime = 0.75;
+    final double wristFlipTime = 0.5;
     Pose2d botPose = new Pose2d(0, 0, 0);
 
     private void handleGamepad1 (Viper viper, WristClaw wristClaw) {
@@ -337,7 +335,7 @@ public class CompetitionTeleOp extends LinearOpMode{
             switch (specimenClipState) {
                 case Home:
                     if (gamepad2.right_trigger > 0 && gamepad2.dpad_up) {
-                        wristClaw.WristClip();
+                        wristClaw.WristUp();
                         specimenClipState = SpecimenClipState.WristUp;
                         wristTimer.reset();
                     }
@@ -345,95 +343,57 @@ public class CompetitionTeleOp extends LinearOpMode{
 
                 case WristUp:
                     if (wristTimer.seconds() >= wristFlipTime) {
-                        arm.MoveToSpecimen();
+                        arm.MoveToNewClipMethodForTeleop();
                         specimenClipState = SpecimenClipState.RaiseArm;
                     }
                 case RaiseArm:
-                    if (arm.getIsArmSpecimenPosition()) {
-//                        viper.ExtendSpecimenhang(1);
-//                        specimenClipState = SpecimenClipState.ViperExtend;
-                        wristClaw.ClampClaw();
-                        specimenClipState = SpecimenClipState.ClawClamp;
-                    }
-                    else if (gamepad2.right_trigger > 0 && gamepad2.dpad_down) {
-                        arm.MoveToHome();
-                        specimenClipState = SpecimenClipState.ArmLowerToHome;
-                    }
-                    break;
-
-                case ClawClamp:
-                    if (wristTimer.seconds() >= wristFlipTime) {
-                        viper.ExtendSpecimenhang(1);
-                        specimenClipState = SpecimenClipState.ViperExtend;
-                    }
-
-                case ViperExtend:
-                    if (viper.getIsViperExtendSpecimenHang()) {
+                    if (arm.getIsArmNewClipMethodPosition()) {
                         specimenClipState = SpecimenClipState.SpecimenHang;
-                    }
-                    else if (gamepad2.right_trigger > 0 && gamepad2.dpad_down) {
-                        viper.ExtendClosed(0.25);
-                        specimenClipState = SpecimenClipState.ViperExtendShort;
                     }
                     break;
 
                 case SpecimenHang:
-                    if (gamepad2.dpad_up) {
-                        if (!isDpadDownPressed)
-                        {
-                            isDpadUpPressed = true;
-                            arm.IncreaseSpecimenAngle();
-                            arm.MoveToSpecimen(.5);
-                            //specimenClipState = SpecimenClipState.RaiseArm;
-                        }
-                    } else {
-                        isDpadUpPressed = false;
-                    }
-                    if (gamepad2.dpad_down) {
-                        if (!isDpadUpPressed)
-                        {
-                            isDpadDownPressed = true;
-                            arm.DecreaseSpecimenAngle();
-                            arm.MoveToSpecimen(.1);
-                            //specimenClipState = SpecimenClipState.RaiseArm;
-                        }
-                    } else {
-                        isDpadDownPressed = false;
-                    }
                     if (gamepad2.right_trigger > 0 && gamepad2.dpad_down) {
-                        wristClaw.WristDown();
-                        specimenClipState = SpecimenClipState.WristDown;
+                        viper.ExtendNewSpecimenClip(1);
+                        specimenClipState = SpecimenClipState.ViperExtend;
+                    }
+                    break;
+
+                case ViperExtend:
+                    if (viper.getIsViperExtendNewClipMethod()) {
+                        wristClaw.OpenClaw();
+                        specimenClipState = SpecimenClipState.ClawOpen;
                         wristTimer.reset();
                     }
                     break;
 
-                case WristDown:
+                case ClawOpen:
                     if (wristTimer.seconds() >= wristFlipTime) {
                         viper.ExtendClosed(0.75);
-                        specimenClipState = SpecimenClipState.ViperExtendClosed;
+                        specimenClipState = SpecimenClipState.ViperClose;
                     }
 
-                case ViperExtendClosed:
+                case ViperClose:
                     if (viper.getIsViperExtendClosed()) {
                         viper.Rest();
-                        arm.MoveToSlowDown();
-                        specimenClipState = SpecimenClipState.ArmLowerToHome;
+                        arm.MoveToFastHome();
+                        specimenClipState = SpecimenClipState.LowerArm;
                     }
                     break;
 
-                case ArmLowerToHome:
-                    if (arm.getIsArmSlowDownPosition()) {
-                        arm.MoveToHome();
-                        specimenClipState = SpecimenClipState.ArmAtHome;
+                case LowerArm:
+                    if (arm.getIsArmHomePosition()) {
+                        arm.Stop();
+                        wristClaw.WristSpecimenPickup();
+                        specimenClipState = SpecimenClipState.SpecimenPickup;
+                        wristTimer.reset();
                     }
                     break;
 
-                case ArmAtHome:
-                    if (arm.getIsHome()) {
+                case SpecimenPickup:
+                    if (wristTimer.seconds() >= wristFlipTime) {
                         specimenClipState = SpecimenClipState.Home;
                     }
-                    break;
-
             }
 
             switch (submersiblePickupState) {

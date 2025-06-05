@@ -73,7 +73,7 @@ public class ViperArmActions {
     public class MoveArmToNewClipMethod implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            _Arm.MoveToNewClipMethod();
+            _Arm.MoveToNewClipMethodForAuto();
             return false;
         }
     }

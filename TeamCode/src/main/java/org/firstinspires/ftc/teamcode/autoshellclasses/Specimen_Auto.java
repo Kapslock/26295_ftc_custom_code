@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.BBcode.MechanismActionBuilders.ViperArmAct
 import org.firstinspires.ftc.teamcode.BBcode.MechanismActionBuilders.WristClawActions;
 import org.firstinspires.ftc.teamcode.BBcode.OpModeType;
 import org.firstinspires.ftc.teamcode.BBcode.PoseStorage;
-import org.firstinspires.ftc.teamcode.PinpointDrive;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Locale;
 
@@ -34,9 +34,9 @@ public class Specimen_Auto extends LinearOpMode {
         WristClawActions _WristClawActions = new WristClawActions(this);
         ViperArmActions _ViperArmActions = new ViperArmActions(this);
 
-        //Initializes Pinpoint
+        //Initializes drive
         Pose2d initialPose = new Pose2d(14.5, -63, Math.toRadians(90));
-        PinpointDrive drive = new PinpointDrive(hardwareMap, initialPose);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         //closes claw on init
         Actions.runBlocking(_WristClawActions.CloseClaw());
@@ -48,12 +48,10 @@ public class Specimen_Auto extends LinearOpMode {
         //----------------------------------------------------------------------------------------------
 
         if (isStopRequested()) return;
-        // Declare OpMode member for the Odometry Computer
-        GoBildaPinpointDriverRR odo;
 
         Action driveToClip1, clippingSpecimen1, driveForSamplePush, driveToClip2, clippingSpecimen2, grabSpecimen3, driveToClip3, clippingSpecimen3, driveToPark, clawCloseWait1, clawCloseWait2;
 
-        driveToClip1 = drive.actionBuilder(drive.pose)
+        driveToClip1 = drive.actionBuilder(drive.localizer.getPose())
                 .strafeToLinearHeading(SpecimenPose.clipCenter.position, SpecimenPose.clipCenter.heading)
                 .build();
         driveToClip2 = drive.actionBuilder(new Pose2d(46,-60, Math.toRadians(0)))
@@ -94,10 +92,10 @@ public class Specimen_Auto extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(60,-60),Math.toRadians(90))
                 .build();
 
-        clawCloseWait1 = drive.actionBuilder(drive.pose)
+        clawCloseWait1 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.3)
                 .build();
-        clawCloseWait2 = drive.actionBuilder(drive.pose)
+        clawCloseWait2 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.3)
                 .build();
 
@@ -127,8 +125,8 @@ public class Specimen_Auto extends LinearOpMode {
                         driveToPark
                 )
         );
-        odo = hardwareMap.get(GoBildaPinpointDriverRR.class,"pinpoint");
-        PoseStorage.currentPose = odo.getPositionRR(); //save the pose for teleop
+
+        PoseStorage.currentPose = drive.localizer.getPose(); //save the pose for teleop
         telemetry.addData("Stored Pose: ", String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", PoseStorage.currentPose.position.x, PoseStorage.currentPose.position.y, Math.toDegrees(PoseStorage.currentPose.heading.toDouble())) );
 
         while(opModeIsActive()) {

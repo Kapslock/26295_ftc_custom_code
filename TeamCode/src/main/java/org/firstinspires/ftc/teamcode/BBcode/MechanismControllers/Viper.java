@@ -29,7 +29,7 @@ public class Viper {
     int hangInExtend = (int) 1.5;
     int halfExtend = 8;
     int specimenhangExtend = 9;
-    int newSpecimenClipExtend = 5;
+    int newSpecimenClipExtend = (int) 4.5;
     int shortsubmersibleExtend = 6;
     int longsubmersibleExtend = 16;
     int shortExtend = 3;
@@ -57,6 +57,7 @@ public class Viper {
     public boolean getIsViperExtendOutHang() {return _viperMotor.getCurrentPosition() < InchConverterToTicks(hangOutExtend + 5);}
     public boolean getIsViperExtendSpecimenHang() {return _viperMotor.getCurrentPosition() > InchConverterToTicks(specimenhangExtend);}
     public boolean getIsViperRetractedSlowDownHang() {return _viperMotor.getCurrentPosition() < InchConverterToTicks(specimenhangExtend);}
+    public boolean getIsViperExtendNewClipMethod() {return _viperMotor.getCurrentPosition() > InchConverterToTicks(newSpecimenClipExtend);}
 
     public void StopAndResetEncoder() {_viperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);}
     public void ExtendFull(double power) {ViperMotorCustom(fullExtend, power);}
