@@ -41,7 +41,8 @@ public class NewClipMethodInTeleop extends LinearOpMode{
         WristDown,
         Hang,
         ViperDown,
-        ArmDown
+        ArmDown,
+        ControlledLetDown
     }
 
     enum SpecimenClipState {
@@ -75,8 +76,10 @@ public class NewClipMethodInTeleop extends LinearOpMode{
     SubmersiblePickupState submersiblePickupState = SubmersiblePickupState.Home;
     Limelight3A _limelight;
     ElapsedTime wristTimer = new ElapsedTime();
+    ElapsedTime controlledLetDownTimer = new ElapsedTime();
 
     final double wristFlipTime = 0.5;
+    final double controlledLetDownTime = 15;
     Pose2d botPose = new Pose2d(0, 0, 0);
 
     private void handleGamepad1 (Viper viper, WristClaw wristClaw) {
@@ -321,15 +324,17 @@ public class NewClipMethodInTeleop extends LinearOpMode{
                     if (viper.getIsViperRetractedShort()) {
                         arm.MoveToHangIn();
                         hangState = HangState.ArmDown;
+                        controlledLetDownTimer.reset();
                     }
                     break;
 
                 case ArmDown:
-                    if (arm.getIsArmHangInPosition()) {
+                    if (controlledLetDownTimer.seconds() >= controlledLetDownTime) {
+                        arm.SlowLetDown();
+                        viper.SlowLetDown();
                         hangState = HangState.Home;
                     }
                     break;
-
             }
 
             switch (specimenClipState) {
