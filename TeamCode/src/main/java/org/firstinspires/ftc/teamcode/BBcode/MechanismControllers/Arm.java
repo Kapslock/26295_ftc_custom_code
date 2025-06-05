@@ -68,6 +68,7 @@ public class Arm {
     {
         _armMotor.setPower(0);
     }
+    public void SlowLetDown() {_armMotor.setPower(0.25);}
     public void Reset()
     {
         if (_armMotor == null)

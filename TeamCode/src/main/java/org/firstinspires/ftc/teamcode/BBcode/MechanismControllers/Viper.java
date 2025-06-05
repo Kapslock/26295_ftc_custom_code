@@ -29,7 +29,7 @@ public class Viper {
     int hangInExtend = (int) 1.5;
     int halfExtend = 8;
     int specimenhangExtend = 9;
-    int newSpecimenClipExtend = (int) 4.5;
+    int newSpecimenClipExtend = 5;
     int shortsubmersibleExtend = 6;
     int longsubmersibleExtend = 16;
     int shortExtend = 3;
@@ -71,6 +71,7 @@ public class Viper {
     public void ExtendSpecimenhang(double power) {ViperMotorCustom(specimenhangExtend, power);}
     public void ExtendNewSpecimenClip(double power) {ViperMotorCustom(newSpecimenClipExtend, power);}
     public void Rest() {_viperMotor.setPower(0);}
+    public void SlowLetDown() {_viperMotor.setPower(0.5);}
 
     public void ViperMotorCustom(double lengthInches, double power)
     {
