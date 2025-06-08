@@ -68,7 +68,10 @@ public class Arm {
     {
         _armMotor.setPower(0);
     }
-    public void SlowLetDown() {_armMotor.setPower(0.25);}
+    public void SlowLetDown() {
+        _armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        _armMotor.setPower(-0.1);
+    }
     public void Reset()
     {
         if (_armMotor == null)

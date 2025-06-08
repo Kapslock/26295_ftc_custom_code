@@ -71,7 +71,10 @@ public class Viper {
     public void ExtendSpecimenhang(double power) {ViperMotorCustom(specimenhangExtend, power);}
     public void ExtendNewSpecimenClip(double power) {ViperMotorCustom(newSpecimenClipExtend, power);}
     public void Rest() {_viperMotor.setPower(0);}
-    public void SlowLetDown() {_viperMotor.setPower(0.5);}
+    public void SlowLetDown() {
+        _viperMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        _viperMotor.setPower(-0.2);
+    }
 
     public void ViperMotorCustom(double lengthInches, double power)
     {

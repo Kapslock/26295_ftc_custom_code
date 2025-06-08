@@ -331,7 +331,7 @@ public class NewClipMethodInTeleop extends LinearOpMode{
                 case ArmDown:
                     if (controlledLetDownTimer.seconds() >= controlledLetDownTime) {
                         arm.SlowLetDown();
-                        viper.SlowLetDown();
+//                        viper.SlowLetDown();
                         hangState = HangState.Home;
                     }
                     break;
