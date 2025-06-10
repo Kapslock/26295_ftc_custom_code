@@ -30,7 +30,7 @@ public class Viper {
     int halfExtend = 8;
     int specimenhangExtend = 9;
     int newSpecimenClipExtend = 5;
-    int shortsubmersibleExtend = 6;
+    int shortsubmersibleExtend = 8;
     int longsubmersibleExtend = 16;
     int shortExtend = 3;
     int closedExtend = 0;

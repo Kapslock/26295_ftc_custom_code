@@ -68,20 +68,20 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
 
         sampleGrab1 = drive.actionBuilder(new Pose2d(3,-28.5,Math.toRadians(-90)))
                 .afterTime(1, _ViperArmActions.MoveViperToLongSamplePickUp())
-                .splineToLinearHeading(new Pose2d(29.87,-45, Math.toRadians(48.48) ), Math.toRadians(90), new TranslationalVelConstraint(75))
+                .splineToLinearHeading(new Pose2d(34.37,-48, Math.toRadians(58.48) ), Math.toRadians(90), new TranslationalVelConstraint(75))
                 .build();
-        sampleGrab2 = drive.actionBuilder(new Pose2d(29.87,-45,Math.toRadians(-40)))
-                .strafeToLinearHeading(new Vector2d(43.82,-48.29), Math.toRadians(56.38))
+        sampleGrab2 = drive.actionBuilder(new Pose2d(34.37,-48,Math.toRadians(-38)))
+                .strafeToLinearHeading(new Vector2d(47.82,-50.29), Math.toRadians(66.38))
                 .build();
 
-        sampleDrop1 = drive.actionBuilder(new Pose2d(29.87,-44,Math.toRadians(48.48)))
+        sampleDrop1 = drive.actionBuilder(new Pose2d(34.37,-48,Math.toRadians(58.48)))
+                .turnTo(Math.toRadians(-38))
+                .build();
+        sampleDrop2 = drive.actionBuilder(new Pose2d(47.82,-50.29,Math.toRadians(66.38)))
                 .turnTo(Math.toRadians(-40))
                 .build();
-        sampleDrop2 = drive.actionBuilder(new Pose2d(43.82,-48.29,Math.toRadians(56.38)))
-                .turnTo(Math.toRadians(-43))
-                .build();
 
-        grabSpecimen2 = drive.actionBuilder(new Pose2d(43.82,-47.29,Math.toRadians(-43)))
+        grabSpecimen2 = drive.actionBuilder(new Pose2d(47.82,-50.29,Math.toRadians(-40)))
                 .strafeToLinearHeading(new Vector2d(47.68,-48.5), Math.toRadians(-85), new TranslationalVelConstraint(25))
                 .build();
 
@@ -107,10 +107,10 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
                 .build();
 
         clawCloseSampleWait1 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.5)
+                .waitSeconds(0.4)
                 .build();
         clawCloseSampleWait2 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.2)
+                .waitSeconds(0.4)
                 .build();
 
         clawOpenSampleWait1 = drive.actionBuilder(drive.localizer.getPose())
@@ -148,20 +148,20 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
                 .build();
 
         viperOutClipWait1 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.5)
+                .waitSeconds(0.4)
                 .build();
         viperOutClipWait2 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.5)
+                .waitSeconds(0.4)
                 .build();
         viperOutClipWait3 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.5)
+                .waitSeconds(0.4)
                 .build();
         viperOutClipWait4 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.5)
+                .waitSeconds(0.4)
                 .build();
 
         specimenFlipWaitTime = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.25)
+                .waitSeconds(0.2)
                 .build();
         sampleTurnWait2 = drive.actionBuilder(drive.localizer.getPose())
                 .waitSeconds(0.75)
