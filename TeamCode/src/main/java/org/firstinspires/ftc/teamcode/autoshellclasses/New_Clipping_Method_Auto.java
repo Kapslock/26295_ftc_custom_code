@@ -53,7 +53,7 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
         clippingSpecimen1 = drive.actionBuilder(drive.localizer.getPose())
                 .strafeToLinearHeading(new Vector2d(3,-28.5),Math.toRadians(-90))
                 .build();
-        clippingSpecimen2 = drive.actionBuilder(new Pose2d(45.72,-48.73,Math.toRadians(-85)))
+        clippingSpecimen2 = drive.actionBuilder(new Pose2d(47.68,-51.5,Math.toRadians(-85)))
                 .afterTime(0.25, _ViperArmActions.MoveArmToNewClipMethod())
                 .strafeToLinearHeading(new Vector2d(2,-28.5),Math.toRadians(-90))
                 .build();
@@ -82,7 +82,7 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
                 .build();
 
         grabSpecimen2 = drive.actionBuilder(new Pose2d(47.82,-50.29,Math.toRadians(-40)))
-                .strafeToLinearHeading(new Vector2d(47.68,-48.5), Math.toRadians(-85), new TranslationalVelConstraint(25))
+                .strafeToLinearHeading(new Vector2d(47.68,-51.5), Math.toRadians(-85), new TranslationalVelConstraint(25))
                 .build();
 
         grabSpecimen3 = drive.actionBuilder(new Pose2d(2,-28.5,Math.toRadians(-90)))
@@ -148,16 +148,16 @@ public class New_Clipping_Method_Auto extends LinearOpMode {
                 .build();
 
         viperOutClipWait1 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.4)
+                .waitSeconds(0.45)
                 .build();
         viperOutClipWait2 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.4)
+                .waitSeconds(0.45)
                 .build();
         viperOutClipWait3 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.4)
+                .waitSeconds(0.45)
                 .build();
         viperOutClipWait4 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.4)
+                .waitSeconds(0.45)
                 .build();
 
         specimenFlipWaitTime = drive.actionBuilder(drive.localizer.getPose())
