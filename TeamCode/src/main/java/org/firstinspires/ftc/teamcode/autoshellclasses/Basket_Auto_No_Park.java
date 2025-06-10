@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.bluebananas.ftc.roadrunneractions.TrajectoryActionBuilders.RedBasketPose;
@@ -20,6 +21,7 @@ import java.util.Locale;
 @Config
 //@Disabled
 @Autonomous(name = "Basket_Auto_No_Park", group = "Autonomous")
+@Disabled
 public class Basket_Auto_No_Park extends LinearOpMode {
 
     @Override

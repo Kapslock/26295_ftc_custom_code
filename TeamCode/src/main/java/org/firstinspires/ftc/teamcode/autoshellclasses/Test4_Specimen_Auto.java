@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.bluebananas.ftc.roadrunneractions.TrajectoryActionBuilders.RedBasketPose;
@@ -23,6 +24,7 @@ import java.util.Locale;
 
 @Config
 @Autonomous(name = "4-Specimen_Auto", group = "Autonomous")
+@Disabled
 public class Test4_Specimen_Auto extends LinearOpMode {
     @Override
     public void runOpMode() {
