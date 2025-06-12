@@ -21,8 +21,8 @@ import java.util.Locale;
 
 
 @Config
-@Autonomous(name = "New_Clipping_Method_Spline_Auto", group = "Autonomous")
-public class New_Clipping_Method_Spline_Auto extends LinearOpMode {
+@Autonomous(name = "New_Clipping_Method_Auto_Obs_Park", group = "Autonomous")
+public class New_Clipping_Method_Auto_Obs_Park extends LinearOpMode {
     @Override
     public void runOpMode() {
         //Initialization steps
@@ -51,28 +51,24 @@ public class New_Clipping_Method_Spline_Auto extends LinearOpMode {
         Action clippingSpecimen1, sampleGrab1, sampleDrop1, sampleGrab2, sampleDrop2, grabSpecimen2, driveToClip2, clippingSpecimen2, grabSpecimen3, driveToClip3, clippingSpecimen3, grabSpecimen4, driveToClip4, clippingSpecimen4, driveToPark, clawCloseSpecimenWait1, clawCloseSpecimenWait2, clawCloseSpecimenWait3, clawCloseSampleWait1, clawCloseSampleWait2, clawOpenSampleWait1, clawOpenSampleWait2, viperOutWait, specimenFlipWaitTime, sampleTurnWait2, clawOpenSpecimenWait1, clawOpenSpecimenWait2, clawOpenSpecimenWait3, clawOpenSpecimenWait4, wristUpWait1, wristUpWait2, wristUpWait3, wristUpWait4, viperOutClipWait1,viperOutClipWait2, viperOutClipWait3, viperOutClipWait4, waitToClip1, waitToClip2, waitToClip3;
 
         clippingSpecimen1 = drive.actionBuilder(drive.localizer.getPose())
-                .strafeToLinearHeading(new Vector2d(-2,-28.5),Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(3,-28.5),Math.toRadians(-90))
                 .build();
         clippingSpecimen2 = drive.actionBuilder(new Pose2d(47.68,-51.75,Math.toRadians(-85)))
                 .afterTime(0.25, _ViperArmActions.MoveArmToNewClipMethod())
-//                .strafeToLinearHeading(new Vector2d(2,-28.5),Math.toRadians(-90))
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(0, -28.5, Math.toRadians(-90)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(-1, -28.5, Math.toRadians(-90)), Math.toRadians(90))
+//                .strafeToLinearHeading(new Vector2d(2,-28.5),Math.toRadians(-90))
                 .build();
         clippingSpecimen3 = drive.actionBuilder(new Pose2d(38,-60,Math.toRadians(0)))
                 .afterTime(0.25, _ViperArmActions.MoveArmToNewClipMethod())
-//                .strafeToLinearHeading(new Vector2d(1,-28.5),Math.toRadians(-90))
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(2, -28.5, Math.toRadians(-90)), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(1,-28.5),Math.toRadians(-90))
                 .build();
         clippingSpecimen4 = drive.actionBuilder(new Pose2d(38,-60,Math.toRadians(0)))
                 .afterTime(0.25, _ViperArmActions.MoveArmToNewClipMethod())
-//                .strafeToLinearHeading(new Vector2d(0,-28.5),Math.toRadians(-90))
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(4, -28.5, Math.toRadians(-90)), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(0,-28.5),Math.toRadians(-90))
                 .build();
 
-        sampleGrab1 = drive.actionBuilder(new Pose2d(-2,-28.5,Math.toRadians(-90)))
+        sampleGrab1 = drive.actionBuilder(new Pose2d(3,-28.5,Math.toRadians(-90)))
                 .afterTime(1, _ViperArmActions.MoveViperToLongSamplePickUp())
                 .splineToLinearHeading(new Pose2d(34.37,-48, Math.toRadians(58.48) ), Math.toRadians(90), new TranslationalVelConstraint(75))
                 .build();
@@ -91,15 +87,15 @@ public class New_Clipping_Method_Spline_Auto extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(47.68,-51.75), Math.toRadians(-85), new TranslationalVelConstraint(25))
                 .build();
 
-        grabSpecimen3 = drive.actionBuilder(new Pose2d(0,-28.5,Math.toRadians(-90)))
+        grabSpecimen3 = drive.actionBuilder(new Pose2d(-1,-28.5,Math.toRadians(-90)))
                 .strafeToLinearHeading(new Vector2d(38,-60), Math.toRadians(0))
                 .build();
-        grabSpecimen4 = drive.actionBuilder(new Pose2d(2,-28.5,Math.toRadians(-90)))
+        grabSpecimen4 = drive.actionBuilder(new Pose2d(1,-28.5,Math.toRadians(-90)))
                 .strafeToLinearHeading(new Vector2d(38,-60), Math.toRadians(0))
                 .build();
 
-        driveToPark = drive.actionBuilder(new Pose2d(4,-28.5,Math.toRadians(-90)))
-                .strafeToLinearHeading(new Vector2d(60,-60),Math.toRadians(90))
+        driveToPark = drive.actionBuilder(new Pose2d(0,-28.5,Math.toRadians(-90)))
+                .strafeToLinearHeading(new Vector2d(48,-56),Math.toRadians(90))
                 .build();
 
         clawCloseSpecimenWait1 = drive.actionBuilder(drive.localizer.getPose())
@@ -154,16 +150,16 @@ public class New_Clipping_Method_Spline_Auto extends LinearOpMode {
                 .build();
 
         viperOutClipWait1 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.45)
+                .waitSeconds(0.35)
                 .build();
         viperOutClipWait2 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.45)
+                .waitSeconds(0.35)
                 .build();
         viperOutClipWait3 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.45)
+                .waitSeconds(0.35)
                 .build();
         viperOutClipWait4 = drive.actionBuilder(drive.localizer.getPose())
-                .waitSeconds(0.45)
+                .waitSeconds(0.35)
                 .build();
 
         specimenFlipWaitTime = drive.actionBuilder(drive.localizer.getPose())
@@ -217,7 +213,7 @@ public class New_Clipping_Method_Spline_Auto extends LinearOpMode {
                         wristUpWait1,
                         _ViperArmActions.MoveViperToHome(),
                         clippingSpecimen2,
-                        waitToClip1,
+//                        waitToClip1,
                         _ViperArmActions.MoveViperToNewClipMethod(),
                         viperOutClipWait2,
                         _WristClawActions.OpenClaw(),
@@ -231,7 +227,7 @@ public class New_Clipping_Method_Spline_Auto extends LinearOpMode {
                         _WristClawActions.WristUp(),
                         wristUpWait2,
                         clippingSpecimen3,
-                        waitToClip2,
+//                        waitToClip2,
                         _ViperArmActions.MoveViperToNewClipMethod(),
                         viperOutClipWait3,
                         _WristClawActions.OpenClaw(),
@@ -243,7 +239,7 @@ public class New_Clipping_Method_Spline_Auto extends LinearOpMode {
                         _WristClawActions.CloseClaw(),
                         clawCloseSpecimenWait3,
                         _WristClawActions.WristUp(),
-                        wristUpWait3,
+//                        wristUpWait3,
                         clippingSpecimen4,
                         waitToClip3,
                         _ViperArmActions.MoveViperToNewClipMethod(),
