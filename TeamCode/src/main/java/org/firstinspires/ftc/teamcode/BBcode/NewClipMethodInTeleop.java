@@ -25,9 +25,8 @@ public class NewClipMethodInTeleop extends LinearOpMode{
         Home,
         RisingArmSample,
         ViperExtendFull,
-        WristDump,
         HighBasket,
-        WristUp,
+        ClawOpen,
         ViperClosed,
         ViperRetractedShort,
         LoweringArm,
@@ -223,10 +222,7 @@ public class NewClipMethodInTeleop extends LinearOpMode{
                 case ViperExtendFull:
                     if (viper.getIsViperExtendFull()) {
                         wristClaw.WristUp();
-//                        wristClaw.WristDump();
-//                        highBasketState = HighBasketState.WristDump;
                         highBasketState = HighBasketState.HighBasket;
-//                        wristTimer.reset();
                     }
                     else if (gamepad2.left_trigger > 0 && gamepad2.dpad_down) {
                         viper.ExtendShort(1);
@@ -234,33 +230,20 @@ public class NewClipMethodInTeleop extends LinearOpMode{
                     }
                     break;
 
-//                case WristDump:
-//                    if (wristTimer.seconds() >= wristFlipTime){
-//                        highBasketState = HighBasketState.HighBasket;
-//                    }
-//                    else if (gamepad2.left_trigger > 0 && gamepad2.dpad_down) {
-//                        wristClaw.WristUp();
-//                        highBasketState = HighBasketState.WristUp;
-//                        wristTimer.reset();
-//                    }
-//                    break;
-
                 case HighBasket:
                     if (gamepad2.left_trigger > 0 && gamepad2.dpad_down) {
-//                        wristClaw.WristUp();
-//                        highBasketState = HighBasketState.WristUp;
-//                        wristTimer.reset();
+                        wristClaw.OpenClaw();
+                        highBasketState = HighBasketState.ClawOpen;
+                        wristTimer.reset();
+                    }
+                    break;
+
+                case ClawOpen:
+                    if (wristTimer.seconds() >= wristFlipTime) {
                         viper.ExtendShort(1);
                         highBasketState = HighBasketState.ViperRetractedShort;
                     }
                     break;
-//
-//                case WristUp:
-//                    if (wristTimer.seconds() >= wristFlipTime) {
-//                        viper.ExtendShort(1);
-//                        highBasketState = HighBasketState.ViperRetractedShort;
-//                    }
-//                    break;
 
                 case ViperRetractedShort:
                     if (viper.getIsViperRetractedShort()) {
