@@ -5,8 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.BBcode.MechanismControllers.WristClaw;
+import org.firstinspires.ftc.teamcode.BBcode.OutreachBot.MechanismControllers.WristClaw;
 
 @TeleOp(name="DriveDemo")
 public class DriveDemo extends LinearOpMode {
