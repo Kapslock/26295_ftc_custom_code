@@ -1,14 +1,11 @@
-## TeamCode Module
+## Overview
+Write team OpModes in TeamCode. **Do not modify anything in FtcRobotController.**
 
-Welcome!
-
-This module, TeamCode, is the place where you will write/paste the code for your team's
-robot controller App. This module is currently empty (a clean slate) but the
-process for adding OpModes is straightforward.
-
-## Creating your own OpModes
-
-Write team OpModes in opmode/auton or opmode/teleop as appropriate.
+Create new OpModes in TeamCode/src/main/java/org/firstinspires/ftc/teamcode
+* Write Auton OpModes in /opmode/auton 
+* Write TeleOp OpModes in /opmode/teleop
+* Write new Robot Components in /components/<component type> where <component type> is 
+drive, sensor, vision, etc.
 
 There are examples of OpModes for various situations in the FtcRobotController package. See:
 FtcRobotController/java/org.firstinspires.ftc.robotcontroller/external/samples
