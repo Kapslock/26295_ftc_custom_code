@@ -11,8 +11,8 @@ There are examples of OpModes for various situations in the FtcRobotController p
 FtcRobotController/java/org.firstinspires.ftc.robotcontroller/external/samples
 
 ## Useful Resources
-* [Team Repo] (https://github.com/FTC-FIA/SparkSquad-DECODE)
-* (DECODE Competition Manual) [https://ftc-resources.firstinspires.org/ftc/game]
-* (FTC Coding Tutorial) [https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio_java/Android-Studio-Tutorial.html]
-* (FTC Docs) [https://ftc-docs.firstinspires.org/]
-* (FTC JavaDoc) [https://javadoc.io/doc/org.firstinspires.ftc]
+* [Team Repo](https://github.com/FTC-FIA/SparkSquad-DECODE)
+* [DECODE Competition Manual](https://ftc-resources.firstinspires.org/ftc/game)
+* [FTC Coding Tutorial](https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio_java/Android-Studio-Tutorial.html)
+* [FTC Docs](https://ftc-docs.firstinspires.org/)
+* [FTC JavaDoc](https://javadoc.io/doc/org.firstinspires.ftc)
