@@ -114,7 +114,7 @@ public class Auton_Starter extends OpMode
         if (runtime.seconds() > 1.0f) {
             leftPower = 0.0f;
             rightPower = 0.0f;
-        };
+        }
         // Invoke the TankDrive to control the motors
         tankDrive.drive(leftPower, rightPower, scaleFactor);
 
