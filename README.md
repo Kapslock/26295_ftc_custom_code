@@ -1,4 +1,6 @@
 ## Overview
+Welcome to Spark Squad's robot code for the 2025-2026 FTC season "DECODE".
+
 Write team OpModes in TeamCode. **Do not modify anything in FtcRobotController.**
 
 Create new OpModes in TeamCode/src/main/java/org/firstinspires/ftc/teamcode
@@ -16,3 +18,4 @@ FtcRobotController/java/org.firstinspires.ftc.robotcontroller/external/samples
 * [FTC Coding Tutorial](https://ftc-docs.firstinspires.org/en/latest/programming_resources/android_studio_java/Android-Studio-Tutorial.html)
 * [FTC Docs](https://ftc-docs.firstinspires.org/)
 * [FTC JavaDoc](https://javadoc.io/doc/org.firstinspires.ftc)
+
