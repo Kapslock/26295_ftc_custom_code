@@ -19,11 +19,6 @@ public class SampleTeleOpMode extends LinearOpMode {
 
     private Hardware hw;
 
-    enum ROBOT_STATE{
-        IDLE, SLOW
-    }
-
-    public ROBOT_STATE liftState = ROBOT_STATE.IDLE;
 
     @Override
     public void runOpMode() throws InterruptedException {

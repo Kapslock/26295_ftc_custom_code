@@ -1,26 +1,28 @@
 package org.firstinspires.ftc.teamcode.opmodes.tests;
 
-
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.teamcode.util.pidcore.PIDCore;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.mecanum.MecanumCommand;
 
 
 
-@Config
 @Autonomous (name = "Sample Auto")
 public class SampleAutoOpMode extends LinearOpMode {
     private MecanumCommand mecanumCommand;
-    private TelemetryPacket packet;
     private FtcDashboard dash;
+    private TelemetryPacket packet;
     private int stage1 = 0;
+    enum AUTO_STATE {
+        FIRST_BUCKET,
+        SUB_PICKUP,
+        FINISH
+
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -28,12 +30,7 @@ public class SampleAutoOpMode extends LinearOpMode {
         Hardware hw = Hardware.getInstance(hardwareMap);
         mecanumCommand = new MecanumCommand(hw);
 
-        enum AUTO_STATE {
-            FIRST_BUCKET,
-            SUB_PICKUP,
-            FINISH
 
-        }
         boolean firstInstance = true;
         dash = FtcDashboard.getInstance();
         telemetry = dash.getTelemetry();
@@ -47,7 +44,7 @@ public class SampleAutoOpMode extends LinearOpMode {
             // run processes
             updateTelemetry();
             mecanumCommand.motorProcess();
-            processPinPoint();
+            //processPinPoint();
 
             switch (autoState) {
                 case FIRST_BUCKET:
@@ -55,12 +52,6 @@ public class SampleAutoOpMode extends LinearOpMode {
                         autoState = AUTO_STATE.SUB_PICKUP;
                     }
                     break;
-
-                default:
-//                case SUB_PICKUP:
-//                    mecanumCommand.moveGlobalPartialPinPoint(true, 10, 15,0.8);
-//                    autoState = AUTO_STATE.FINISH;
-//                    br eak;
 
                 case FINISH:
                     stopRobot();
@@ -80,13 +71,13 @@ public class SampleAutoOpMode extends LinearOpMode {
 
 
     private void stopRobot() {
-        mecanumCommand.moveGlobalPartialPinPoint(false, 0, 0, 0);
+        mecanumCommand.moveGlobalPartialPinPoint( 0, 0, 0);
     }
 
 
-    public void processPinPoint() {
-        pinPointOdo.deadReckoning();
-    }
+//    public void processPinPoint() {
+//        pinPointOdo.deadReckoning();
+//    }
 
 
 
