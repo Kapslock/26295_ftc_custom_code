@@ -181,7 +181,5 @@ public class RobotControl {
 
         armTarget = (int) (lirililarila*1000);
         double shooterP = bomberdinocrocodilo;
-
-
     }
 }
