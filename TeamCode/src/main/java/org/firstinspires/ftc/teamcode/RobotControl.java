@@ -167,4 +167,21 @@ public class RobotControl {
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
     }
+
+    public void MethRobot() {
+        double distanceX = 2; // Q
+        double distanceY = 1.2; // W
+        final double maxHeight = 1.5; // D
+        final double gravity = 9.8; // G
+
+        double capotchinoassassino = Math.sqrt(2 * gravity * maxHeight); // Z
+        double brrbrrpatapim = Math.sqrt((2 * gravity * maxHeight) - (2 *gravity * distanceY)) + capotchinoassassino; // B
+        double lirililarila = Math.atan((capotchinoassassino * brrbrrpatapim) / (distanceX * gravity)); // N
+        double bomberdinocrocodilo = Math.sqrt(Math.pow(distanceX * gravity/brrbrrpatapim, 2) + (2*gravity*maxHeight));
+
+        armTarget = (int) (lirililarila*1000);
+        double shooterP = bomberdinocrocodilo;
+
+
+    }
 }
