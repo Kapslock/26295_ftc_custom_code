@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class MecanumDrive {
@@ -27,7 +28,7 @@ public class MecanumDrive {
         backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        imu = hwMap.get(IMU.class, "IMU");
+        imu = hwMap.get(IMU.class, "imu");
 
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
@@ -38,10 +39,10 @@ public class MecanumDrive {
     }
 
     public void drive(double forward, double strafe, double rotate) {
-        double frontLeftPower = forward + strafe + rotate;
-        double backLeftPower = forward - strafe + rotate;
-        double frontRightPower = forward + strafe - rotate;
-        double backRightPower = forward - strafe - rotate;
+        double frontLeftPower = forward + strafe +rotate;
+        double backLeftPower = forward - strafe - rotate;
+        double frontRightPower = forward - strafe + rotate;
+        double backRightPower = forward + strafe - rotate;
 
         double maxPower = 1.0;
         double maxSpeed = 1.0;
@@ -58,19 +59,26 @@ public class MecanumDrive {
 
     }
 
-    public void driveFieldOriented(double forward, double strafe, double rotate) {
+    public void driveFieldOriented(double forward, double strafe, double rotate, Telemetry telemetry) {
 
         double theta = Math.atan2(forward, strafe);
         double r = Math.hypot(strafe, forward);
+
+        telemetry.addData("theta1", theta);
 
         theta = AngleUnit.normalizeRadians(theta -
                 imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 
         double newForward = r * Math.sin(theta);
-        double newStrafe = r + Math.cos(theta);
+        double newStrafe = r * Math.cos(theta);
+
+
+        telemetry.addData("newforward", newForward);
+        telemetry.addData("newstrafe", newStrafe);
+        telemetry.addData("theta",theta);
+        telemetry.addData("ime angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 
         this.drive(newForward, newStrafe, rotate);
-
     }
 
 }
