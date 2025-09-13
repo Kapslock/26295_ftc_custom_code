@@ -1,0 +1,42 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/java
+{
+	"name": "Android Java",
+	"image": "mcr.microsoft.com/devcontainers/java:17", //Java 17 for sure works, 8 & 11 don't. I didn't test any others
+	"features": {
+		"ghcr.io/nordcominc/devcontainer-features/android-sdk:1": {
+			/*"build_tools": "30.0.3", //gradlew requires this version
+			"platform": "android-29", //This is the version of Android that the SDK will target
+			"extra_packages": "emulator"*/
+		}, //This is the Android SDK
+		"ghcr.io/devcontainers/features/github-cli:1": {}
+	},
+	"onCreateCommand": "if ! sdkmanager --list | grep -q 'emulator'; then echo '\n\n!!!          emulator not available via sdkmanager. Installing it manually          !!!\n\n'; ./.devcontainer/install-emulator.sh; fi && ./gradlew assembleDebug ; echo Done.", //This will handle downloading gradle and setting up the dependencies (it also checks to see if the emulator tool is available via `sdkmanager`, and installs it manually if it isn't (Arm-based devices))
+	"customizations": {
+		"codespaces": {
+			"openFiles": [
+				"TeamCode/src/main/java/org/firstinspires/ftc/teamcode/readme.md" //This will open up the folder structure in the sidebar to make it easy to get to the programs
+			]
+		},
+		"vscode": {
+			"extensions": [
+				"-vscjava.vscode-java-pack",
+				"-dbaeumer.vscode-eslint",
+				"GitHub.copilot",
+				"GitHub.vscode-github-actions",
+				"antonydalmiere.android-support",
+				"redhat.java",
+				"aaron-bond.better-comments",
+				"eamodio.gitlens",
+				"bierner.github-markdown-preview",
+				"pdconsec.vscode-print",
+				"GitHub.vscode-pull-request-github",
+				"streetsidesoftware.code-spell-checker"
+			],
+			"settings": {
+				"java.server.launchMode": "LightWeight", //Make sure `redhat.java` dosen't try to start a server, it just needs to do syntax highlighting
+				"android.sdkLocation": "${ANDROID_SDK_ROOT}" //This is the path to the Android SDK, which is set by the image
+			}
+		}
+	}
+}
