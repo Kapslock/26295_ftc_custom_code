@@ -11,9 +11,9 @@ import java.util.Locale;
 @TeleOp(name="Final code", group="Linear OpMode")
 public class Code_Z extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
-    GoBildaPinpointDriver odo;
+    //GoBildaPinpointDriver odo;
     RobotControl robot = new RobotControl(this);
-    AutoControl auto = new AutoControl(this);
+    //AutoControl auto = new AutoControl(this);
     private EnhancedNavigation navigation;
     private double mod = 1;
     private double slow = 1;
@@ -43,14 +43,14 @@ public class Code_Z extends LinearOpMode {
         telemetry.update();
 
         // Initialize odometry
-        odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+        /*odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         odo.setOffsets(6.25, -168.0);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
         //odo.resetPosAndIMU();
 
         // Initialize navigation system
-        navigation = new EnhancedNavigation(robot, odo);
+        navigation = new EnhancedNavigation(robot, odo);*/
 
 
         waitForStart();
@@ -76,20 +76,20 @@ public class Code_Z extends LinearOpMode {
 
 
             // Update odometry and telemetry
-            odo.update();
+            /*odo.update();
             Pose2D pos = odo.getPosition();
             String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",
                     pos.getX(DistanceUnit.MM),
                     pos.getY(DistanceUnit.MM),
-                    pos.getHeading(AngleUnit.DEGREES));
+                    pos.getHeading(AngleUnit.DEGREES));*/
 
             // Telemetry updates
-            telemetry.addData("odo Position", data);
+            //telemetry.addData("odo Position", data);
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Arm motor position", robot.armMotor.getCurrentPosition());
-            telemetry.addData("Arm motor target", robot.armTarget);
-            telemetry.addData("near basker", odo.getPosition().getHeading(AngleUnit.DEGREES));
-            telemetry.addData("editing", odo.getHeading());
+            //telemetry.addData("Arm motor position", robot.armMotor.getCurrentPosition());
+            //telemetry.addData("Arm motor target", robot.armTarget);
+            //telemetry.addData("near basker", odo.getPosition().getHeading(AngleUnit.DEGREES));
+            //telemetry.addData("editing", odo.getHeading());
             telemetry.addData("basket h errpr", basketHError);
             if (isNavigating) {
                 telemetry.addData("Navigation", "Moving to Basket");

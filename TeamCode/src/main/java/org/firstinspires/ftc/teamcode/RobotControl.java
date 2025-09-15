@@ -48,11 +48,11 @@ public class RobotControl {
      */
     public void init() {
         armTimer = new ElapsedTime();
-        GoBildaPinpointDriver odo = myOpMode.hardwareMap.get(
+        /*GoBildaPinpointDriver odo = myOpMode.hardwareMap.get(
                 GoBildaPinpointDriver.class,
                 "odo"
         );
-        navigation = new EnhancedNavigation(this, odo);
+        navigation = new EnhancedNavigation(this, odo);*/
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         leftFrontDrive = myOpMode.hardwareMap.get(
                 DcMotor.class,
@@ -67,20 +67,16 @@ public class RobotControl {
                 DcMotor.class,
                 "right_back_drive"
         );
-        armMotor = myOpMode.hardwareMap.get(DcMotor.class, "arm_motor");
+        //armMotor = myOpMode.hardwareMap.get(DcMotor.class, "arm_motor");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -89,8 +85,8 @@ public class RobotControl {
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
 
-        armTarget = armMotor.getCurrentPosition();
-        armMotor.setTargetPosition(armTarget);
+        //armTarget = armMotor.getCurrentPosition();
+        //armMotor.setTargetPosition(armTarget);
     }
 
     public void resetEncoders() {
