@@ -3,10 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @TeleOp
-public class TestMotorOreintation extends OpMode {
+public class TestMotorOrientation extends OpMode {
     MecanumDrive drive = new MecanumDrive();
     private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
 
