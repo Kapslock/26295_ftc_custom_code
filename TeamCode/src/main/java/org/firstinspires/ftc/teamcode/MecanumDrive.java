@@ -7,18 +7,22 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class MecanumDrive {
 
     private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+    GoBildaPinpointDriver odo;
     private IMU imu;
 
-    public void init(HardwareMap hwMap) {
+    public void init(HardwareMap hwMap, Telemetry telemetry) {
 
         frontLeftMotor = hwMap.get(DcMotor.class, "front_left_motor");
         frontRightMotor = hwMap.get(DcMotor.class, "front_right_motor");
         backLeftMotor = hwMap.get(DcMotor.class, "back_left_motor");
         backRightMotor = hwMap.get(DcMotor.class, "back_right_motor");
+
+        odo = hwMap.get(GoBildaPinpointDriver.class,"odo");
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -35,6 +39,20 @@ public class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP);
 
         imu.initialize(new IMU.Parameters(RevOrientation));
+
+        //check these
+        odo.setOffsets(1, 7.8, DistanceUnit.INCH);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
+
+        odo.resetPosAndIMU();
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("X offset (Inches)", odo.getXOffset(DistanceUnit.INCH));
+        telemetry.addData("Y offset (Inches)", odo.getYOffset(DistanceUnit.INCH));
+        telemetry.addData("Odo Device Version Number:", odo.getDeviceVersion());
+        telemetry.addData("Odo Heading Scalar", odo.getYawScalar());
+        telemetry.update();
 
     }
 
@@ -66,17 +84,24 @@ public class MecanumDrive {
 
         telemetry.addData("theta1", theta);
 
-        theta = AngleUnit.normalizeRadians(theta -
-                imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        odo.update(GoBildaPinpointDriver.ReadData.ONLY_UPDATE_HEADING);
+
+        double heading = odo.getPosition().getHeading(AngleUnit.RADIANS);
+        theta = AngleUnit.normalizeRadians(theta - heading);
 
         double newForward = r * Math.sin(theta);
         double newStrafe = r * Math.cos(theta);
 
+        telemetry.addData("New Forward", newForward);
+        telemetry.addData("New Strafe", newStrafe);
+        telemetry.addData("Theta",theta);
+        telemetry.addData("Imu Angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        telemetry.addData("Heading (rad)", heading);
+        telemetry.addData("Heading (deg)", odo.getPosition().getHeading(AngleUnit.DEGREES));
+        telemetry.addData("Odo Status", odo.getDeviceStatus());
+        telemetry.addData("Pinpoint Frequency", odo.getFrequency()); //prints/gets the current refresh rate of the Pinpoint
 
-        telemetry.addData("newforward", newForward);
-        telemetry.addData("newstrafe", newStrafe);
-        telemetry.addData("theta",theta);
-        telemetry.addData("ime angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        telemetry.update();
 
         this.drive(newForward, newStrafe, rotate);
     }
