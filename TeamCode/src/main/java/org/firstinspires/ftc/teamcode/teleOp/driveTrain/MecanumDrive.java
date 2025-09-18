@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.teleOp.GoBildaPinpointDriver;
 
 public class MecanumDrive {
 
@@ -27,10 +28,10 @@ public class MecanumDrive {
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         imu = hwMap.get(IMU.class, "imu");
 
@@ -56,13 +57,13 @@ public class MecanumDrive {
 
     }
 
-    public void drive(double forward, double strafe, double rotate) {
-        double frontLeftPower = forward + strafe +rotate;
+    public void drive(double forward, double strafe, double rotate, double slow) {
+        double frontLeftPower = forward + strafe + rotate;
         double backLeftPower = forward - strafe - rotate;
         double frontRightPower = forward - strafe + rotate;
         double backRightPower = forward + strafe - rotate;
 
-        double maxPower = 1.0;
+        double maxPower = 0.0;
         double maxSpeed = 1.0;
 
         maxPower = Math.max(maxPower, Math.abs(frontLeftPower));
@@ -70,19 +71,24 @@ public class MecanumDrive {
         maxPower = Math.max(maxPower, Math.abs(frontRightPower));
         maxPower = Math.max(maxPower, Math.abs(backRightPower));
 
-        frontLeftMotor.setPower(maxSpeed * (frontLeftPower / maxPower));
-        frontRightMotor.setPower(maxSpeed * (backLeftPower / maxPower));
-        backLeftMotor.setPower(maxSpeed * (frontRightPower / maxPower));
-        backRightMotor.setPower(maxSpeed * (backRightPower / maxPower));
+        if (maxPower > 1.0) {
+            frontLeftPower /= maxPower;
+            backLeftPower /= maxPower;
+            frontRightPower /= maxPower;
+            backRightPower /= maxPower;
+        }
+
+        frontLeftMotor.setPower(slow * maxSpeed * (frontLeftPower));
+        frontRightMotor.setPower(slow * maxSpeed * (frontRightPower));
+        backLeftMotor.setPower(slow * maxSpeed * (backLeftPower));
+        backRightMotor.setPower(slow * maxSpeed * (backRightPower));
 
     }
 
-    public void driveFieldOriented(double forward, double strafe, double rotate, Telemetry telemetry) {
+    public void driveFieldOriented(double forward, double strafe, double rotate, double slow, Telemetry telemetry) {
 
         double theta = Math.atan2(forward, strafe);
         double r = Math.hypot(strafe, forward);
-
-        telemetry.addData("theta1", theta);
 
         odo.update(GoBildaPinpointDriver.ReadData.ONLY_UPDATE_HEADING);
 
@@ -94,7 +100,7 @@ public class MecanumDrive {
 
         telemetry.addData("New Forward", newForward);
         telemetry.addData("New Strafe", newStrafe);
-        telemetry.addData("Theta",theta);
+        telemetry.addData("Theta", theta);
         telemetry.addData("Imu Angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
         telemetry.addData("Heading (rad)", heading);
         telemetry.addData("Heading (deg)", odo.getPosition().getHeading(AngleUnit.DEGREES));
@@ -103,7 +109,7 @@ public class MecanumDrive {
 
         telemetry.update();
 
-        this.drive(newForward, newStrafe, rotate);
+        this.drive(newForward, newStrafe, rotate, slow);
     }
 
 }
