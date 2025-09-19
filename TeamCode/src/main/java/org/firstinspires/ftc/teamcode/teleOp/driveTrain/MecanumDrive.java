@@ -33,6 +33,11 @@ public class MecanumDrive {
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         imu = hwMap.get(IMU.class, "imu");
 
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
@@ -59,8 +64,8 @@ public class MecanumDrive {
 
     public void drive(double forward, double strafe, double rotate, double slow) {
         double frontLeftPower = forward + strafe + rotate;
-        double backLeftPower = forward - strafe - rotate;
-        double frontRightPower = forward - strafe + rotate;
+        double backLeftPower = forward - strafe + rotate;
+        double frontRightPower = forward - strafe - rotate;
         double backRightPower = forward + strafe - rotate;
 
         double maxPower = 0.0;
