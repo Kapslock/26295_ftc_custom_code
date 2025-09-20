@@ -311,14 +311,14 @@ class MecanumSubsystem {
         rightBackMotorOutput *= POWER_SCALE_FACTOR;
         leftBackMotorOutput *= POWER_SCALE_FACTOR;
 
-        setPowers(rightBackMotorOutput,leftBackMotorOutput,rightFrontMotorOutput,leftFrontMotorOutput);
+        setPowers(rightFrontMotorOutput,leftBackMotorOutput,rightBackMotorOutput,leftFrontMotorOutput);
     }
 
-    public void setPowers (double x1, double x2, double y1, double y2){
-        hw.rf.setPower(x1);
-        hw.lb.setPower(x2);
-        hw.rb.setPower(y1);
-        hw.lf.setPower(y2);
+    public void setPowers (double rightFront, double leftFront, double rightBack, double leftBack){
+        hw.rf.setPower(rightFront);
+        hw.lb.setPower(leftFront);
+        hw.rb.setPower(rightBack);
+        hw.lf.setPower(leftBack);
     }
 }
 

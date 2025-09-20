@@ -13,46 +13,30 @@ public class SampleTeleOpMode extends LinearOpMode {
 
     // opmodes should only own commands
     private MecanumCommand mecanumCommand;
-    //private ElapsedTime timer;
+    private ElapsedTime timer;
 
     private ElapsedTime resetTimer;
 
     private Hardware hw;
-
-    enum ROBOT_STATE{
-        IDLE, //SLOW
-    }
-
-    //public ROBOT_STATE liftState = ROBOT_STATE.IDLE;
+    private double theta;
 
     @Override
     public void runOpMode() throws InterruptedException {
         hw = Hardware.getInstance(hardwareMap);
-        resetTimer = new ElapsedTime();
         mecanumCommand = new MecanumCommand(hw);
-        while (opModeInInit()){
-            telemetry.update();
-        }
+        resetTimer = new ElapsedTime();
+
 
         // Wait for start button to be pressed
         waitForStart();
 
-        double servoPower = 0;
-
         // Loop while OpMode is running
         while (opModeIsActive()) {
-            mecanumCommand.fieldOrientedMove(
-                    -gamepad1.left_stick_y,
+            theta = mecanumCommand.fieldOrientedMove(
+                    gamepad1.left_stick_y,
                     gamepad1.left_stick_x,
                     gamepad1.right_stick_x
             );
-
-
-
-
-
-
-
 
             processTelemetry();
 
@@ -66,7 +50,7 @@ public class SampleTeleOpMode extends LinearOpMode {
         //add telemetry messages here
         telemetry.addData("resetTimer: ",  resetTimer.milliseconds());
         telemetry.addLine("---------------------------------");
-
+        telemetry.addData("theta", theta);
         telemetry.update();
     }
 }
