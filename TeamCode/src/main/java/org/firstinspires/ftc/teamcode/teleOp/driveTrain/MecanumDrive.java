@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -14,7 +15,6 @@ public class MecanumDrive {
 
     private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     GoBildaPinpointDriver odo;
-    private IMU imu;
 
     public void init(HardwareMap hwMap, Telemetry telemetry) {
 
@@ -27,24 +27,18 @@ public class MecanumDrive {
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        imu = hwMap.get(IMU.class, "imu");
-
-        RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP);
-
-        imu.initialize(new IMU.Parameters(RevOrientation));
 
         //check these
         odo.setOffsets(1, 7.8, DistanceUnit.INCH);
@@ -106,15 +100,22 @@ public class MecanumDrive {
         telemetry.addData("New Forward", newForward);
         telemetry.addData("New Strafe", newStrafe);
         telemetry.addData("Theta", theta);
-        telemetry.addData("Imu Angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
-        telemetry.addData("Heading (rad)", heading);
-        telemetry.addData("Heading (deg)", odo.getPosition().getHeading(AngleUnit.DEGREES));
         telemetry.addData("Odo Status", odo.getDeviceStatus());
         telemetry.addData("Pinpoint Frequency", odo.getFrequency()); //prints/gets the current refresh rate of the Pinpoint
+        telemetry.addLine();
+        telemetry.addData("Heading (deg)", odo.getPosition().getHeading(AngleUnit.DEGREES));
 
         telemetry.update();
 
         this.drive(newForward, newStrafe, rotate, slow);
+    }
+
+    public void OdoReset(Telemetry tele) {
+
+        odo.resetPosAndIMU();
+        odo.update(GoBildaPinpointDriver.ReadData.ONLY_UPDATE_HEADING);
+        tele.update();
+
     }
 
 }

@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.teleOp.GoBildaPinpointDriver;
+
 @TeleOp
 public class DriveOpMode extends OpMode {
     MecanumDrive drive = new MecanumDrive();
@@ -20,12 +23,18 @@ public class DriveOpMode extends OpMode {
 
         forward = -gamepad1.left_stick_y;
         strafe = gamepad1.left_stick_x;
-        rotate = gamepad1.right_stick_x;
+        rotate = gamepad1.right_stick_x * 1.1;
 
         if (gamepad1.left_trigger > 0.4) {
             slow = 0.5;
+        } else if (gamepad1.right_trigger > 0.4) {
+            slow = 2;
         } else{
             slow = 1;
+        }
+
+        if (gamepad1.dpad_up) {
+            drive.OdoReset(telemetry);
         }
 
         telemetry.addData("forward", forward);
