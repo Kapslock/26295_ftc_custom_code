@@ -22,9 +22,26 @@ public class RB_Auto {
     backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
     servoRotate = hardwareMap.get(CRServo.class, "servoRotate");
 
+    frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+    frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    motorArm.setDirection(DcMotorSimple.Direction.REVERSE);
+
+    backLeftPos = 0;
+    frontLeftPos = 0;
+    backRightPos = 0;
+    frontRightPos = 0;
+    motorArmLinearSlidePos = 0;
+
     waitForStart();
     
   }
   
 }
+
 
