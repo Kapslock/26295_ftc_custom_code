@@ -108,6 +108,8 @@ public class TeleopGamePadStuff {
             } else if (gamepad1.left_stick_x > 0.0) {
                 drivetrain.strafeRight(gamepad1.left_stick_x, 5);
             }
+
+
             //gamepad1
             //Position to score specimen
      /*       if(gamepad1.) {
