@@ -20,7 +20,7 @@ public class DriveOpMode extends OpMode {
 
         forward = -1 * gamepad1.left_stick_y;
         strafe = gamepad1.left_stick_x;
-        rotate = gamepad1.right_stick_x * 1.1;
+        rotate = gamepad1.right_stick_x;
 
         if (gamepad1.left_trigger > 0.4) {
             slow = 0.5;
