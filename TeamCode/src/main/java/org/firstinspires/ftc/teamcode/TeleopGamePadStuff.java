@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -19,7 +20,7 @@ public class TeleopGamePadStuff {
     @Override
     public void runOpMode() throws InterruptedException {
         TeleopDrivetrain drivetrain = new TeleopDrivetrain(this);
-       // Mechanisms mech = new Mechanisms(this);
+        Mechanisms mech = new Mechanisms(this);
 
         drivetrain.initDriveTrain((hardwareMap));
       //  mech.initMechanisms(hardwareMap);
@@ -107,6 +108,10 @@ public class TeleopGamePadStuff {
                 drivetrain.strafeLeft(gamepad1.left_stick_x, 5);
             } else if (gamepad1.left_stick_x > 0.0) {
                 drivetrain.strafeRight(gamepad1.left_stick_x, 5);
+            }
+
+            if(gamepad2.x) {
+
             }
 
 

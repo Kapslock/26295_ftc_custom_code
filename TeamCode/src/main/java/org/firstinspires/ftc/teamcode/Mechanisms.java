@@ -11,6 +11,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "Mechanisms")
 public class Mechanisms {
+   public DcMotor intakeMotor;
+
+   public void takeInBall(HardwareMap hardwareMap) {
+      intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
 
 
+   }
 }
