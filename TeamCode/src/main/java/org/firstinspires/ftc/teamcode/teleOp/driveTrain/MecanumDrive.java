@@ -1,18 +1,20 @@
 package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.teleOp.GoBildaPinpointDriver;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Locale;
 
 public class MecanumDrive {
 
+    private static final Logger log = LoggerFactory.getLogger(MecanumDrive.class);
     private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     GoBildaPinpointDriver odo;
 
@@ -30,18 +32,19 @@ public class MecanumDrive {
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //check these
-        odo.setOffsets(1, 7.8, DistanceUnit.INCH);
+        //New Bot Offsets
+        //odo.setOffsets(-0.5, 0, DistanceUnit.INCH);
+        odo.setOffsets(-0.4, 3.6, DistanceUnit.INCH);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
@@ -56,7 +59,7 @@ public class MecanumDrive {
 
     }
 
-    public void drive(double forward, double strafe, double rotate, double slow) {
+    public void drive(double forward, double strafe, double rotate, double slow, Telemetry telemetry) {
         double frontLeftPower = forward + strafe + rotate;
         double backLeftPower = forward - strafe + rotate;
         double frontRightPower = forward - strafe - rotate;
@@ -82,6 +85,10 @@ public class MecanumDrive {
         backLeftMotor.setPower(slow * maxSpeed * (backLeftPower));
         backRightMotor.setPower(slow * maxSpeed * (backRightPower));
 
+        telemetry.addData("Front Left Motor Power", maxSpeed * (frontLeftPower));
+        telemetry.addData("Front Right Motor Power", maxSpeed * (frontRightPower));
+        telemetry.addData("Back Left Motor Power", maxSpeed * (backLeftPower));
+        telemetry.addData("Back Right Motor Power", maxSpeed * (backRightPower));
     }
 
     public void driveFieldOriented(double forward, double strafe, double rotate, double slow, Telemetry telemetry) {
@@ -89,7 +96,7 @@ public class MecanumDrive {
         double theta = Math.atan2(forward, strafe);
         double r = Math.hypot(strafe, forward);
 
-        odo.update(GoBildaPinpointDriver.ReadData.ONLY_UPDATE_HEADING);
+        odo.update();
 
         double heading = odo.getPosition().getHeading(AngleUnit.RADIANS);
         theta = AngleUnit.normalizeRadians(theta - heading);
@@ -97,17 +104,22 @@ public class MecanumDrive {
         double newForward = r * Math.sin(theta);
         double newStrafe = r * Math.cos(theta);
 
+        Pose2D pos = odo.getPosition();
+        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
+
         telemetry.addData("New Forward", newForward);
         telemetry.addData("New Strafe", newStrafe);
         telemetry.addData("Theta", theta);
         telemetry.addData("Odo Status", odo.getDeviceStatus());
         telemetry.addData("Pinpoint Frequency", odo.getFrequency()); //prints/gets the current refresh rate of the Pinpoint
         telemetry.addLine();
+        telemetry.addData("Position", data);
+        telemetry.addLine();
         telemetry.addData("Heading (deg)", odo.getPosition().getHeading(AngleUnit.DEGREES));
 
-        telemetry.update();
+        this.drive(newForward, newStrafe, rotate, slow, telemetry);
 
-        this.drive(newForward, newStrafe, rotate, slow);
+        telemetry.update();
     }
 
     public void OdoReset(Telemetry tele) {
