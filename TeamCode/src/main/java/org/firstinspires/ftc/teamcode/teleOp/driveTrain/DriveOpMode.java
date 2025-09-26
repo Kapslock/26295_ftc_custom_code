@@ -42,7 +42,7 @@ public class DriveOpMode extends OpMode {
         telemetry.addData("rotate", rotate);
         telemetry.addData("speed", slow);
 
-        drive.driveFieldOriented(forward, strafe, rotate, slow, telemetry);
+        drive.drive(forward, strafe, rotate, slow);
 
     }
 }
