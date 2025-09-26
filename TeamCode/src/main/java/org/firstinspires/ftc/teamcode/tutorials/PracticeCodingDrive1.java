@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Disabled
-@TeleOp
+@TeleOp(name = "PracticeCodingDrive1", group = "Tutorials")
 public class PracticeCodingDrive1 extends OpMode {
 
     private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;

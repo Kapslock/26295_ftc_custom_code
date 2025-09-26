@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @Disabled
-@TeleOp
+@TeleOp(name = "HelloWorld", group = "Tutorials")
 public class HelloWorld extends OpMode {
 
     @Override
