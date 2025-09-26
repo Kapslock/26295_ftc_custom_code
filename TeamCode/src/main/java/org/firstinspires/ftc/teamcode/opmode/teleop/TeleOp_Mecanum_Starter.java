@@ -67,7 +67,6 @@ public class TeleOp_Mecanum_Starter extends OpMode
         double strafe = gamepad1.left_stick_x;
         double rotate = -gamepad1.right_stick_x;
 
-        // Invoke the TankDrive to control the motors
         mecanumDrive.drive(forward, strafe, rotate);
 
         // Show the elapsed game time and wheel power.
