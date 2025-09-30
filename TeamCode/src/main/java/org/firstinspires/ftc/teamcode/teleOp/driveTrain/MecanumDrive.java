@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Locale;
 
 public class MecanumDrive {
@@ -17,6 +16,7 @@ public class MecanumDrive {
     private static final Logger log = LoggerFactory.getLogger(MecanumDrive.class);
     private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     GoBildaPinpointDriver odo;
+    public IMU imu;
 
     public void init(HardwareMap hwMap, Telemetry telemetry) {
 
@@ -105,7 +105,7 @@ public class MecanumDrive {
         double newStrafe = r * Math.cos(theta);
 
         Pose2D pos = odo.getPosition();
-        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
+        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
 
         telemetry.addData("New Forward", newForward);
         telemetry.addData("New Strafe", newStrafe);
@@ -125,7 +125,7 @@ public class MecanumDrive {
     public void OdoReset(Telemetry tele) {
 
         odo.resetPosAndIMU();
-        odo.update(GoBildaPinpointDriver.ReadData.ONLY_UPDATE_HEADING);
+        odo.update();
         tele.update();
 
     }

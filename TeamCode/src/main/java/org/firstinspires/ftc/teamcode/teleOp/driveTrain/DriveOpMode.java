@@ -34,6 +34,9 @@ public class DriveOpMode extends OpMode {
             drive.OdoReset(telemetry);
         }
 
+        telemetry.addData("Elapsed Time", getRuntime());
+        telemetry.addLine();
+
         telemetry.addData("forward", forward);
         telemetry.addData("strafe", strafe);
         telemetry.addData("rotate", rotate);
