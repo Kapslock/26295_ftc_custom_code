@@ -125,15 +125,15 @@ public class omniTeleOP extends LinearOpMode{
         // leftHang = hardwareMap.get(Servo.class, "leftHangServo");
 
         // Game Element Intake
-        intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
-        intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
+//        intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
+//        intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
 
         // Belts to connect intake and flywheel
-        bottomBelt = hardwareMap.get(CRServo.class, "bottomBelt");
-        angledBelt = hardwareMap.get(CRServo.class, "angledBelt");
+//        bottomBelt = hardwareMap.get(CRServo.class, "bottomBelt");
+//        angledBelt = hardwareMap.get(CRServo.class, "angledBelt");
 
         // Flywheel Motor
-        flywheelMotor = hardwareMap.dcMotor.get("flywheelMotor");
+//        flywheelMotor = hardwareMap.dcMotor.get("flywheelMotor");
 
         // Reverse some of the drive motors depending on physical setup
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -149,8 +149,8 @@ public class omniTeleOP extends LinearOpMode{
         imu.initialize(parameters);
 
         // Chassis-mounted distance sensors
-        rightDistanceSensor = hardwareMap.get(DistanceSensor.class, "rightDistanceSensor");
-        backDistanceSensor = hardwareMap.get(DistanceSensor.class, "backDistanceSensor");
+//        rightDistanceSensor = hardwareMap.get(DistanceSensor.class, "rightDistanceSensor");
+//        backDistanceSensor = hardwareMap.get(DistanceSensor.class, "backDistanceSensor");
 
         waitForStart();
 
@@ -191,15 +191,34 @@ public class omniTeleOP extends LinearOpMode{
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
             double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-            double frontLeftPower = (rotY + rotX + rx) / denominator;
-            double backLeftPower = (rotY - rotX + rx) / denominator;
-            double frontRightPower = (rotY - rotX - rx) / denominator;
-            double backRightPower = (rotY + rotX - rx) / denominator;
+//            double frontLeftPower = (rotY + rotX + rx) / denominator;
+//            double backLeftPower = (rotY - rotX + rx) / denominator;
+//            double frontRightPower = (rotY - rotX - rx) / denominator;
+//            double backRightPower = (rotY + rotX - rx) / denominator;
+            double frontLeftPower = (y + x + rx);
+            double frontRightPower = (y - x - rx);
+            double backLeftPower = (y - x + rx);
+            double backRightPower = (y + x - rx);
+
+            double max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
+            max = Math.max(max, Math.abs(backLeftPower));
+            max = Math.max(max, Math.abs(backRightPower));
+
+            if (max > 1.0) {
+                frontLeftPower  /= max;
+                frontRightPower /= max;
+                backLeftPower   /= max;
+                backRightPower  /= max;
+            }
 
             frontLeftMotor.setPower(frontLeftPower);
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
+
+            telemetry.addData("vals", "%4.2f, %4.2f, %4.2f", y, x, rx);
+            telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
+            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftPower, backRightPower);
 
             // Controller 1 Arm Pivot Motor
             /*
@@ -243,7 +262,7 @@ public class omniTeleOP extends LinearOpMode{
             }*/
 
             // Controller 1 Intake
-            if (gamepad1.right_bumper) {
+            /*if (gamepad1.right_bumper) {
                 intakeLeft.setPower(1);
                 intakeRight.setPower(-1);
             } else if (gamepad1.left_bumper) {
@@ -278,7 +297,7 @@ public class omniTeleOP extends LinearOpMode{
             }
             else {
                 flywheelMotor.setPower(0);
-            }
+            }*/
 
             // Controller 1 Arm Slide
             // encoder directions become negative depending on motor directions
@@ -319,8 +338,8 @@ public class omniTeleOP extends LinearOpMode{
             // telemetry.addData("Arm Slide Encoder Position :", armSlideMotor.getCurrentPosition());
             // telemetry.addData("Arm Slide Motor Power :", armSlideMotor.getPower());
 
-            telemetry.addData("Right Distance (mm): ", rightDistanceSensor.getDistance(DistanceUnit.MM));
-            telemetry.addData("Back Distance (mm): ", backDistanceSensor.getDistance(DistanceUnit.MM));
+//            telemetry.addData("Right Distance (mm): ", rightDistanceSensor.getDistance(DistanceUnit.MM));
+//            telemetry.addData("Back Distance (mm): ", backDistanceSensor.getDistance(DistanceUnit.MM));
             telemetry.update();
         }
     }
