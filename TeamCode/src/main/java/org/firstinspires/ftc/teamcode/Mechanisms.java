@@ -15,7 +15,7 @@ public class Mechanisms {
 
    public void takeInBall(HardwareMap hardwareMap) {
       intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
-
+      intakeMotor.setPower();
 
    }
 }
