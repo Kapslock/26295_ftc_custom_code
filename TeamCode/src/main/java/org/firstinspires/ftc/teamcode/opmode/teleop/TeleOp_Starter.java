@@ -7,13 +7,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.component.drive.TankDrive;
 
-
 @TeleOp(name="TeleOp_TankStarter", group="Iterative OpMode")
 public class TeleOp_Starter extends OpMode
 {
     final String LEFT_DRIVE_MOTOR_NAME = "left_drive";
     final String RIGHT_DRIVE_MOTOR_NAME = "right_drive";
-    // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
     private TankDrive tankDrive = null;
 
