@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="TeleOp_ShooterPrototype", group="Test")
 public class TeleOp_ShooterPrototype extends OpMode {
-    final String SHOOTER_MOTOR_NAME = "shooter";
+    final String SHOOTER_MOTOR_NAME = "I_AM_GROOT";
     private final ElapsedTime runtime = new ElapsedTime();
 
     private DcMotor shooter;
