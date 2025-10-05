@@ -129,7 +129,7 @@ public class TeleopMain extends LinearOpMode{
             //extends the viper slide
             //gamepad 2 functions
           //  telemetry.addData("ViperSlide", mech.viperSlide.getCurrentPosition());
-            if (gamepad2.dpad_left){
+        if (gamepad2.dpad_left){
               //  mech.simplePivotLimit1();
                 //mech.extendViperSlide("backward");
 
