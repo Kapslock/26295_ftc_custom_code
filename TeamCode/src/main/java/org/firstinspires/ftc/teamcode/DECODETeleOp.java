@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -30,7 +29,6 @@ public class DECODETeleOp extends LinearOpMode {
     private DcMotor intake, spindexer;
     private Servo kicker, hood;
     private DcMotorEx launcher;
-    private DigitalChannel spindexerHomeSwitch;
 
     // === Spindexer ===
     private int spindexerStep = 0;
@@ -59,14 +57,6 @@ public class DECODETeleOp extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-
-        // --- HOMING for spindexer ---
-        telemetry.addLine("Homing spindexer...");
-        telemetry.update();
-        homeSpindexer();
-
-        telemetry.addLine("Homing complete");
-        telemetry.update();
 
         // === Main loop ===
         while (opModeIsActive()) {
@@ -142,8 +132,6 @@ public class DECODETeleOp extends LinearOpMode {
         kicker = hardwareMap.get(Servo.class, "kicker");
         hood = hardwareMap.get(Servo.class, "hood");
         launcher = hardwareMap.get(DcMotorEx.class, "launcher");
-        spindexerHomeSwitch = hardwareMap.get(DigitalChannel.class, "spindexerHome");
-        spindexerHomeSwitch.setMode(DigitalChannel.Mode.INPUT);
 
         spindexer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         spindexer.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -206,18 +194,6 @@ public class DECODETeleOp extends LinearOpMode {
         hoodPos += stick * 0.01; // scale adjust speed
         hoodPos = Math.max(0.0, Math.min(1.0, hoodPos));
         hood.setPosition(hoodPos);
-    }
-
-    private void homeSpindexer() {
-        spindexer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        spindexer.setPower(-0.3); // spin backwards toward switch
-        while (opModeIsActive() && spindexerHomeSwitch.getState()) {
-            // wait until switch pressed
-        }
-        spindexer.setPower(0);
-        spindexer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        spindexer.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        spindexerStep = 0;
     }
 
     private void stopAllMotors() {
