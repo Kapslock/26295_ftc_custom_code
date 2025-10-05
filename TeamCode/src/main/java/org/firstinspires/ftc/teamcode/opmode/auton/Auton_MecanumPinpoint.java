@@ -95,9 +95,6 @@ public class Auton_MecanumPinpoint extends OpMode
         // Read sensors and inputs
         odo.update();
 
-
-
-
         double forward;
         double strafe;
         double rotate = 0.0;
@@ -128,27 +125,25 @@ public class Auton_MecanumPinpoint extends OpMode
         }
 
         // Actuate - execute robot functions
-        //mecanumDrive.drive(forward, strafe, rotate);
+        mecanumDrive.drive(forward, strafe, rotate);
 
         // Print telemetry
-
         String position = String.format(
-                Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",
-                pos.getX(DistanceUnit.MM),
-                pos.getY(DistanceUnit.MM),
-                pos.getHeading(AngleUnit.DEGREES)
+            Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",
+            pos.getX(DistanceUnit.MM),
+            pos.getY(DistanceUnit.MM),
+            pos.getHeading(AngleUnit.DEGREES)
         );
         telemetry.addData("Position", position);
 
         String velocity = String.format(
-                Locale.US, "{XVel: %.3f, YVel: %.3f, HVel: %.3f}",
-                odo.getVelX(DistanceUnit.MM),
-                odo.getVelY(DistanceUnit.MM),
-                odo.getHeadingVelocity(UnnormalizedAngleUnit.DEGREES)
+            Locale.US, "{XVel: %.3f, YVel: %.3f, HVel: %.3f}",
+            odo.getVelX(DistanceUnit.MM),
+            odo.getVelY(DistanceUnit.MM),
+            odo.getHeadingVelocity(UnnormalizedAngleUnit.DEGREES)
         );
         telemetry.addData("Velocity", velocity);
         telemetry.addData("Pinppoint Device Status", odo.getDeviceStatus());
-
     }
 
     /*
