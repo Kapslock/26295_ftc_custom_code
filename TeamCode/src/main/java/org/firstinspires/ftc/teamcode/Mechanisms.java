@@ -1,4 +1,6 @@
+/*
 package org.firstinspires.ftc.teamcode;
+
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
@@ -19,3 +21,4 @@ public class Mechanisms {
 
    }
 }
+*/

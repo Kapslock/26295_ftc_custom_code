@@ -1,26 +1,28 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+import static android.icu.lang.UProperty.MATH;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "TeleopGamePadStuff")
-public class TeleopGamePadStuff {
+public class TeleopMain extends LinearOpMode{
 
 
     //private static final double TICKS_PER_REVOLUTION = 1538.0;
     private ElapsedTime runtime = new ElapsedTime();
 
-    @Override
+
+    public TeleopMain() {
+
+    }
+
+   // @Override
     public void runOpMode() throws InterruptedException {
         TeleopDrivetrain drivetrain = new TeleopDrivetrain(this);
-        Mechanisms mech = new Mechanisms(this);
+       // Mechanisms mech = new Mechanisms(this);
 
         drivetrain.initDriveTrain((hardwareMap));
       //  mech.initMechanisms(hardwareMap);
@@ -29,11 +31,7 @@ public class TeleopGamePadStuff {
 
         telemetry.addData("Status","READY TO NUT");
 
-
-
-
-
-        waitForStart();
+        this.waitForStart();
 
 //        boolean press = false;
 //        boolean pressStart = false;
@@ -68,9 +66,9 @@ public class TeleopGamePadStuff {
 
 
 
-        if (isStopRequested()) {
-            return;
-        }
+       // if (isStopRequested()) {
+         //   return;
+        //}
 
         //This is loop that checks the gamepad for inputs every iteration
         while (opModeIsActive()) {
@@ -99,20 +97,18 @@ public class TeleopGamePadStuff {
 
 //Find out what to put in targetInSeconds
             if(gamepad1.left_stick_y < 0.0) {
-                drivetrain.moveForward( gamepad1.left_stick_y, 5);
+                drivetrain.moveForward(Math.abs(gamepad1.left_stick_y));
             } else if (gamepad1.left_stick_y > 0.0) {
-                drivetrain.moveBackwards(gamepad1.left_stick_y,5);
+                drivetrain.moveBackwards(Math.abs(gamepad1.left_stick_y));
             }
 
             if(gamepad1.left_stick_x < 0.0){
-                drivetrain.strafeLeft(gamepad1.left_stick_x, 5);
+                drivetrain.strafeLeft(Math.abs(gamepad1.left_stick_x));
             } else if (gamepad1.left_stick_x > 0.0) {
-                drivetrain.strafeRight(gamepad1.left_stick_x, 5);
+                drivetrain.strafeRight(Math.abs(gamepad1.left_stick_x));
             }
 
-            if(gamepad2.x) {
 
-            }
 
 
             //gamepad1
@@ -172,7 +168,7 @@ public class TeleopGamePadStuff {
 
 
             //pivots the claw
-            telemetry.addData("ClawPivotPosition",mech.pivot.getPosition());
+           // telemetry.addData("ClawPivotPosition",mech.pivot.getPosition());
             if(gamepad2.right_bumper){
                 //mech.setClawPivot("up");
 
@@ -188,7 +184,7 @@ public class TeleopGamePadStuff {
         }
     }
 
-    private void waitForStart() {
-    }
+
+
 }
 

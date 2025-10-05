@@ -1,3 +1,5 @@
+/*
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -13,8 +15,10 @@ public class ColorSensorTester {
     public enum DetectedColor {
 
         RED,
-        Blue,
-        Yellow,
+        BLUE,
+        YELLOW,
+        PURPlE,
+        GREEN,
         UNKNOWN
 
     }
@@ -37,5 +41,10 @@ public class ColorSensorTester {
 
         return DetectedColor.UNKNOWN;
 
+        if(normGreen > 0.5 && normRed < 0.3 && normBlue < 0.3) {
+            return DetectedColor.GREEN;
+        }
+
     }
 }
+*/

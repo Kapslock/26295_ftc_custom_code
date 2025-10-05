@@ -76,7 +76,7 @@ public class TeleopDrivetrain {
         backRight.setPower(0);
     }
 
-    public void moveForward(double power, long targetInSeconds) {
+    public void moveForward(double power) {
         runtime.reset();
 
         opMode.telemetry.addData("Status", "Moving Forward");
@@ -87,10 +87,10 @@ public class TeleopDrivetrain {
         backLeft.setPower(power);
         backRight.setPower(power);
 
-        opMode.sleep(targetInSeconds);
+       // opMode.sleep(targetInSeconds);
     }
 
-    public void moveBackwards(double power, long targetInMillis) {
+    public void moveBackwards(double power) {
         opMode.telemetry.addData("Status", "Moving Backward");
         opMode.telemetry.update();
 
@@ -99,13 +99,13 @@ public class TeleopDrivetrain {
         backLeft.setPower(-power);
         backRight.setPower(-power);
 
-        while(runtime.milliseconds() < targetInMillis) {
+     //   while(runtime.milliseconds() < targetInMillis) {
             //Keeps on looping until target is reached
-        }
+       // }
         stopMotors();
     }
 
-    public void strafeLeft(double power, long targetTimeMillis) {
+    public void strafeLeft(double power) {
         runtime.reset();
 
         opMode.telemetry.addData("Status", "Moving Left");
@@ -116,14 +116,14 @@ public class TeleopDrivetrain {
         backLeft.setPower(power);
         backRight.setPower(-power);
 
-        while(runtime.milliseconds() < targetTimeMillis) {
+     //   while(runtime.milliseconds() < targetTimeMillis) {
             //keeps on looping until target is reached
-        }
+       // }
         stopMotors();
 
     }
 
-    public void strafeRight(double power, long targetTimeMillis){
+    public void strafeRight(double power){
         runtime.reset();
 
         opMode.telemetry.addData("Status", "Moving Right");
@@ -134,9 +134,9 @@ public class TeleopDrivetrain {
         backLeft.setPower(power);
         backRight.setPower(-power);
 
-        while(runtime.milliseconds() < targetTimeMillis) {
+       // while(runtime.milliseconds() < targetTimeMillis) {
 
-        }
+       // }
         stopMotors();
     }
 
