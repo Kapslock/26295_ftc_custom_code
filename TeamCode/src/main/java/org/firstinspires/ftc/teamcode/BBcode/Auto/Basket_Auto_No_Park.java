@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autoshellclasses;
+package org.firstinspires.ftc.teamcode.BBcode.Auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
@@ -9,9 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.bluebananas.ftc.roadrunneractions.TrajectoryActionBuilders.RedBasketPose;
-import org.firstinspires.ftc.teamcode.BBcode.OpModeType;
-import org.firstinspires.ftc.teamcode.BBcode.MechanismActionBuilders.ViperArmActions;
 import org.firstinspires.ftc.teamcode.BBcode.MechanismActionBuilders.WristClawActions;
+import org.firstinspires.ftc.teamcode.BBcode.OpModeType;
 import org.firstinspires.ftc.teamcode.BBcode.PoseStorage;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
