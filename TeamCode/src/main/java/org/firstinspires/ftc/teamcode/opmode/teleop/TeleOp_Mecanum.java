@@ -3,14 +3,13 @@ package org.firstinspires.ftc.teamcode.opmode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.component.drive.MecanumDrive;
 
 
-@TeleOp(name="Test_TeleOp_Mecanum", group="Iterative OpMode")
-public class Test_TeleOp_Mecanum extends OpMode
+@TeleOp(name="TeleOp_MecanumStarter", group="Iterative OpMode")
+public class TeleOp_Mecanum extends OpMode
 {
     final String FRONT_LEFT_DRIVE_MOTOR_NAME = "front_left";
     final String FRONT_RIGHT_DRIVE_MOTOR_NAME = "front_right";
@@ -20,10 +19,6 @@ public class Test_TeleOp_Mecanum extends OpMode
     private final ElapsedTime runtime = new ElapsedTime();
     private MecanumDrive mecanumDrive = null;
 
-    DcMotor frontLeft;
-    DcMotor frontRight;
-    DcMotor rearLeft;
-    DcMotor rearRight;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -31,10 +26,10 @@ public class Test_TeleOp_Mecanum extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        frontLeft  = hardwareMap.get(DcMotor.class, FRONT_LEFT_DRIVE_MOTOR_NAME);
-        frontRight = hardwareMap.get(DcMotor.class, FRONT_RIGHT_DRIVE_MOTOR_NAME);
-        rearLeft  = hardwareMap.get(DcMotor.class, REAR_LEFT_DRIVE_MOTOR_NAME);
-        rearRight = hardwareMap.get(DcMotor.class, REAR_RIGHT_DRIVE_MOTOR_NAME);
+        DcMotor frontLeft  = hardwareMap.get(DcMotor.class, FRONT_LEFT_DRIVE_MOTOR_NAME);
+        DcMotor frontRight = hardwareMap.get(DcMotor.class, FRONT_RIGHT_DRIVE_MOTOR_NAME);
+        DcMotor rearLeft  = hardwareMap.get(DcMotor.class, REAR_LEFT_DRIVE_MOTOR_NAME);
+        DcMotor rearRight = hardwareMap.get(DcMotor.class, REAR_RIGHT_DRIVE_MOTOR_NAME);
 
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -68,20 +63,15 @@ public class Test_TeleOp_Mecanum extends OpMode
     @Override
     public void loop() {
         // Setup a variable for each drive wheel to save power level for telemetry
-        double frontLeftPower = gamepad1.dpad_up ? 0.5 : 0.0;
-        double frontRightPower = gamepad1.dpad_down ? 0.5 : 0.0;
-        double rearLeftPower = gamepad1.dpad_left ? 0.5 : 0.0;
-        double rearRightPower = gamepad1.dpad_right ? 0.5 : 0.0;
+        double forward = -gamepad1.left_stick_y;
+        double strafe = gamepad1.left_stick_x;
+        double rotate = -gamepad1.right_stick_x;
 
-        this.frontLeft.setPower(frontLeftPower);
-        this.frontRight.setPower(frontRightPower);
-        this.rearLeft.setPower(rearLeftPower);
-        this.rearRight.setPower(rearRightPower);
-
+        mecanumDrive.drive(forward, strafe, rotate);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        //telemetry.addData("Motors", "forward (%.2f), strafe (%.2f), rotate (%.2f)", forward, strafe, rotate);
+        telemetry.addData("Motors", "forward (%.2f), strafe (%.2f), rotate (%.2f)", forward, strafe, rotate);
 
     }
 
