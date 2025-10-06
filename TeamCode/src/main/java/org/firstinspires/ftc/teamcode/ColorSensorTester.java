@@ -1,4 +1,4 @@
-/*
+
 
 package org.firstinspires.ftc.teamcode;
 
@@ -17,7 +17,7 @@ public class ColorSensorTester {
         RED,
         BLUE,
         YELLOW,
-        PURPlE,
+        PURPLE,
         GREEN,
         UNKNOWN
 
@@ -39,12 +39,15 @@ public class ColorSensorTester {
         telemetry.addData("green", normGreen);
         telemetry.addData("blue", normBlue);
 
-        return DetectedColor.UNKNOWN;
-
         if(normGreen > 0.5 && normRed < 0.3 && normBlue < 0.3) {
             return DetectedColor.GREEN;
         }
+        else if (normRed > 0.4 && normBlue > 0.4 && normGreen < 0.3) {
+            return DetectedColor.PURPLE;
+        }
+        return DetectedColor.UNKNOWN;
+
+
 
     }
 }
-*/
