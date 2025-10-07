@@ -17,6 +17,8 @@ public class MecanumDrive {
     private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     GoBildaPinpointDriver odo;
     public IMU imu;
+    private PIDcontroller headingPID;  // PID controller for heading
+    private PIDcontroller drivePID;    // Optional PID for forward/backward distance
 
     public void init(HardwareMap hwMap, Telemetry telemetry) {
 
@@ -50,11 +52,20 @@ public class MecanumDrive {
 
         odo.resetPosAndIMU();
 
+        double kp = 0.5;
+        double ki = 0.0;
+        double kd = 0.0;
+
+        headingPID = new PIDcontroller(kp, ki, kd); // tune these values
+        headingPID.setTarget(0); // default target heading = 0 degrees
+        String data = String.format(Locale.US, "{KP: %.3f, KI: %.3f, KD: %.3f}", kp, kd, ki);
+
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset (Inches)", odo.getXOffset(DistanceUnit.INCH));
         telemetry.addData("Y offset (Inches)", odo.getYOffset(DistanceUnit.INCH));
         telemetry.addData("Odo Device Version Number:", odo.getDeviceVersion());
         telemetry.addData("Odo Heading Scalar", odo.getYawScalar());
+        telemetry.addData("PID Settings", data);
         telemetry.update();
 
     }
@@ -119,6 +130,31 @@ public class MecanumDrive {
 
         this.drive(newForward, newStrafe, rotate, slow, telemetry);
 
+        telemetry.update();
+    }
+
+    public void turnToHeading(double targetHeading, double slow, Telemetry telemetry, double kp, double ki, double kd) {
+
+        headingPID.setKP(kp);
+        headingPID.setKI(ki);
+        headingPID.setKD(kd);
+        headingPID.setTarget(targetHeading);
+
+        odo.update();
+        double currentHeading = odo.getPosition().getHeading(AngleUnit.DEGREES);
+        double time = System.nanoTime() / 1e9; // seconds
+
+        double correction = headingPID.calculateOutput(currentHeading, time);
+
+        // Apply correction as rotation power
+        double rotate = correction;
+
+        // Keep forward/strafe 0, just rotate
+        this.drive(0, 0, rotate, slow, telemetry);
+
+        telemetry.addData("Target Heading", targetHeading);
+        telemetry.addData("Current Heading", currentHeading);
+        telemetry.addData("Correction (PID)", correction);
         telemetry.update();
     }
 

@@ -4,9 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
-public class DriveOpMode extends OpMode {
+public class DriveOpModePIDTest extends OpMode {
     MecanumDrive drive = new MecanumDrive();
     double forward, strafe, rotate, slow;
+    double pidP = 0.1;
+    double pidI = 0.0;
+    double pidD = 0.0;
+
 
     @Override
     public void init() {
@@ -33,6 +37,15 @@ public class DriveOpMode extends OpMode {
         if (gamepad1.dpad_up) {
             drive.OdoReset(telemetry);
         }
+        if (gamepad1.triangle) {
+            pidP += 0.1;
+        }
+        if (gamepad1.circle) {
+            pidI += 0.01;
+        }
+        if (gamepad1.cross) {
+            pidD += 0.01;
+        }
 
         telemetry.addData("Elapsed Time", getRuntime());
         telemetry.addLine();
@@ -41,6 +54,8 @@ public class DriveOpMode extends OpMode {
         telemetry.addData("strafe", strafe);
         telemetry.addData("rotate", rotate);
         telemetry.addData("speed", slow);
+
+        drive.turnToHeading(rotate, slow, telemetry, pidP, pidI, pidD);
 
         drive.driveFieldOriented(forward, strafe, rotate, slow, telemetry);
         //drive.drive(forward, strafe, rotate, slow, telemetry);
