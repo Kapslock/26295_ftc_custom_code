@@ -102,7 +102,6 @@ public class TeleopDrivetrain {
      //   while(runtime.milliseconds() < targetInMillis) {
             //Keeps on looping until target is reached
        // }
-        stopMotors();
     }
 
     public void strafeLeft(double power) {
@@ -119,8 +118,6 @@ public class TeleopDrivetrain {
      //   while(runtime.milliseconds() < targetTimeMillis) {
             //keeps on looping until target is reached
        // }
-        stopMotors();
-
     }
 
     public void strafeRight(double power){
@@ -137,7 +134,6 @@ public class TeleopDrivetrain {
        // while(runtime.milliseconds() < targetTimeMillis) {
 
        // }
-        stopMotors();
     }
 
     public void rotate(double power, long targetInMilis) {
