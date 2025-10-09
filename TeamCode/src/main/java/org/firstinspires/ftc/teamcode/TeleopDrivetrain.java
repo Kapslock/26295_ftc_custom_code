@@ -102,7 +102,6 @@ public class TeleopDrivetrain {
      //   while(runtime.milliseconds() < targetInMillis) {
             //Keeps on looping until target is reached
        // }
-        stopMotors();
     }
 
     public void strafeLeft(double power) {
@@ -111,15 +110,14 @@ public class TeleopDrivetrain {
         opMode.telemetry.addData("Status", "Moving Left");
         opMode.telemetry.update();
 
-        frontLeft.setPower(-power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(-power);
+        frontLeft.setPower(power);
+        frontRight.setPower(-power);
+        backLeft.setPower(-power);
+        backRight.setPower(power);
 
      //   while(runtime.milliseconds() < targetTimeMillis) {
             //keeps on looping until target is reached
        // }
-        stopMotors();
 
     }
 
@@ -129,15 +127,14 @@ public class TeleopDrivetrain {
         opMode.telemetry.addData("Status", "Moving Right");
         opMode.telemetry.update();
 
-        frontLeft.setPower(power);
-        frontRight.setPower(-power);
+        frontLeft.setPower(-power);
+        frontRight.setPower(power);
         backLeft.setPower(power);
         backRight.setPower(-power);
 
        // while(runtime.milliseconds() < targetTimeMillis) {
 
        // }
-        stopMotors();
     }
 
     public void rotate(double power, long targetInMilis) {
