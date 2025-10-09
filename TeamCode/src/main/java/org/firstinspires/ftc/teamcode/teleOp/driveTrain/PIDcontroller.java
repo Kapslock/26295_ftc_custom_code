@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
 public class PIDcontroller {
-    private double kp;
-    private double ki;
-    private double kd;
+    public double kp;
+    public double ki;
+    public double kd;
 
-    private double target;
+    public double target;
     private double integral;
     private double previousError;
     private double previousTime; // Using System.nanoTime() or ElapsedTime for more accurate timing

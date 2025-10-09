@@ -1,21 +1,26 @@
 package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
+@Config
 @TeleOp
 public class DriveOpModePIDTest extends OpMode {
+    FtcDashboard dashboard = FtcDashboard.getInstance();
     MecanumDrive drive = new MecanumDrive();
     double forward, strafe, rotate, slow;
-    double pidP = 0.1;
+    double pidP = 5;
     double pidI = 0.0;
     double pidD = 0.0;
-
 
     @Override
     public void init() {
 
         drive.init(hardwareMap, telemetry);
+        dashboard.isEnabled();
 
     }
 
@@ -37,15 +42,6 @@ public class DriveOpModePIDTest extends OpMode {
         if (gamepad1.dpad_up) {
             drive.OdoReset(telemetry);
         }
-        if (gamepad1.triangle) {
-            pidP += 0.1;
-        }
-        if (gamepad1.circle) {
-            pidI += 0.01;
-        }
-        if (gamepad1.cross) {
-            pidD += 0.01;
-        }
 
         telemetry.addData("Elapsed Time", getRuntime());
         telemetry.addLine();
@@ -57,7 +53,7 @@ public class DriveOpModePIDTest extends OpMode {
 
         drive.turnToHeading(rotate, slow, telemetry, pidP, pidI, pidD);
 
-        drive.driveFieldOriented(forward, strafe, rotate, slow, telemetry);
+        //drive.driveFieldOriented(forward, strafe, rotate, slow, telemetry);
         //drive.drive(forward, strafe, rotate, slow, telemetry);
 
     }

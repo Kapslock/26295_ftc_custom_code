@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -140,6 +141,8 @@ public class MecanumDrive {
         headingPID.setKD(kd);
         headingPID.setTarget(targetHeading);
 
+        String data = String.format(Locale.US, "{KP: %.3f, KI: %.3f, KD: %.3f}", kp, kd, ki);
+
         odo.update();
         double currentHeading = odo.getPosition().getHeading(AngleUnit.DEGREES);
         double time = System.nanoTime() / 1e9; // seconds
@@ -152,9 +155,17 @@ public class MecanumDrive {
         // Keep forward/strafe 0, just rotate
         this.drive(0, 0, rotate, slow, telemetry);
 
+        TelemetryPacket packet = new TelemetryPacket();
+
+        packet.put("target", headingPID.target);
+        packet.put("current", headingPID.current);
+        packet.put("error", headingPID.target - headingPID.current);
+        packet.put("output", output);
+
         telemetry.addData("Target Heading", targetHeading);
         telemetry.addData("Current Heading", currentHeading);
         telemetry.addData("Correction (PID)", correction);
+        telemetry.addData("PID information", data);
         telemetry.update();
     }
 
