@@ -175,10 +175,10 @@ public class MecanumDrive {
 
         TelemetryPacket packet = new TelemetryPacket();
 
-        packet.put("Target", headingPID.target);
-        packet.put("Current", currentHeading);
-        packet.put("Output", rotate);
-        packet.put("Error", headingPID.target - currentHeading);
+        packet.put("target", headingPID.target);
+        packet.put("current", headingPID.current);
+        packet.put("error", headingPID.target - headingPID.current);
+        packet.put("output", headingPID.output);
 
         //Crucial line: Sends data to FTC Dash
         FtcDashboard.getInstance().sendTelemetryPacket(packet);

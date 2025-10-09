@@ -6,6 +6,8 @@ public class PIDController {
     public double kd;
 
     public double target;
+    public double current;
+    public double output;
     private double integral;
     private double previousError;
     private double previousTime; // Using System.nanoTime() or ElapsedTime for more accurate timing
@@ -34,7 +36,7 @@ public class PIDController {
     }
 
     public double calculateOutput(double current, double time) {
-
+        this.current = current;
         double error = target - current;
         double deltaTime = time - previousTime;
 
@@ -49,6 +51,7 @@ public class PIDController {
         previousError = error;
         previousTime = time;
 
+        this.output = output;
         return output;
 
     }
