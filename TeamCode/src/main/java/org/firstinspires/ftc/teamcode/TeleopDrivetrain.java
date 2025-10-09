@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -57,10 +58,10 @@ public class TeleopDrivetrain {
         backLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         frontLeft.setZeroPowerBehavior((DcMotorEx.ZeroPowerBehavior.BRAKE));
         frontRight.setZeroPowerBehavior((DcMotorEx.ZeroPowerBehavior.BRAKE));
@@ -128,9 +129,9 @@ public class TeleopDrivetrain {
         double velocity = power * MAX_TICKS_PER_SEC;
 
         frontLeft.setVelocity(velocity);
-        frontRight.setVelocity(velocity);
+        frontRight.setVelocity(-velocity);
         backLeft.setVelocity(-velocity);
-        backRight.setVelocity(-velocity);
+        backRight.setVelocity(velocity);
 
      //   while(runtime.milliseconds() < targetTimeMillis) {
             //keeps on looping until target is reached
@@ -151,9 +152,9 @@ public class TeleopDrivetrain {
         double velocity = power * MAX_TICKS_PER_SEC;
 
         frontLeft.setVelocity(-velocity);
-        frontRight.setVelocity(-velocity);
+        frontRight.setVelocity(velocity);
         backLeft.setVelocity(velocity);
-        backRight.setVelocity(velocity);
+        backRight.setVelocity(-velocity);
 
        // while(runtime.milliseconds() < targetTimeMillis) {
 
