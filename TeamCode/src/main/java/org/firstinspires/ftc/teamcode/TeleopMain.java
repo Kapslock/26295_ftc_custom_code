@@ -22,7 +22,7 @@ public class TeleopMain extends LinearOpMode{
    // @Override
     public void runOpMode() throws InterruptedException {
         TeleopDrivetrain drivetrain = new TeleopDrivetrain(this);
-       // Mechanisms mech = new Mechanisms(this);
+        Mechanisms mech = new Mechanisms();
 
         drivetrain.initDriveTrain((hardwareMap));
       //  mech.initMechanisms(hardwareMap);
@@ -32,43 +32,6 @@ public class TeleopMain extends LinearOpMode{
         telemetry.addData("Status","READY TO NUT");
 
         this.waitForStart();
-
-//        boolean press = false;
-//        boolean pressStart = false;
-//
-//        while(!press){
-//            telemetry.addLine("Choose Team");
-//            telemetry.addData("Red Team:", "Player 1, press UP");
-//            telemetry.addData("Blue Team: ", "Player 1, press DOWN");
-//            telemetry.update();
-//            if(gamepad1.dpad_up){
-//                mech.ifRedTeam = true;
-//                mech.ifBlueTeam = false;
-//                telemetry.addData("Team Selected", "RED");
-//                press = true;
-//
-//            } else if (gamepad1.dpad_down){
-//                mech.ifBlueTeam = true;
-//                mech.ifRedTeam = false;
-//                telemetry.addData("Team Selected", "BLUE");
-//                press = true;
-//
-//            }
-//            telemetry.update();
-//        }
-//
-//        while(!pressStart) {
-//            telemetry.addData("Ready to Start?", "Press START");
-//            if (gamepad1.start){
-//                pressStart = true;
-//            }
-//        }
-
-
-
-       // if (isStopRequested()) {
-         //   return;
-        //}
 
         //This is loop that checks the gamepad for inputs every iteration
         while (opModeIsActive()) {
@@ -109,27 +72,6 @@ public class TeleopMain extends LinearOpMode{
                 drivetrain.strafeRight(Math.abs(gamepad1.left_stick_x));
             }
 
-
-
-
-            //gamepad1
-            //Position to score specimen
-     /*       if(gamepad1.) {
-                mech.SpecimenScoringPositionV3();
-            }
-            //Position to score specimen in the basket
-            if (gamepad1.x) {
-                mech.BasketScorePosition();
-            }
-*/
-
-            //controls gamepad2 claw open and close
-          //  mech.openClaw(gamepad2.left_trigger);
-            //mech.closeClaw(gamepad2.right_trigger);
-
-            //extends the viper slide
-            //gamepad 2 functions
-          //  telemetry.addData("ViperSlide", mech.viperSlide.getCurrentPosition());
         if (gamepad2.dpad_left){
               //  mech.simplePivotLimit1();
                 //mech.extendViperSlide("backward");
@@ -140,8 +82,6 @@ public class TeleopMain extends LinearOpMode{
                // mech.extendViperSlide("forward");
             }
 
-            //pivots the arm
-           // telemetry.addData("viperPivot", mech.viperPivot.getCurrentPosition());
             if(gamepad2.dpad_down){
                 //mech.pivotLimit1();
              //   mech.armMotorPivot("down");
@@ -166,15 +106,21 @@ public class TeleopMain extends LinearOpMode{
                 //mech.SpecimenViperPosition();
             }
 
-
-
-            //pivots the claw
-           // telemetry.addData("ClawPivotPosition",mech.pivot.getPosition());
             if(gamepad2.right_bumper){
                 //mech.setClawPivot("up");
 
             }
             if(gamepad2.left_bumper) {
+                //mech.setClawPivot("down");
+
+            }
+
+            if(gamepad2.right_trigger > 0.1){
+                mech.outtakeMotorStart(gamepad2.right_trigger);
+            } else {
+                mech.outtakeMotorStop();
+            }
+            if(gamepad2.left_trigger > 0.1) {
                 //mech.setClawPivot("down");
 
             }

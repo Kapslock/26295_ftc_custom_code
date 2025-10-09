@@ -115,9 +115,17 @@ public class Mechanisms {
         intakeMotor.setPower(0);
     }
 
-    public void outtakeMotor1start(double power) {
-        telemetry.addData("Velocity", outtakeMotor1.getVelocity());
+    public void outtakeMotorStart(double power) {
         outtakeMotor1.setVelocity(power*MAX_TICKS_PER_SEC);
+        outtakeMotor2.setVelocity(power*MAX_TICKS_PER_SEC);
+        telemetry.addData("Velocity", outtakeMotor1.getVelocity());
+        telemetry.update();
+    }
+
+    public void outtakeMotorStop() {
+        outtakeMotor1.setVelocity(0);
+        outtakeMotor2.setVelocity(0);
+        telemetry.addData("Velocity", outtakeMotor1.getVelocity());
         telemetry.update();
     }
 
