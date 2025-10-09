@@ -3,16 +3,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class TeleopDrivetrain {
-    public DcMotor frontLeft;
-    public DcMotor backLeft;
-    public DcMotor frontRight;
-    public DcMotor backRight;
+    public DcMotorEx frontLeft;
+    public DcMotorEx backLeft;
+    public DcMotorEx frontRight;
+    public DcMotorEx backRight;
     public IMU imu;
 
 
@@ -20,6 +20,12 @@ public class TeleopDrivetrain {
     private ElapsedTime runtime = new ElapsedTime();
 
     LinearOpMode opMode;
+
+    // 435 rpm motor
+
+    private static final double TICKS_PER_REV = 383.6;
+    private static final double MAX_RPM = 435.0;
+    private static final double MAX_TICKS_PER_SEC = (TICKS_PER_REV * MAX_RPM) / 60.0; // ≈ 2786 t/s
 
     public TeleopDrivetrain(LinearOpMode op) {
         opMode = op;
@@ -36,30 +42,30 @@ public class TeleopDrivetrain {
 //        );
 //        imu.initialize(parameters);
 
-        frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
-        backLeft= hardwareMap.get(DcMotor.class, "leftBack");
-        frontRight = hardwareMap.get(DcMotor.class, "rightFront");
-        backRight = hardwareMap.get(DcMotor.class, "rightBack");
+        frontLeft = hardwareMap.get(DcMotorEx.class, "leftFront");
+        backLeft= hardwareMap.get(DcMotorEx.class, "leftBack");
+        frontRight = hardwareMap.get(DcMotorEx.class, "rightFront");
+        backRight = hardwareMap.get(DcMotorEx.class, "rightBack");
 
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        frontRight.setDirection(DcMotorEx.Direction.FORWARD);
+        backLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        backRight.setDirection(DcMotorEx.Direction.FORWARD);
 
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        frontLeft.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
-        frontRight.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
-        backLeft.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
-        backRight.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
+        frontLeft.setZeroPowerBehavior((DcMotorEx.ZeroPowerBehavior.BRAKE));
+        frontRight.setZeroPowerBehavior((DcMotorEx.ZeroPowerBehavior.BRAKE));
+        backLeft.setZeroPowerBehavior((DcMotorEx.ZeroPowerBehavior.BRAKE));
+        backRight.setZeroPowerBehavior((DcMotorEx.ZeroPowerBehavior.BRAKE));
 
         frontLeft.setPower(0);
         frontRight.setPower(0);
@@ -82,10 +88,12 @@ public class TeleopDrivetrain {
         opMode.telemetry.addData("Status", "Moving Forward");
         opMode.telemetry.update();
 
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
+        double velocity = power * MAX_TICKS_PER_SEC;
+
+        frontLeft.setVelocity(velocity);
+        frontRight.setVelocity(velocity);
+        backLeft.setVelocity(velocity);
+        backRight.setVelocity(velocity);
 
        // opMode.sleep(targetInSeconds);
     }
@@ -94,10 +102,12 @@ public class TeleopDrivetrain {
         opMode.telemetry.addData("Status", "Moving Backward");
         opMode.telemetry.update();
 
-        frontLeft.setPower(-power);
-        frontRight.setPower(-power);
-        backLeft.setPower(-power);
-        backRight.setPower(-power);
+        double velocity = power * MAX_TICKS_PER_SEC;
+
+        frontLeft.setVelocity(-velocity);
+        frontRight.setVelocity(-velocity);
+        backLeft.setVelocity(-velocity);
+        backRight.setVelocity(-velocity);
 
      //   while(runtime.milliseconds() < targetInMillis) {
             //Keeps on looping until target is reached
@@ -110,10 +120,17 @@ public class TeleopDrivetrain {
         opMode.telemetry.addData("Status", "Moving Left");
         opMode.telemetry.update();
 
-        frontLeft.setPower(-power);
+/*        frontLeft.setPower(-power);
         frontRight.setPower(power);
         backLeft.setPower(power);
-        backRight.setPower(-power);
+        backRight.setPower(-power);*/
+
+        double velocity = power * MAX_TICKS_PER_SEC;
+
+        frontLeft.setVelocity(velocity);
+        frontRight.setVelocity(velocity);
+        backLeft.setVelocity(-velocity);
+        backRight.setVelocity(-velocity);
 
      //   while(runtime.milliseconds() < targetTimeMillis) {
             //keeps on looping until target is reached
@@ -126,10 +143,17 @@ public class TeleopDrivetrain {
         opMode.telemetry.addData("Status", "Moving Right");
         opMode.telemetry.update();
 
-        frontLeft.setPower(power);
+/*        frontLeft.setPower(power);
         frontRight.setPower(-power);
         backLeft.setPower(power);
-        backRight.setPower(-power);
+        backRight.setPower(-power);*/
+
+        double velocity = power * MAX_TICKS_PER_SEC;
+
+        frontLeft.setVelocity(-velocity);
+        frontRight.setVelocity(-velocity);
+        backLeft.setVelocity(velocity);
+        backRight.setVelocity(velocity);
 
        // while(runtime.milliseconds() < targetTimeMillis) {
 
