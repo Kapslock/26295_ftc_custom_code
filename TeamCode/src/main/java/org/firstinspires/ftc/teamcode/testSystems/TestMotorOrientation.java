@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.teleOp.driveTrain.MecanumDrive;
 
-@TeleOp
+@TeleOp(name = "TestMotorOrientation", group = "Test")
 public class TestMotorOrientation extends OpMode {
     MecanumDrive drive = new MecanumDrive();
     private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;

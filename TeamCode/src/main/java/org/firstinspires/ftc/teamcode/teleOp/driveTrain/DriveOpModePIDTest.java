@@ -8,7 +8,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.dashboard.config.Config;
 
 @Config
-@TeleOp
+@TeleOp(name = "DriveOpModePIDTest", group = "OpModes")
 public class DriveOpModePIDTest extends OpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     MecanumDrive drive = new MecanumDrive();
