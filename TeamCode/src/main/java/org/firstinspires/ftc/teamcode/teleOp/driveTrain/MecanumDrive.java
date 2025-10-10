@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -8,13 +10,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.Locale;
 
 public class MecanumDrive {
-
-    private static final Logger log = LoggerFactory.getLogger(MecanumDrive.class);
     private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     GoBildaPinpointDriver odo;
     public IMU imu;
@@ -41,7 +39,7 @@ public class MecanumDrive {
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -53,7 +51,7 @@ public class MecanumDrive {
 
         odo.resetPosAndIMU();
 
-        double kp = 0.5;
+        double kp = 1;
         double ki = 0.0;
         double kd = 0.0;
 
@@ -141,7 +139,7 @@ public class MecanumDrive {
         headingPID.setKD(kd);
         headingPID.setTarget(targetHeading);
 
-        String data = String.format(Locale.US, "{KP: %.3f, KI: %.3f, KD: %.3f}", kp, kd, ki);
+        String data = String.format(Locale.US, "{KP: %.3f, KI: %.3f, KD: %.3f}", kp, ki, kd);
 
         odo.update();
         double currentHeading = odo.getPosition().getHeading(AngleUnit.DEGREES);
@@ -158,9 +156,11 @@ public class MecanumDrive {
         TelemetryPacket packet = new TelemetryPacket();
 
         packet.put("target", headingPID.target);
-        packet.put("current", headingPID.current);
-        packet.put("error", headingPID.target - headingPID.current);
-        packet.put("output", output);
+        packet.put("current", currentHeading);
+        packet.put("error", headingPID.target - currentHeading);
+        packet.put("output", rotate);
+
+        FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
         telemetry.addData("Target Heading", targetHeading);
         telemetry.addData("Current Heading", currentHeading);

@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
-import com.acmerobotics.dashboard.config.Config;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.dashboard.config.Config;
 
 @Config
 @TeleOp
@@ -51,7 +52,7 @@ public class DriveOpModePIDTest extends OpMode {
         telemetry.addData("rotate", rotate);
         telemetry.addData("speed", slow);
 
-        drive.turnToHeading(rotate, slow, telemetry, pidP, pidI, pidD);
+        drive.turnToHeading(0, slow, telemetry, pidP, pidI, pidD);
 
         //drive.driveFieldOriented(forward, strafe, rotate, slow, telemetry);
         //drive.drive(forward, strafe, rotate, slow, telemetry);
