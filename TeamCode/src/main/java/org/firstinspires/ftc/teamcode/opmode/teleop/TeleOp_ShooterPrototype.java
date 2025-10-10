@@ -93,11 +93,9 @@ public class TeleOp_ShooterPrototype extends OpMode {
 
 
         // Show the elapsed game time and wheel power.
-//        telemetry.addData("Status", "Run Time: " + runtime);
-//        telemetry.addData(
-//            "Shooter", "power (%f)",
-//            runShooter );
-//        telemetry.update();
+        telemetry.addData("Status", "Run Time: " + runtime);
+        telemetry.addData("Shooter power", shooter.getPower());
+        telemetry.update();
     }
 
     /*
