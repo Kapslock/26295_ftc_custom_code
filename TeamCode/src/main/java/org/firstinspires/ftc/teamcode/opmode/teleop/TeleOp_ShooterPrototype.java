@@ -51,33 +51,46 @@ public class TeleOp_ShooterPrototype extends OpMode {
     @Override
     public void loop() {
         // Setup a variable for each drive wheel to save power level for telemetry
-        boolean runShooter =  gamepad1.right_bumper;
-        double shooterPower = .6;
-        boolean stopShooter =  gamepad1.left_bumper;
-        boolean runServoOne20 = gamepad1.a;
-        boolean runServoOne45 = gamepad1.b;
-        boolean runServoOne90 = gamepad1.y;
-        boolean runServoOne180 = gamepad1.x;
+        boolean shooter25 =  gamepad2.a;
+        boolean shooter50 =  gamepad2.b;
+        boolean shooter75 =  gamepad2.y;
+        boolean shooter100 =  gamepad2.x;
+        double shooterPower = 0;
+        boolean Stop =  gamepad2.right_bumper;
 
-        if (runServoOne20) {
+
+
+        if (gamepad2.dpad_down) {
             servo_1.setPosition(0);
         }
-        if (runServoOne45){
+        if (gamepad2.dpad_right){
             servo_1.setPosition(0.25);
         }
-        if (runServoOne90) {
+        if (gamepad2.dpad_up) {
             servo_1.setPosition(.5);
         }
-        if (runServoOne180) {
+        if (gamepad2.dpad_left) {
             servo_1.setPosition(.75);
         }
-        if (runShooter) {
-            shooter.setPower(shooterPower);
+        if (shooter25) {
+            shooter.setPower(.25);
         }
-
-        if (stopShooter) {
+        if (Stop) {
             shooter.setPower(0);
         }
+        if (shooter50) {
+            shooter.setPower(.5);
+        }
+
+        if (shooter75) {
+            shooter.setPower(.75);
+        }
+
+        if (shooter100) {
+            shooter.setPower(1);
+        }
+
+
 
         // Show the elapsed game time and wheel power.
 //        telemetry.addData("Status", "Run Time: " + runtime);
