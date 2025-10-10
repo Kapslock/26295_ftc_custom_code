@@ -25,14 +25,15 @@ public class Auton_MecanumPinpoint extends OpMode
 
     private final ElapsedTime runtime = new ElapsedTime();
     private MecanumDrive mecanumDrive = null;
-    private GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
+    private GoBildaPinpointDriver odo;
+
     double targetX = 200.0;
     double targetY = 200.0;
     double targetA = 0.0;
 
-    double errorToleranceX = 10.0;
-    double errorToleranceY = 10.0;
-    double errorToleranceA = 10.0;
+    double errorToleranceX = 20.0;
+    double errorToleranceY = 20.0;
+    double errorToleranceA = 20.0;
 
     double speed = 0.25;
     /*
@@ -47,8 +48,6 @@ public class Auton_MecanumPinpoint extends OpMode
         DcMotor frontRight = hardwareMap.get(DcMotor.class, FRONT_RIGHT_DRIVE_MOTOR_NAME);
         DcMotor rearLeft  = hardwareMap.get(DcMotor.class, REAR_LEFT_DRIVE_MOTOR_NAME);
         DcMotor rearRight = hardwareMap.get(DcMotor.class, REAR_RIGHT_DRIVE_MOTOR_NAME);
-
-
 
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -67,8 +66,15 @@ public class Auton_MecanumPinpoint extends OpMode
         // INIT OTHER MECHANISMS - SHOOTER, INTAKE, LIFT, LIMELIGHT, ETC.
 
         // PRINT TELEMETRY
+        Pose2D pos = odo.getPosition();
+        String position = String.format(
+                Locale.US, "{CurrX: %.3f, CurrY: %.3f, CurrH: %.3f}",
+                pos.getX(DistanceUnit.MM),
+                pos.getY(DistanceUnit.MM),
+                pos.getHeading(AngleUnit.DEGREES)
+        );
+        telemetry.addData("Position", position);
         telemetry.addData("Status", "Initialized");
-        System.out.println("TeleOp_Starter: Initializing Logging"); // TODO: where does this go?
     }
 
     /*
@@ -76,6 +82,7 @@ public class Auton_MecanumPinpoint extends OpMode
      */
     @Override
     public void init_loop() {
+
     }
 
     /*
@@ -83,6 +90,8 @@ public class Auton_MecanumPinpoint extends OpMode
      */
     @Override
     public void start() {
+        odo.resetPosAndIMU();
+        odo.recalibrateIMU();
         runtime.reset(); // TODO: do we care about runtime?
     }
 
@@ -124,25 +133,25 @@ public class Auton_MecanumPinpoint extends OpMode
             strafe = speed;
         }
 
+        // determine angle error and how to rotate
+
         // Actuate - execute robot functions
         mecanumDrive.drive(forward, strafe, rotate);
 
         // Print telemetry
         String position = String.format(
-            Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",
+            Locale.US, "{CurrX: %.3f, CurrY: %.3f, CurrH: %.3f}",
             pos.getX(DistanceUnit.MM),
             pos.getY(DistanceUnit.MM),
             pos.getHeading(AngleUnit.DEGREES)
         );
         telemetry.addData("Position", position);
 
-        String velocity = String.format(
-            Locale.US, "{XVel: %.3f, YVel: %.3f, HVel: %.3f}",
-            odo.getVelX(DistanceUnit.MM),
-            odo.getVelY(DistanceUnit.MM),
-            odo.getHeadingVelocity(UnnormalizedAngleUnit.DEGREES)
+        String error = String.format(
+            Locale.US, "{XErr: %.3f, YErr: %.3f, HErr: %.3f}",
+            errorX, errorY, errorA
         );
-        telemetry.addData("Velocity", velocity);
+        telemetry.addData("Error", error);
         telemetry.addData("Pinppoint Device Status", odo.getDeviceStatus());
     }
 
