@@ -68,19 +68,19 @@ public class TeleopDrivetrain {
         backLeft.setZeroPowerBehavior((DcMotorEx.ZeroPowerBehavior.BRAKE));
         backRight.setZeroPowerBehavior((DcMotorEx.ZeroPowerBehavior.BRAKE));
 
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
     }
 
     public void stopMotors(){
         opMode.telemetry.addData("Status", "Stopped");
         opMode.telemetry.update();
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
     }
 
     public void moveForward(double power) {
@@ -91,10 +91,10 @@ public class TeleopDrivetrain {
 
         double velocity = power * MAX_TICKS_PER_SEC;
 
-        frontLeft.setVelocity(velocity);
-        frontRight.setVelocity(velocity);
-        backLeft.setVelocity(velocity);
-        backRight.setVelocity(velocity);
+        frontLeft.setPower(power);
+        frontRight.setPower(power);
+        backLeft.setPower(power);
+        backRight.setPower(power);
 
        // opMode.sleep(targetInSeconds);
     }
@@ -105,10 +105,10 @@ public class TeleopDrivetrain {
 
         double velocity = power * MAX_TICKS_PER_SEC;
 
-        frontLeft.setVelocity(-velocity);
-        frontRight.setVelocity(-velocity);
-        backLeft.setVelocity(-velocity);
-        backRight.setVelocity(-velocity);
+        frontLeft.setPower(-power);
+        frontRight.setPower(-power);
+        backLeft.setPower(-power);
+        backRight.setPower(-power);
 
      //   while(runtime.milliseconds() < targetInMillis) {
             //Keeps on looping until target is reached
@@ -121,17 +121,17 @@ public class TeleopDrivetrain {
         opMode.telemetry.addData("Status", "Moving Left");
         opMode.telemetry.update();
 
-/*        frontLeft.setPower(-power);
+       frontLeft.setPower(-power);
         frontRight.setPower(power);
         backLeft.setPower(power);
-        backRight.setPower(-power);*/
+        backRight.setPower(-power);
 
-        double velocity = power * MAX_TICKS_PER_SEC;
+/*        double velocity = power * MAX_TICKS_PER_SEC;
 
-        frontLeft.setVelocity(velocity);
-        frontRight.setVelocity(-velocity);
-        backLeft.setVelocity(-velocity);
-        backRight.setVelocity(velocity);
+        frontLeft.setPower(velocity);
+        frontRight.setPower(-velocity);
+        backLeft.setPower(-velocity);
+        backRight.setPower(velocity);*/
 
      //   while(runtime.milliseconds() < targetTimeMillis) {
             //keeps on looping until target is reached
@@ -144,17 +144,17 @@ public class TeleopDrivetrain {
         opMode.telemetry.addData("Status", "Moving Right");
         opMode.telemetry.update();
 
-/*        frontLeft.setPower(power);
+        frontLeft.setPower(power);
         frontRight.setPower(-power);
         backLeft.setPower(power);
-        backRight.setPower(-power);*/
+        backRight.setPower(-power);
 
-        double velocity = power * MAX_TICKS_PER_SEC;
+/*        double velocity = power * MAX_TICKS_PER_SEC;
 
-        frontLeft.setVelocity(-velocity);
-        frontRight.setVelocity(velocity);
-        backLeft.setVelocity(velocity);
-        backRight.setVelocity(-velocity);
+        frontLeft.setPower(-velocity);
+        frontRight.setPower(velocity);
+        backLeft.setPower(velocity);
+        backRight.setPower(-velocity);*/
 
        // while(runtime.milliseconds() < targetTimeMillis) {
 

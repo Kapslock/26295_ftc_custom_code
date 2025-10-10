@@ -23,8 +23,10 @@ public class TeleopMain extends LinearOpMode{
     public void runOpMode() throws InterruptedException {
         TeleopDrivetrain drivetrain = new TeleopDrivetrain(this);
         Mechanisms mech = new Mechanisms();
+        mech.initTelemetry(telemetry);
 
         drivetrain.initDriveTrain((hardwareMap));
+        mech.initOuttakeSystem(hardwareMap);
       //  mech.initMechanisms(hardwareMap);
 
         //Checks what team color we are
