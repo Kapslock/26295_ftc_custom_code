@@ -16,6 +16,10 @@ public class TeleopDrivetrain {
     public DcMotorEx backRight;
     public IMU imu;
 
+    private double currentFL = 0, currentFR = 0, currentBL = 0, currentBR = 0;
+    private double rampRate = 0.025; // change per loop (tune this value)
+
+    public double targetFL = 0, targetFR = 0, targetBL = 0, targetBR = 0;
 
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -74,6 +78,32 @@ public class TeleopDrivetrain {
         backRight.setPower(0.0);
     }
 
+    private double rampToTarget(double current, double target) {
+        double delta = target - current;
+        // Limit change per loop to +/- rampRate
+        if (Math.abs(delta) > rampRate) {
+            current += Math.signum(delta) * rampRate;
+        } else {
+            current = target;
+        }
+        return current;
+    }
+
+    public void updateDrive(double targetFL, double targetFR, double targetBL, double targetBR) {
+        // Ramp each motor toward its target
+        currentFL = rampToTarget(currentFL, targetFL);
+        currentFR = rampToTarget(currentFR, targetFR);
+        currentBL = rampToTarget(currentBL, targetBL);
+        currentBR = rampToTarget(currentBR, targetBR);
+
+        // Apply smoothed powers
+        frontLeft.setPower(currentFL);
+        frontRight.setPower(currentFR);
+        backLeft.setPower(currentBL);
+        backRight.setPower(currentBR);
+    }
+
+
     public void stopMotors(){
         opMode.telemetry.addData("Status", "Stopped");
         opMode.telemetry.update();
@@ -83,7 +113,7 @@ public class TeleopDrivetrain {
         backRight.setPower(0.0);
     }
 
-    public void moveForward(double power) {
+/*    public void moveForward(double power) {
         runtime.reset();
 
         opMode.telemetry.addData("Status", "Moving Forward");
@@ -126,12 +156,12 @@ public class TeleopDrivetrain {
         backLeft.setPower(power);
         backRight.setPower(-power);
 
-/*        double velocity = power * MAX_TICKS_PER_SEC;
+*//*        double velocity = power * MAX_TICKS_PER_SEC;
 
         frontLeft.setPower(velocity);
         frontRight.setPower(-velocity);
         backLeft.setPower(-velocity);
-        backRight.setPower(velocity);*/
+        backRight.setPower(velocity);*//*
 
      //   while(runtime.milliseconds() < targetTimeMillis) {
             //keeps on looping until target is reached
@@ -149,18 +179,58 @@ public class TeleopDrivetrain {
         backLeft.setPower(power);
         backRight.setPower(-power);
 
-/*        double velocity = power * MAX_TICKS_PER_SEC;
+*//*        double velocity = power * MAX_TICKS_PER_SEC;
 
         frontLeft.setPower(-velocity);
         frontRight.setPower(velocity);
         backLeft.setPower(velocity);
-        backRight.setPower(-velocity);*/
+        backRight.setPower(-velocity);*//*
 
        // while(runtime.milliseconds() < targetTimeMillis) {
 
        // }
+    }*/
+
+
+    public void moveForward(double power) {
+        opMode.telemetry.addData("Status", "Moving Forward");
+        opMode.telemetry.update();
+
+        targetFL = power;
+        targetFR = power;
+        targetBL = power;
+        targetBR = power;
     }
 
+    public void moveBackwards(double power) {
+        opMode.telemetry.addData("Status", "Moving Backward");
+        opMode.telemetry.update();
+
+        targetFL = -power;
+        targetFR = -power;
+        targetBL = -power;
+        targetBR = -power;
+    }
+
+    public void strafeLeft(double power) {
+        opMode.telemetry.addData("Status", "Strafing Left");
+        opMode.telemetry.update();
+
+        targetFL = -power;
+        targetFR = power;
+        targetBL = power;
+        targetBR = -power;
+    }
+
+    public void strafeRight(double power) {
+        opMode.telemetry.addData("Status", "Strafing Right");
+        opMode.telemetry.update();
+
+        targetFL = power;
+        targetFR = -power;
+        targetBL = power;
+        targetBR = -power;
+    }
     public void rotate(double power, long targetInMilis) {
         opMode.telemetry.addData("Status", "Rotating");
         opMode.telemetry.update();
@@ -185,7 +255,7 @@ public class TeleopDrivetrain {
         opMode.sleep(targetInMilis);
     }
 
-    public void rotateToAngle(double targetAngle, double power) {
+/*    public void rotateToAngle(double targetAngle, double power) {
         double tolerance = 1.0; // Tolerance in degrees for accuracy
         double currentAngle = imu.getRobotYawPitchRollAngles().getYaw();
 
@@ -224,7 +294,7 @@ public class TeleopDrivetrain {
 
         // Stop the motors once the target angle is reached
         stopMotors();
-    }
+    }*/
 
 //    private int convertInchesToTicks(double inches) {
 //        double ticksPerRevolution = 1538; // Example: Neverest 20 motor

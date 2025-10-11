@@ -10,10 +10,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name = "TeleopGamePadStuff")
 public class TeleopMain extends LinearOpMode{
 
-
     //private static final double TICKS_PER_REVOLUTION = 1538.0;
     private ElapsedTime runtime = new ElapsedTime();
-
 
     public TeleopMain() {
 
@@ -26,10 +24,7 @@ public class TeleopMain extends LinearOpMode{
         mech.initTelemetry(telemetry);
 
         drivetrain.initDriveTrain((hardwareMap));
-        mech.initOuttakeSystem(hardwareMap);
-      //  mech.initMechanisms(hardwareMap);
-
-        //Checks what team color we are
+        // mech.initMechanisms();
 
         telemetry.addData("Status","READY TO NUT");
 
@@ -37,44 +32,36 @@ public class TeleopMain extends LinearOpMode{
 
         //This is loop that checks the gamepad for inputs every iteration
         while (opModeIsActive()) {
-           // mech.updateZeroPosition();
+            double y = -gamepad1.left_stick_y;   // forward/back (negative because stick up is negative)
+            double x = -gamepad1.left_stick_x;    // left/right strafe
+            double rx = gamepad1.right_stick_x;  // rotation
 
-           double time = runtime.startTime();
-//            telemetry.addData("RunTime", time);
-//            telemetry.addData("ifBlue",mech.ifBlueTeam);
-//            telemetry.addData("ifRed", mech.ifRedTeam);
+            if (Math.abs(y) < 0.05) y = 0;
+            if (Math.abs(x) < 0.05) x = 0;
+            if (Math.abs(rx) < 0.05) rx = 0;
 
-            //drives the robot
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x * 1.1;
-            double rx = gamepad1.right_stick_x;
-            //double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1.0);
-            double frontLeftPower = (y + x + rx)/1.5;
-            double backLeftPower = (y - x + rx)/1.5;
-            double frontRightPower = (y - x - rx)/1.5;
-            double backRightPower = (y + x - rx)/1.5;
+            double targetFL = y + x + rx;
+            double targetFR = y - x - rx;
+            double targetBL = y - x + rx;
+            double targetBR = y + x - rx;
 
-            drivetrain.frontLeft.setPower(frontLeftPower);
-            drivetrain.frontRight.setPower(frontRightPower);
-            drivetrain.backLeft.setPower(backLeftPower);
-            drivetrain.backRight.setPower(backRightPower);
+            double max = Math.max(1.0, Math.max(Math.abs(targetFL),
+                    Math.max(Math.abs(targetFR),
+                            Math.max(Math.abs(targetBL), Math.abs(targetBR)))));
+            targetFL /= max;
+            targetFR /= max;
+            targetBL /= max;
+            targetBR /= max;
 
+            double driveScale = 0.7;
+            targetFL *= driveScale;
+            targetFR *= driveScale;
+            targetBL *= driveScale;
+            targetBR *= driveScale;
 
+            drivetrain.updateDrive(targetFL, targetFR, targetBL, targetBR);
 
-//Find out what to put in targetInSeconds
-            if(gamepad1.left_stick_y < 0.0) {
-                drivetrain.moveForward(Math.abs(gamepad1.left_stick_y));
-            } else if (gamepad1.left_stick_y > 0.0) {
-                drivetrain.moveBackwards(Math.abs(gamepad1.left_stick_y));
-            }
-
-            if(gamepad1.left_stick_x < 0.0){
-                drivetrain.strafeLeft(Math.abs(gamepad1.left_stick_x));
-            } else if (gamepad1.left_stick_x > 0.0) {
-                drivetrain.strafeRight(Math.abs(gamepad1.left_stick_x));
-            }
-
-        if (gamepad2.dpad_left){
+            if (gamepad2.dpad_left){
               //  mech.simplePivotLimit1();
                 //mech.extendViperSlide("backward");
 
@@ -117,11 +104,11 @@ public class TeleopMain extends LinearOpMode{
 
             }
 
-            if(gamepad2.right_trigger > 0.1){
+/*            if(gamepad2.right_trigger > 0.1){
                 mech.outtakeMotorStart(gamepad2.right_trigger);
             } else {
                 mech.outtakeMotorStop();
-            }
+            }*/
             if(gamepad2.left_trigger > 0.1) {
                 //mech.setClawPivot("down");
 
