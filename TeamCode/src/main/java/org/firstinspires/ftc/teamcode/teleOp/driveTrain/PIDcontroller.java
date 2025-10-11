@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 public class PIDcontroller {
-    private double kp;
-    private double ki;
-    private double kd;
+    public double kp;
+    public double ki;
+    public double kd;
 
-    private double target;
+    public double target;
     private double integral;
     private double previousError;
     private double previousTime; // Using System.nanoTime() or ElapsedTime for more accurate timing
@@ -20,6 +18,16 @@ public class PIDcontroller {
         integral = 0.0;
         previousError = 0.0;
         previousTime = 0.0; // Initialize with current time in actual implementation
+    }
+
+    public void setKP(double kp) {
+        this.kp = kp;
+    }
+    public void setKI(double ki) {
+        this.ki = ki;
+    }
+    public void setKD(double kd) {
+        this.kd = kd;
     }
 
     public void setTarget(double target) {

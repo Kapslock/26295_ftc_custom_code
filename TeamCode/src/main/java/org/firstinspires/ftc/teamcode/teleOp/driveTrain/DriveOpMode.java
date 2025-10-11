@@ -38,7 +38,7 @@ public class DriveOpMode extends OpMode {
                 recenterTime = 0; // done freezing
             } else {
                 // Still in freeze period: stop motors and skip input processing
-                drive.drive(0,0,0,0);
+                drive.drive(0,0,0,0, telemetry);
                 telemetry.addLine("Recalibrating IMU...");
                 telemetry.update();
                 return; // skip the rest of loop for now

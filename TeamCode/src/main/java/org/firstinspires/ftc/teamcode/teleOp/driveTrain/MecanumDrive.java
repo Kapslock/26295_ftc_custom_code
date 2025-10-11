@@ -1,25 +1,26 @@
 package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
-import org.firstinspires.ftc.teamcode.teleOp.GoBildaPinpointDriver;
+import java.util.Locale;
 
 import java.util.Locale;
 
 public class MecanumDrive {
-
     private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     IMU imu;
     GoBildaPinpointDriver odo;
+    public IMU imu;
+    private PIDcontroller headingPID;  // PID controller for heading
+    private PIDcontroller drivePID;    // Optional PID for forward/backward distance
 
     public void init(HardwareMap hwMap, Telemetry telemetry) {
 
@@ -39,7 +40,6 @@ public class MecanumDrive {
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        //Motors Run Using or Without Encoder
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -47,12 +47,13 @@ public class MecanumDrive {
 
         //Brake at 0 Power
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //Meet 0 Bot Offsets: -0.4, 3.4, INCH
-        odo.setOffsets(-0.4, 3.4, DistanceUnit.INCH);
+        //New Bot Offsets
+        //odo.setOffsets(-0.5, 0, DistanceUnit.INCH);
+        odo.setOffsets(-0.4, 3.6, DistanceUnit.INCH);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
 
         /*
@@ -91,26 +92,25 @@ public class MecanumDrive {
         odo.resetPosAndIMU();
         odo.recalibrateIMU();
 
+        double kp = 1;
+        double ki = 0.0;
+        double kd = 0.0;
 
-        //Initialize IMU
-        RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
-
-        imu.initialize(new IMU.Parameters(RevOrientation));
+        headingPID = new PIDcontroller(kp, ki, kd); // tune these values
+        headingPID.setTarget(0); // default target heading = 0 degrees
+        String data = String.format(Locale.US, "{KP: %.3f, KI: %.3f, KD: %.3f}", kp, kd, ki);
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset (Inches)", odo.getXOffset(DistanceUnit.INCH));
         telemetry.addData("Y offset (Inches)", odo.getYOffset(DistanceUnit.INCH));
         telemetry.addData("Odo Device Version Number:", odo.getDeviceVersion());
         telemetry.addData("Odo Heading Scalar", odo.getYawScalar());
-
+        telemetry.addData("PID Settings", data);
         telemetry.update();
 
     }
 
-    public void drive(double forward, double strafe, double rotate, double slow) {
-
+    public void drive(double forward, double strafe, double rotate, double slow, Telemetry telemetry) {
         double frontLeftPower = forward + strafe + rotate;
         double backLeftPower = forward - strafe - rotate;
         double frontRightPower = forward - strafe + rotate;
@@ -129,6 +129,15 @@ public class MecanumDrive {
         backLeftMotor.setPower(slow * maxSpeed * (frontRightPower / maxPower));
         backRightMotor.setPower(slow * maxSpeed * (backRightPower / maxPower));
 
+        frontLeftMotor.setPower(slow * maxSpeed * (frontLeftPower));
+        frontRightMotor.setPower(slow * maxSpeed * (frontRightPower));
+        backLeftMotor.setPower(slow * maxSpeed * (backLeftPower));
+        backRightMotor.setPower(slow * maxSpeed * (backRightPower));
+
+        telemetry.addData("Front Left Motor Power", maxSpeed * (frontLeftPower));
+        telemetry.addData("Front Right Motor Power", maxSpeed * (frontRightPower));
+        telemetry.addData("Back Left Motor Power", maxSpeed * (backLeftPower));
+        telemetry.addData("Back Right Motor Power", maxSpeed * (backRightPower));
     }
 
     public void driveFieldOriented(double forward, double strafe, double rotate, double slow, Telemetry telemetry) {
@@ -137,7 +146,7 @@ public class MecanumDrive {
         double theta = Math.atan2(forward, strafe);
         double r = Math.hypot(strafe, forward);
 
-        odo.update(GoBildaPinpointDriver.ReadData.ONLY_UPDATE_HEADING);
+        odo.update();
 
         /* Use this code to use the IMU instead of the odo:
         theta = AngleUnit.normalizeRadians(theta -
@@ -157,42 +166,67 @@ public class MecanumDrive {
         double newForward = r * Math.sin(theta);
         double newStrafe = r * Math.cos(theta);
 
-        //General Odo Tele
+        Pose2D pos = odo.getPosition();
+        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
+
         telemetry.addData("New Forward", newForward);
         telemetry.addData("New Strafe", newStrafe);
         telemetry.addData("Theta (Radians)", theta);
         telemetry.addData("Odo Status", odo.getDeviceStatus());
         telemetry.addData("Pinpoint Frequency", odo.getFrequency()); //prints the current refresh rate of the Pinpoint
         telemetry.addLine();
-
-        //Heading Tele
+        telemetry.addData("Position", data);
+        telemetry.addLine();
         telemetry.addData("Heading (deg)", odo.getPosition().getHeading(AngleUnit.DEGREES));
         telemetry.addLine();
 
-        //X, Y Pos from Odo Tele
-        Pose2D pos = odo.getPosition();
-        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
-        telemetry.addData("Position", data);
-        telemetry.addLine();
-
-        //Velocity from Odo Tele
-        String velocity = String.format(Locale.US,"{XVel: %.3f, YVel: %.3f, HVel: %.3f}",
-                odo.getVelX(DistanceUnit.MM), odo.getVelY(DistanceUnit.MM),
-                odo.getHeadingVelocity(UnnormalizedAngleUnit.DEGREES));
-        telemetry.addData("Velocity", velocity);
+        this.drive(newForward, newStrafe, rotate, slow, telemetry);
 
         telemetry.update();
+    }
 
-        //Uses modified Field oriented factors in regular drive class
-        this.drive(newForward, newStrafe, rotate, slow);
+    public void turnToHeading(double targetHeading, double slow, Telemetry telemetry, double kp, double ki, double kd) {
 
+        headingPID.setKP(kp);
+        headingPID.setKI(ki);
+        headingPID.setKD(kd);
+        headingPID.setTarget(targetHeading);
+
+        String data = String.format(Locale.US, "{KP: %.3f, KI: %.3f, KD: %.3f}", kp, ki, kd);
+
+        odo.update();
+        double currentHeading = odo.getPosition().getHeading(AngleUnit.DEGREES);
+        double time = System.nanoTime() / 1e9; // seconds
+
+        double correction = headingPID.calculateOutput(currentHeading, time);
+
+        // Apply correction as rotation power
+        double rotate = correction;
+
+        // Keep forward/strafe 0, just rotate
+        this.drive(0, 0, rotate, slow, telemetry);
+
+        TelemetryPacket packet = new TelemetryPacket();
+
+        packet.put("target", headingPID.target);
+        packet.put("current", currentHeading);
+        packet.put("error", headingPID.target - currentHeading);
+        packet.put("output", rotate);
+
+        FtcDashboard.getInstance().sendTelemetryPacket(packet);
+
+        telemetry.addData("Target Heading", targetHeading);
+        telemetry.addData("Current Heading", currentHeading);
+        telemetry.addData("Correction (PID)", correction);
+        telemetry.addData("PID information", data);
+        telemetry.update();
     }
 
     public void OdoReset(Telemetry tele) {
 
         //Resets Heading and Position -STAY STILL FOR AT LEAST 0.25 SECONDS WHILE DOING SO FOR ACCURACY-
         odo.resetPosAndIMU();
-        odo.update(GoBildaPinpointDriver.ReadData.ONLY_UPDATE_HEADING);
+        odo.update();
         tele.update();
 
     }
