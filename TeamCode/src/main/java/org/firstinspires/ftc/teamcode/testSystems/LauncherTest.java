@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.teleOp.driveTrain.MecanumDrive;
 
-@TeleOp(name = "LauncherTest", group = "Test")
+@TeleOp(name = "LauncherTest", group = "TestModes")
 public class LauncherTest extends OpMode {
     private DcMotor launcherMotor;
     private MecanumDrive drive = new MecanumDrive();

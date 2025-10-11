@@ -27,6 +27,6 @@ public class PracticeCodingDrive1 extends OpMode {
         } else {
             aPressed = false;
         }
-        telemetry.addData("A button prees?", aPressed);
+        telemetry.addData("A button preesed?", aPressed);
     }
 }

@@ -1,12 +1,11 @@
-package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
+package org.firstinspires.ftc.teamcode.teleOp;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-import android.hardware.HardwareBuffer;
-import android.hardware.Sensor;
+
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

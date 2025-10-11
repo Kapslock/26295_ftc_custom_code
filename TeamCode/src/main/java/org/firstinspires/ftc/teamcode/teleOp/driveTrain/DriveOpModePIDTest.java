@@ -52,6 +52,7 @@ public class DriveOpModePIDTest extends OpMode {
         telemetry.addData("rotate", rotate);
         telemetry.addData("speed", slow);
 
+        //TODO: CHANGE 0 TO ROTATE ONCE CODE WORKS
         drive.turnToHeading(0, slow, telemetry, pidP, pidI, pidD);
 
         //drive.driveFieldOriented(forward, strafe, rotate, slow, telemetry);

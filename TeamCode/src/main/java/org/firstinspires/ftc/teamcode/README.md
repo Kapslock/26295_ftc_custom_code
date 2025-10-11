@@ -1,4 +1,6 @@
-## New Coders Start Here!
+## AURORA 2025 CODE REP0
+
+## New Aurora Coders Start Here!
 
 I recommend you begin by reading through the "Controller24" class. This contains code written by 
 former team member Kylah from the 2023/2024 Into the Deep Competition. Whether or not you have any 

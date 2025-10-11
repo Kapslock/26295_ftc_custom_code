@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
 
-public class PIDcontroller {
+public class PIDController {
     public double kp;
     public double ki;
     public double kd;
@@ -10,7 +10,7 @@ public class PIDcontroller {
     private double previousError;
     private double previousTime; // Using System.nanoTime() or ElapsedTime for more accurate timing
 
-    public PIDcontroller(double kp, double ki, double kd) {
+    public PIDController(double kp, double ki, double kd) {
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
@@ -29,12 +29,12 @@ public class PIDcontroller {
     public void setKD(double kd) {
         this.kd = kd;
     }
-
     public void setTarget(double target) {
         this.target = target;
     }
 
     public double calculateOutput(double current, double time) {
+
         double error = target - current;
         double deltaTime = time - previousTime;
 
@@ -50,5 +50,6 @@ public class PIDcontroller {
         previousTime = time;
 
         return output;
+
     }
 }
