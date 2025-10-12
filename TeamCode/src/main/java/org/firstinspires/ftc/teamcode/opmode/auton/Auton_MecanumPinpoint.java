@@ -135,6 +135,14 @@ public class Auton_MecanumPinpoint extends OpMode
             strafe = speed;
         }
 
+        if (Math.abs(errorA) < errorToleranceA) {
+            rotate = 0.0;
+        } else if (errorA > 0) {
+            rotate = -speed;
+        } else {
+            rotate = speed;
+        }
+
         // determine angle error and how to rotate
 
         // Actuate - execute robot functions
