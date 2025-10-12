@@ -6,24 +6,19 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 
-@TeleOp
+@TeleOp(name = "Motor Run")
 public class Motor_Run extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DriveTrain driveTrain = new DriveTrain(this);
-
-        final DcMotor OutakeMotor = hardwareMap.dcMotor.get("OuttakeMotor");
+        final DcMotor outtakeMotor = hardwareMap.dcMotor.get("outtakeMotor");
         final IMU imu;
-
-
 
         waitForStart();
         if (isStopRequested()) return;
+
         while (opModeIsActive()) {
-            OutakeMotor.setPower(gamepad1.right_trigger);
-
-
+            outtakeMotor.setPower(gamepad2.right_trigger);
         }
     }
 }
