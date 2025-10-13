@@ -1,0 +1,2 @@
+recuperer les alias git surtout git lg1
+mettre le repo en forward merge: git config --global merge.ff only
