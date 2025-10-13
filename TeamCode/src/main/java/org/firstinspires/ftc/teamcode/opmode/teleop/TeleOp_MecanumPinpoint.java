@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmode.teleop;
 
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -57,6 +58,7 @@ public class TeleOp_MecanumPinpoint extends OpMode
         // INIT OTHER MECHANISMS - SHOOTER, INTAKE, LIFT, LIMELIGHT, ETC.
 
         // PRINT TELEMETRY
+
         telemetry.addData("Status", "Initialized");
         System.out.println("TeleOp_Starter: Initializing Logging"); // TODO: where does this go?
     }

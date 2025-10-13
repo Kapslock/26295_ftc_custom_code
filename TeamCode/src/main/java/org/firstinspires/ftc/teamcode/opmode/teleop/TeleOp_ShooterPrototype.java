@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmode.teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 @TeleOp(name="TeleOp_ShooterPrototype", group="Test")
@@ -16,6 +20,9 @@ public class TeleOp_ShooterPrototype extends OpMode {
     private DcMotor shooter;
     private Servo servo_1;
     private boolean modeButtonWasPressedLastLoop = false;
+
+    private FtcDashboard dashboard = FtcDashboard.getInstance();
+    private Telemetry dashboardTelemetry  = dashboard.getTelemetry();
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -26,6 +33,9 @@ public class TeleOp_ShooterPrototype extends OpMode {
         shooter  = hardwareMap.get(DcMotor.class,SHOOTER_MOTOR_NAME);
         servo_1  = hardwareMap.get(Servo.class,SERVO_1_NAME);
         shooter.setDirection(DcMotor.Direction.FORWARD);
+
+        dashboardTelemetry.addData("x", 33);
+        dashboardTelemetry.update();
 
         telemetry.addData("Status", "Initialized");
         System.out.println("TeleOp_Starter: Initializing Logging"); // where does this go?
@@ -94,26 +104,26 @@ public class TeleOp_ShooterPrototype extends OpMode {
         boolean shooter75 =  gamepad2.y;
         boolean shooter100 =  gamepad2.x;
 
+        double shooterPower = 0.0;
 
         if (Stop) {
-            shooter.setPower(0);
+            shooterPower = 0.0;
         }
         if (shooter25) {
-            shooter.setPower(.25);
+            shooterPower = 0.25;
         }
         if (shooter50) {
-            shooter.setPower(.5);
+            shooterPower = 0.5;
         }
-
         if (shooter75) {
-            shooter.setPower(.75);
-
+            shooterPower = 0.75;
         }
-
         if (shooter100) {
-            shooter.setPower(1);
-
+            shooterPower = 1.0;
         }
+        shooter.setPower(shooterPower);
+        dashboardTelemetry.addData("Shooter Power", shooterPower);
+        dashboardTelemetry.update();
     }
 
     private void mode1() {
