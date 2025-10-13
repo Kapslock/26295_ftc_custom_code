@@ -1,50 +1,47 @@
 package org.firstinspires.ftc.teamcode;
-import com.qualcomm.hardware.bosch.BNO055IMU;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 @TeleOp(name = "DECODETeleOp", group = "Linear OpMode")
 public class DECODETeleOp extends LinearOpMode {
-    // === Runtime & IMU ===
+    private DECODEMechanisms mechanisms;
     private final ElapsedTime runtime = new ElapsedTime();
-    private BNO055IMU imu;
-    private double headingOffset = 0;
-    private boolean isFieldCentric = true;
-    // === Drive motors ===
-    private DcMotor leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive;
-    // === Mechanisms ===
-    private DcMotor intake, spindexer;
-    private Servo kicker, hood;
-    private DcMotorEx launcher;
-    // === Spindexer ===
-    private int spindexerStep = 0;
-    private static final double TICKS_PER_STEP = 1322; // adjust CPR
+
+    // Button state tracking
     private boolean previousA = false;
     private boolean previousB = false;
-    // === Launcher ===
-    private double launcherRPM = 0;
-    private static final double LAUNCHER_MAX_RPM = 5000;
-    private static final double LAUNCHER_STEP = 250; // rpm per press
-    private static final double TICKS_PER_REV = 28;  // goBILDA/REV motor, adjust if needed
-    // === Hood ===
-    private double hoodPos = 0.5; // mid angle
+    private boolean previousY = false;
+    private boolean previousLeftBumper = false;
+    private boolean previousRightBumper = false;
+    private boolean previousDpadUp = false;
+    private boolean previousDpadDown = false;
+    private boolean previousDpadLeft = false;
+    private boolean previousDpadRight = false;
+    private boolean previousBack = false;
+    private boolean previousStart = false;
+    private boolean previousLeftStick = false;
+    private boolean previousRightStick = false;
+
     @Override
     public void runOpMode() {
-        // --- Initialize hardware ---
-        initializeDrive();
-        initializeIMU();
-        initializeMechanisms();
+        // Initialize mechanisms
+        mechanisms = new DECODEMechanisms(hardwareMap);
+
         telemetry.addLine("Initialized, waiting for start...");
+        telemetry.addLine("Spindexer limit switch: " +
+                (mechanisms.isSpindexerLimitPressed() ? "PRESSED" : "Released"));
         telemetry.update();
+
         waitForStart();
         runtime.reset();
+
+        // Auto-home spindexer on start if limit switch is available
+        if (mechanisms.isUseLimitSwitch()) {
+            mechanisms.homeSpindexer();
+        }
+
         // === Main loop ===
         while (opModeIsActive()) {
             handleDriveControls();
@@ -53,131 +50,243 @@ public class DECODETeleOp extends LinearOpMode {
             handleKickerControls();
             handleLauncherControls();
             handleHoodControls();
+            handleTurretControls();
+            handleContinuousServoControls();
+            handleUtilityControls();
+
+            // Update all mechanisms
+            mechanisms.updateAllSystems();
+
             updateTelemetry();
         }
-        stopAllMotors();
+
+        mechanisms.stopAllMotors();
     }
-    // ================= DRIVE =================
-    private void initializeDrive() {
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-    }
-    private void initializeIMU() {
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters params = new BNO055IMU.Parameters();
-        params.mode = BNO055IMU.SensorMode.IMU;
-        params.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(params);
-    }
+
     private void handleDriveControls() {
-        // Toggle field-centric with Y
-        if (gamepad1.y) isFieldCentric = !isFieldCentric;
-        // Reset heading offset with B
-        if (gamepad1.b) headingOffset = getHeadingRadians();
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
-        double heading = getHeadingRadians();
-        if (isFieldCentric) {
-            double rotX = x * Math.cos(-heading) - y * Math.sin(-heading);
-            double rotY = x * Math.sin(-heading) + y * Math.cos(-heading);
-            x = rotX; y = rotY;
+
+        // Toggle field-centric with Y
+        boolean yPressed = gamepad1.y;
+        if (yPressed && !previousY) {
+            mechanisms.toggleFieldCentric();
         }
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        double lf = (y + x + rx) / denominator;
-        double lb = (y - x + rx) / denominator;
-        double rf = (y - x - rx) / denominator;
-        double rb = (y + x - rx) / denominator;
-        leftFrontDrive.setPower(lf);
-        leftBackDrive.setPower(lb);
-        rightFrontDrive.setPower(rf);
-        rightBackDrive.setPower(rb);
+        previousY = yPressed;
+
+        // Reset heading offset with B
+        if (gamepad1.b) {
+            mechanisms.resetHeadingOffset();
+        }
+
+        mechanisms.driveMecanum(y, x, rx);
     }
-    private double getHeadingRadians() {
-        Orientation o = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-        return -o.firstAngle + headingOffset;
-    }
-    // ================= MECHANISMS =================
-    private void initializeMechanisms() {
-        intake = hardwareMap.get(DcMotor.class, "intake");
-        spindexer = hardwareMap.get(DcMotor.class, "spindexer");
-        kicker = hardwareMap.get(Servo.class, "kicker");
-        hood = hardwareMap.get(Servo.class, "hood");
-        launcher = hardwareMap.get(DcMotorEx.class, "launcher");
-        spindexer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        spindexer.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
+
     private void handleIntakeControls() {
         if (gamepad2.right_trigger > 0.1) {
-            intake.setPower(1.0);
+            mechanisms.startIntake();
+        } else if (gamepad2.left_trigger > 0.1) {
+            mechanisms.reverseIntake();
         } else {
-            intake.setPower(0.0);
+            mechanisms.stopIntake();
         }
     }
+
     private void handleSpindexerControls() {
         boolean aPressed = gamepad2.a;
-        if (aPressed && !previousA) {
-            spindexerStep = (spindexerStep + 1) % 3;
-            int targetPos = (int)(spindexerStep * TICKS_PER_STEP);
-            spindexer.setTargetPosition(targetPos);
-            spindexer.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spindexer.setPower(0.6);
-            while (opModeIsActive() && spindexer.isBusy()) {
-                telemetry.addData("Spindexer", "Moving to step %d", spindexerStep);
-                telemetry.update();
-            }
-            spindexer.setPower(0);
-            spindexer.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (aPressed && !previousA && !mechanisms.isSpindexerMoving()) {
+            mechanisms.advanceSpindexer();
         }
+
+        // Manual spindexer control with X button
+        boolean xPressed = gamepad2.x;
+        if (xPressed && !previousLeftStick) {
+            // Cycle through spindexer steps manually
+            int currentStep = mechanisms.getSpindexerStep();
+            mechanisms.setSpindexerStep((currentStep + 1) % 3);
+        }
+        previousLeftStick = xPressed;
+
+        // Home spindexer with Y button
+        boolean yPressed = gamepad2.y;
+        if (yPressed && !previousY && mechanisms.isUseLimitSwitch()) {
+            mechanisms.homeSpindexer();
+        }
+        previousY = yPressed;
+
         previousA = aPressed;
     }
+
     private void handleKickerControls() {
         boolean bPressed = gamepad2.b;
         if (bPressed && !previousB) {
-            kicker.setPosition(1.0); // extend
-            sleep(250);
-            kicker.setPosition(0.0); // retract
+            mechanisms.fireKicker();
+            // Schedule retraction
+            new Thread(() -> {
+                try {
+                    Thread.sleep(250);
+                    mechanisms.retractKicker();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }).start();
         }
         previousB = bPressed;
     }
+
     private void handleLauncherControls() {
-        if (gamepad2.right_bumper) {
-            launcherRPM = Math.min(launcherRPM + LAUNCHER_STEP, LAUNCHER_MAX_RPM);
+        boolean rightBumper = gamepad2.right_bumper;
+        boolean leftBumper = gamepad2.left_bumper;
+
+        if (rightBumper && !previousRightBumper) {
+            mechanisms.increaseLauncherRPM();
         }
-        if (gamepad2.left_bumper) {
-            launcherRPM = Math.max(launcherRPM - LAUNCHER_STEP, 0);
+        if (leftBumper && !previousLeftBumper) {
+            mechanisms.decreaseLauncherRPM();
         }
-        double ticksPerSec = (launcherRPM / 60.0) * TICKS_PER_REV;
-        launcher.setVelocity(ticksPerSec);
+
+        previousLeftBumper = leftBumper;
+        previousRightBumper = rightBumper;
+
+        // Stop launcher with Start button
+        boolean startPressed = gamepad2.start;
+        if (startPressed && !previousStart) {
+            mechanisms.stopLauncher();
+        }
+        previousStart = startPressed;
     }
+
     private void handleHoodControls() {
-        double stick = -gamepad2.left_stick_y; // up is positive
-        hoodPos += stick * 0.01; // scale adjust speed
-        hoodPos = Math.max(0.0, Math.min(1.0, hoodPos));
-        hood.setPosition(hoodPos);
+        // Manual hood control with right stick Y
+        double stick = -gamepad2.right_stick_y;
+        if (Math.abs(stick) > 0.1) {
+            mechanisms.adjustHoodPosition(stick * 0.02);
+        }
+
+        // Preset hood positions with D-pad
+        boolean dpadUp = gamepad2.dpad_up;
+        boolean dpadDown = gamepad2.dpad_down;
+
+        if (dpadUp && !previousDpadUp) {
+            mechanisms.setHoodPosition(0.8); // High position
+        }
+        if (dpadDown && !previousDpadDown) {
+            mechanisms.setHoodPosition(0.2); // Low position
+        }
+
+        previousDpadUp = dpadUp;
+        previousDpadDown = dpadDown;
     }
-    private void stopAllMotors() {
-        leftFrontDrive.setPower(0);
-        leftBackDrive.setPower(0);
-        rightFrontDrive.setPower(0);
-        rightBackDrive.setPower(0);
-        intake.setPower(0);
-        spindexer.setPower(0);
-        launcher.setPower(0);
+
+    private void handleTurretControls() {
+        // Turret control with left stick X
+        double stick = gamepad2.left_stick_x;
+        if (Math.abs(stick) > 0.1) {
+            mechanisms.adjustTurretPosition(stick * 0.02);
+        }
+
+        // Preset turret positions with D-pad left/right
+        boolean dpadLeft = gamepad2.dpad_left;
+        boolean dpadRight = gamepad2.dpad_right;
+
+        if (dpadLeft && !previousDpadLeft) {
+            mechanisms.setTurretPosition(0.2); // Left position
+        }
+        if (dpadRight && !previousDpadRight) {
+            mechanisms.setTurretPosition(0.8); // Right position
+        }
+
+        // Center turret with Back button
+        boolean backPressed = gamepad2.back;
+        if (backPressed && !previousBack) {
+            mechanisms.setTurretPosition(0.5); // Center position
+        }
+        previousBack = backPressed;
+
+        previousDpadLeft = dpadLeft;
+        previousDpadRight = dpadRight;
     }
+
+    private void handleContinuousServoControls() {
+        // Control continuous servo 1 with gamepad1 triggers
+        if (gamepad1.right_trigger > 0.1) {
+            mechanisms.setContinuousServo1Power(0.5); // Forward
+        } else if (gamepad1.left_trigger > 0.1) {
+            mechanisms.setContinuousServo1Power(-0.5); // Reverse
+        } else {
+            mechanisms.setContinuousServo1Power(0); // Stop
+        }
+
+        // Control continuous servo 2 with gamepad2 triggers
+        if (gamepad2.right_trigger > 0.1) {
+            mechanisms.setContinuousServo2Power(0.5); // Forward
+        } else if (gamepad2.left_trigger > 0.1) {
+            mechanisms.setContinuousServo2Power(-0.5); // Reverse
+        } else {
+            mechanisms.setContinuousServo2Power(0); // Stop
+        }
+
+        // Use left stick buttons for precise servo positioning
+        boolean leftStick = gamepad1.left_stick_button;
+        boolean rightStick = gamepad1.right_stick_button;
+
+        if (leftStick && !previousLeftStick) {
+            mechanisms.moveContinuousServo1Revolutions(0.25); // Move forward 0.25 revolutions
+        }
+        if (rightStick && !previousRightStick) {
+            mechanisms.moveContinuousServo1Revolutions(-0.25); // Move backward 0.25 revolutions
+        }
+
+        previousLeftStick = leftStick;
+        previousRightStick = rightStick;
+    }
+
+    private void handleUtilityControls() {
+        // Toggle limit switch functionality with D-pad Up
+        boolean dpadUp = gamepad1.dpad_up;
+        if (dpadUp && !previousDpadUp) {
+            mechanisms.setUseLimitSwitch(!mechanisms.isUseLimitSwitch());
+            telemetry.addLine("Limit switch: " +
+                    (mechanisms.isUseLimitSwitch() ? "ENABLED" : "DISABLED"));
+        }
+        previousDpadUp = dpadUp;
+
+        // Manual home with D-pad Down
+        boolean dpadDown = gamepad1.dpad_down;
+        if (dpadDown && !previousDpadDown && mechanisms.isUseLimitSwitch()) {
+            mechanisms.homeSpindexer();
+        }
+        previousDpadDown = dpadDown;
+
+        // Reset all encoders with Start + Back buttons
+        boolean startPressed = gamepad1.start;
+        boolean backPressed = gamepad1.back;
+
+        if (startPressed && backPressed && !previousStart) {
+            mechanisms.resetAllEncoders();
+            telemetry.addLine("All encoders reset!");
+        }
+        previousStart = startPressed;
+    }
+
     private void updateTelemetry() {
         telemetry.addData("Runtime", "%.1fs", runtime.seconds());
-        telemetry.addData("Drive Mode", isFieldCentric ? "Field-Centric" : "Robot-Centric");
-        telemetry.addData("Heading (deg)", Math.toDegrees(getHeadingRadians()));
-        telemetry.addData("Spindexer Step", spindexerStep);
-        telemetry.addData("Spindexer Pos", spindexer.getCurrentPosition());
-        telemetry.addData("Launcher RPM", "%.0f", launcherRPM);
-        telemetry.addData("Hood Pos", "%.2f", hoodPos);
+        telemetry.addData("Status", "All systems operational");
+        mechanisms.addTelemetryData(telemetry);
+
+        // Add control hints
+        telemetry.addLine("");
+        telemetry.addLine("=== Controls ===");
+        telemetry.addData("Drive", "LS: Move, RS: Rotate, Y: Toggle Field-Centric, B: Reset Heading");
+        telemetry.addData("Intake", "RT: Forward, LT: Reverse");
+        telemetry.addData("Spindexer", "A: Advance, X: Manual Step, Y: Home, Dpad Up: Toggle Limit, Dpad Down: Re-home");
+        telemetry.addData("Launcher", "RB: +RPM, LB: -RPM, Start: Stop");
+        telemetry.addData("Hood", "RS: Manual, Dpad Up/Down: Presets");
+        telemetry.addData("Turret", "LS: Manual, Dpad Left/Right: Presets, Back: Center");
+        telemetry.addData("Servos", "Triggers: Manual, Stick Buttons: Precise");
+        telemetry.addData("Reset", "Start+Back: Reset Encoders");
+
         telemetry.update();
     }
 }
