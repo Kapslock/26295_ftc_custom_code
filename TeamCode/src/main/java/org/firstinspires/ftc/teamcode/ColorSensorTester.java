@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.robocol.TelemetryMessage;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -40,9 +41,11 @@ public class ColorSensorTester {
         telemetry.addData("blue", normBlue);
 
         if(normGreen > 0.5 && normRed < 0.3 && normBlue < 0.3) {
+            telemetry.addData("Color detected","green");
             return DetectedColor.GREEN;
         }
         else if (normRed > 0.4 && normBlue > 0.4 && normGreen < 0.3) {
+            telemetry.addData("Color detected","purple");
             return DetectedColor.PURPLE;
         }
         return DetectedColor.UNKNOWN;
