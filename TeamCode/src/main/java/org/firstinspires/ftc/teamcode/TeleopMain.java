@@ -12,7 +12,7 @@ public class TeleopMain extends LinearOpMode{
 
     //private static final double TICKS_PER_REVOLUTION = 1538.0;
     private ElapsedTime runtime = new ElapsedTime();
-
+    System.out.println("s");
     public TeleopMain() {
 
     }
@@ -39,7 +39,7 @@ public class TeleopMain extends LinearOpMode{
             if (Math.abs(y) < 0.05) y = 0;
             if (Math.abs(x) < 0.05) x = 0;
             if (Math.abs(rx) < 0.05) rx = 0;
-
+            System.out.println("s");
             double targetFL = y + x + rx;
             double targetFR = y - x - rx;
             double targetBL = y - x + rx;
