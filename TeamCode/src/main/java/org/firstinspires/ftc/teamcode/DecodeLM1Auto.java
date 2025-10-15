@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Autonomous(name = "Test")
+@Autonomous(name = "Auto LM1")
 public class DecodeLM1Auto extends LinearOpMode {
 
     GoBildaPinpointDriver odo;
