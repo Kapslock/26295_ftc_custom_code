@@ -117,18 +117,19 @@ public class DriveTrain {
 
     private double getDenominator(double rotX, double rotY, double rx) {
         // Calculate the denominator to normalize powers
-        return Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);    }
+        return Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+    }
 
     private Rotation getRotation(double x, double y) {
         // Calculate the robot's heading
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         // Calculate rotated x and y values
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+        double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
+        double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
 
         // Apply scaling to rotX if needed
-        rotX = rotX * 1.2;
+        rotX = rotX * 1.1;
 
         // Return a Rotation object containing rotX and rotY
         return new Rotation(rotX, rotY);
@@ -141,6 +142,8 @@ public class DriveTrain {
         linearOpMode.telemetry.addData("Raw Right Stick (Rotation)", "%5.2f", linearOpMode.gamepad1.right_stick_x);
         linearOpMode.telemetry.addData("Fast Mode", linearOpMode.gamepad1.left_bumper);
         linearOpMode.telemetry.addData("Slow Mode", linearOpMode.gamepad1.right_bumper);
+        linearOpMode.telemetry.addData("Yaw, Pitch, Roll", imu.getRobotYawPitchRollAngles());
+        linearOpMode.telemetry.addData("Reset Yaw", linearOpMode.gamepad1.back);
 
         linearOpMode.telemetry.addData("Front Left Position", frontLeftMotor.getCurrentPosition());
         linearOpMode.telemetry.addData("Front Right Position", frontRightMotor.getCurrentPosition());
@@ -175,7 +178,7 @@ public class DriveTrain {
     }
 
     public void resetYaw() {
-        if (linearOpMode.gamepad1.start) {
+        if (linearOpMode.gamepad1.back) {
             imu.resetYaw();
             counter++;
         }
