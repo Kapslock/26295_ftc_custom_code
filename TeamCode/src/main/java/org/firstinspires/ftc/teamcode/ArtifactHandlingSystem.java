@@ -147,6 +147,29 @@ public class ArtifactHandlingSystem {
         }
     }
 
+    public void shootAutoArtifact(){
+        Thread ArtifactShoot = new Thread(() -> {
+            long endTime = System.currentTimeMillis() + 4000; // 4 seconds from now
+            
+            // Start the outtake motor for shooting
+            shootArtifact(0.8F);
+            
+            while (System.currentTimeMillis() < endTime) {
+
+                sendArtifactToOuttake();
+
+                }
+
+            
+
+            shootArtifact(0.0F);
+            System.out.println("Thread finished its 4-second run!");
+        });
+        
+        // Start the thread
+        ArtifactShoot.start();
+    }
+
     private void setRGBIndicator(String color) {
         switch (color) {
             case "Purple":

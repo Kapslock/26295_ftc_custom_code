@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.linearOpMode;
 import static org.firstinspires.ftc.teamcode.AutoConstants.CLASSIFIER_X;
 import static org.firstinspires.ftc.teamcode.AutoConstants.CLASSIFIER_Y;
 
@@ -31,9 +32,11 @@ public class DecodeLM1Auto extends LinearOpMode {
             driveToPos(CLASSIFIER_X, CLASSIFIER_Y);
             gyroTurnToAngle(110);
         //TODO: When the robot classes get built we need to add actions for outake to score the pre-load
-//      Example  Code:
-//      ArtifactHandlingSystem.shootAutoArtifact();
-//      driveToPos(40, 23);
+
+        ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
+        artifactSystem.shootAutoArtifact();
+
+        driveToPos(40, 23);
 /*
         while (counter < 2) {
             frontLeftMotor.setPower(AutoConstants.DRIVE_SPEED);
@@ -159,7 +162,7 @@ public class DecodeLM1Auto extends LinearOpMode {
         private void initAuto() {
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         //        odo.setOffsets(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
-        odo.setOffsets(107.95, 95.25, DistanceUnit.CM ); //took on 12/20 by Rohan
+        odo.setOffsets(107.95, 21, DistanceUnit.CM ); //took on 12/20 by Rohan
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED);
