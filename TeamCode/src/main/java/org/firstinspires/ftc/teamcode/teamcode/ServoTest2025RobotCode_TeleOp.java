@@ -24,6 +24,7 @@ public class ServoTest2025RobotCode_TeleOp extends OpMode {
         carousel = hardwareMap.get(Servo.class, "carousel");
         kicker = hardwareMap.get(Servo.class, "kicker");
         colorSensor0 = hardwareMap.get(NormalizedColorSensor.class, "colorSensor0");
+        colorSensor0.setGain(2);
         telemetry.addData("Status", "Initialized says Teammate");
         telemetry.update();
     }
@@ -55,6 +56,28 @@ public class ServoTest2025RobotCode_TeleOp extends OpMode {
         telemetry.addData("Red", "%.3f", colors.red);
         telemetry.addData("Green", "%.3f", colors.green);
         telemetry.addData("Blue", "%.3f", colors.blue);
+
+        if(hue < 30){
+            telemetry.addData("Color", "Red");
+        }
+        else if (hue < 60) {
+            telemetry.addData("Color", "Orange");
+        }
+        else if (hue < 90){
+            telemetry.addData("Color", "Yellow");
+        }
+        else if (hue < 150){
+            telemetry.addData("Color", "Green");
+        }
+        else if (hue < 225){
+            telemetry.addData("Color", "Blue");
+        }
+        else if (hue < 350){
+            telemetry.addData("Color", "Purple");
+        }
+        else{
+            telemetry.addData("Color", "Red");
+        }
 
         //Determining HSV and alpha
         telemetry.addData("Hue", JavaUtil.colorToHue(colors.toColor()));
