@@ -66,7 +66,10 @@ public class Auton_PinpointDiagnosis extends OpMode
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         odo.setOffsets(-82.5, 125, DistanceUnit.MM); // TODO: check if signs are correct
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.setEncoderDirections(
+                GoBildaPinpointDriver.EncoderDirection.REVERSED,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED
+        );
         odo.resetPosAndIMU();
         // INIT OTHER MECHANISMS - SHOOTER, INTAKE, LIFT, LIMELIGHT, ETC.
 
@@ -185,6 +188,7 @@ public class Auton_PinpointDiagnosis extends OpMode
         // Convention: FORWARD is where the shooter is
 
         // going forward causes pos.getX() to decrease
+        // when set as REVERSED, going forward causes pos.getX() to INCREASE
         // mecanumDrive.drive( 1, 0, 0, 0.1 );
 
         // going backward causes pos.getX() to increase
@@ -194,10 +198,11 @@ public class Auton_PinpointDiagnosis extends OpMode
         // mecanumDrive.drive( 0, 1, 0, 0.1 );
 
         // strafe left (strafe == -1) causes pos.getY() to decrease
-        // mecanumDrive.drive( 0, -1, 0, 0.1 );
+        // when set as REVERSED, strafe left causes pos.getY() to INCREASE
+        mecanumDrive.drive( 0, -1, 0, 0.1 );
 
         // rotate right/clockwise (rotate == 1) causes pos.getHeading() to basically hover around 0
-        // mecanumDrive.drive( 0, 0, 1, 0.1 );
+        mecanumDrive.drive( 0, 0, 1, 0.25 );
 
         // rotate left/counterclockwise (rotate == -1) causes pos.getHeading() to basically hover around 0
         // mecanumDrive.drive( 0, 0, -1, 0.1 );
