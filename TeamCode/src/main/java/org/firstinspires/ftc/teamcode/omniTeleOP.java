@@ -67,11 +67,12 @@ public class omniTeleOP extends LinearOpMode{
     DcMotor backLeftMotor;
     DcMotor frontRightMotor;
     DcMotor backRightMotor;
-    CRServo bottomBelt;
-    CRServo angledBelt;
-    CRServo intakeLeft;
-    CRServo intakeRight;
-    DcMotor flywheelMotor;
+    CRServo intakeLeft; // 0
+    CRServo intakeRight; // 1
+    CRServo beltLeft; // 2
+    CRServo beltRight; // 3
+    CRServo beltVertical; // 4
+    DcMotor flywheelMotor; // 0
     // CRServo clawIntake;
     IMU imu;
     DistanceSensor rightDistanceSensor;
@@ -125,15 +126,20 @@ public class omniTeleOP extends LinearOpMode{
         // leftHang = hardwareMap.get(Servo.class, "leftHangServo");
 
         // Game Element Intake
-//        intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
-//        intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
+        intakeLeft = hardwareMap.get(CRServo.class, "intakeLeft");
+        intakeRight = hardwareMap.get(CRServo.class, "intakeRight");
 
         // Belts to connect intake and flywheel
-//        bottomBelt = hardwareMap.get(CRServo.class, "bottomBelt");
-//        angledBelt = hardwareMap.get(CRServo.class, "angledBelt");
+        beltLeft = hardwareMap.get(CRServo.class, "beltLeft");
+        beltRight = hardwareMap.get(CRServo.class, "beltRight");
+        beltVertical = hardwareMap.get(CRServo.class, "beltVertical");
+
+        // Reverse some belts
+        intakeLeft.setDirection(CRServo.Direction.REVERSE);
+        beltLeft.setDirection(CRServo.Direction.REVERSE);
 
         // Flywheel Motor
-//        flywheelMotor = hardwareMap.dcMotor.get("flywheelMotor");
+        flywheelMotor = hardwareMap.dcMotor.get("flywheelMotor");
 
         // Reverse some of the drive motors depending on physical setup
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -262,42 +268,44 @@ public class omniTeleOP extends LinearOpMode{
             }*/
 
             // Controller 1 Intake
-            /*if (gamepad1.right_bumper) {
+            if (gamepad1.a) {
                 intakeLeft.setPower(1);
-                intakeRight.setPower(-1);
-            } else if (gamepad1.left_bumper) {
-                intakeLeft.setPower(-1);
                 intakeRight.setPower(1);
+            } else if (gamepad1.a) {
+                intakeLeft.setPower(-1);
+                intakeRight.setPower(-1);
             }
             else {
                 intakeLeft.setPower(0);
                 intakeRight.setPower(0);
             }
 
-            // Controller 2 Belts
-            if (gamepad2.right_bumper) {
-                bottomBelt.setPower(1);
-                angledBelt.setPower(1);
+            if (gamepad1.a) {
+                beltLeft.setPower(1);
+                beltRight.setPower(1);
+                beltVertical.setPower(1);
             }
-            else if (gamepad2.left_bumper) {
-                bottomBelt.setPower(-1);
-                angledBelt.setPower(-1);
+            else if (gamepad1.a) {
+                beltLeft.setPower(-1);
+                beltRight.setPower(-1);
+                beltVertical.setPower(-1);
             }
             else {
-                bottomBelt.setPower(0);
-                angledBelt.setPower(0);
+                beltLeft.setPower(0);
+                beltRight.setPower(0);
+                beltVertical.setPower(0);
             }
 
             // Controller 2 Flywheel
-            if (gamepad2.a) {
-                flywheelMotor.setPower(10);
+            if (gamepad1.x) {
+                flywheelMotor.setPower(1);
             }
-            if (gamepad2.b) {
-                flywheelMotor.setPower(-10);
-            }
+//            if (gamepad2.y) {
+//                flywheelMotor.setPower(-1);
+//            }
             else {
                 flywheelMotor.setPower(0);
-            }*/
+            }
 
             // Controller 1 Arm Slide
             // encoder directions become negative depending on motor directions
@@ -340,6 +348,7 @@ public class omniTeleOP extends LinearOpMode{
 
 //            telemetry.addData("Right Distance (mm): ", rightDistanceSensor.getDistance(DistanceUnit.MM));
 //            telemetry.addData("Back Distance (mm): ", backDistanceSensor.getDistance(DistanceUnit.MM));
+            telemetry.addData("rmp flywheel: ", flywheelMotor.getPower());
             telemetry.update();
         }
     }
