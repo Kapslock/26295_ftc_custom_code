@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 
@@ -18,21 +19,31 @@ public class ServoTest2025RobotCode_TeleOp extends OpMode {
     double hue;
     Servo carousel;
     Servo kicker;
+    TouchSensor touchSensor;
 
     @Override
     public void init() {
         carousel = hardwareMap.get(Servo.class, "carousel");
         kicker = hardwareMap.get(Servo.class, "kicker");
+
         colorSensor0 = hardwareMap.get(NormalizedColorSensor.class, "colorSensor0");
-        colorSensor0.setGain(2);
+        colorSensor0.setGain(7);
+
+        touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
+
         telemetry.addData("Status", "Initialized says Teammate");
         telemetry.update();
     }
 
+    private void testTouchSensor() {
+        telemetry.addData("Touch Sensor get value", touchSensor.getValue());
+        telemetry.addData("Touch Sensor ", touchSensor.isPressed());
+    }
+
     @Override
     public void loop() {
+        testTouchSensor();
         testColorSensors();
-
         if (gamepad1.x) {
             carousel.setPosition(0.5);
         }
@@ -43,7 +54,6 @@ public class ServoTest2025RobotCode_TeleOp extends OpMode {
         if (gamepad1.a) {
             kicker.setPosition(0.5);
         }
-
         kicker.setPosition(0.0);
     }
 
@@ -57,33 +67,49 @@ public class ServoTest2025RobotCode_TeleOp extends OpMode {
         telemetry.addData("Green", "%.3f", colors.green);
         telemetry.addData("Blue", "%.3f", colors.blue);
 
-        if(hue < 30){
-            telemetry.addData("Color", "Red");
-        }
-        else if (hue < 60) {
-            telemetry.addData("Color", "Orange");
-        }
-        else if (hue < 90){
-            telemetry.addData("Color", "Yellow");
-        }
-        else if (hue < 150){
-            telemetry.addData("Color", "Green");
-        }
-        else if (hue < 225){
-            telemetry.addData("Color", "Blue");
-        }
-        else if (hue < 350){
-            telemetry.addData("Color", "Purple");
-        }
-        else{
-            telemetry.addData("Color", "Red");
-        }
-
         //Determining HSV and alpha
         telemetry.addData("Hue", JavaUtil.colorToHue(colors.toColor()));
         telemetry.addData("Saturation", "%.3f", JavaUtil.colorToSaturation(colors.toColor()));
         telemetry.addData("Value", "%.3f", JavaUtil.colorToValue(colors.toColor()));
         telemetry.addData("Alpha", "%.3f", colors.alpha);
+
+        String color;
+        if(hue < 30){
+            color = "Red";
+        }
+        else if (hue < 60) {
+            color = "Orange";
+        }
+        else if (hue < 90){
+            color = "Yellow";
+        }
+        else if (hue < 150){
+            color = "Green";
+        }
+        else if (hue < 225){
+            color = "Blue";
+        }
+        else if (hue < 350){
+            color = "Purple";
+        }
+        else{
+            color = "Red";
+        }
+
+        telemetry.addData("Color Hue", color);
+
+        //now we determine if the color hue is closer to green or purple
+        double greenDistance = Math.abs(hue - 150);
+        double purpleDistance = Math.abs(hue - 225);
+
+        // now we can compare the two distances and determine which is the smallest
+        if (greenDistance < purpleDistance){
+            telemetry.addData("Color is closest to", "Green");
+        }
+        else{
+            telemetry.addData("Color is closest to", "Purple");
+        }
+
         telemetry.update();
     }
 }
