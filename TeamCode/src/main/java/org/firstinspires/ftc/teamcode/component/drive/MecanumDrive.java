@@ -21,16 +21,7 @@ public class MecanumDrive {
     }
 
     public void drive(double forward, double strafe, double rotate, double speedFactor) {
-        // speedFactor between 0.0 and 1.0
-
-        if ( speedFactor < 0.02 ) {
-            frontLeft.setPower( 0.0 );
-            rearLeft.setPower( 0.0 );
-            frontRight.setPower( 0.0 );
-            rearRight.setPower( 0.0 );
-            return;
-        }
-
+        // clip speedFactor to between 0.0 and 1.0
         double speedFactorClipped = Math.min( 1.0, Math.max( 0.0, speedFactor ) );
         double denominator = ( Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(rotate), 1) ) / speedFactorClipped;
         frontLeft.setPower((forward + strafe + rotate) / denominator);

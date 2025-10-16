@@ -64,7 +64,14 @@ public class Auton_PinpointDiagnosis extends OpMode
 
         // INIT PINPOINT
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-        odo.setOffsets(-82.5, 125, DistanceUnit.MM); // TODO: check if signs are correct
+
+        //odo.setOffsets(-82.5, 125, DistanceUnit.MM); // ORIGINAL - does not appear to be correct
+        //odo.setOffsets(82.5, 125, DistanceUnit.MM); // not good
+        //odo.setOffsets(82.5, -125, DistanceUnit.MM); // not good
+        odo.setOffsets(-82.5, -125, DistanceUnit.MM); // not good
+
+        odo.setOffsets(-84.1, 117.5, DistanceUnit.MM);
+
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.REVERSED,
