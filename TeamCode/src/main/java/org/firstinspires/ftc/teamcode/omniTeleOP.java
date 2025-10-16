@@ -63,16 +63,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
 public class omniTeleOP extends LinearOpMode{
-    DcMotor frontLeftMotor;
-    DcMotor backLeftMotor;
-    DcMotor frontRightMotor;
-    DcMotor backRightMotor;
-    CRServo intakeLeft; // 0
-    CRServo intakeRight; // 1
-    CRServo beltLeft; // 2
-    CRServo beltRight; // 3
-    CRServo beltVertical; // 4
-    DcMotor flywheelMotor; // 0
+    DcMotor frontLeftMotor; // 1
+    DcMotor backLeftMotor; // 0
+    DcMotor frontRightMotor; // 1 (expansion)
+    DcMotor backRightMotor; // 0 (expansion)
+    CRServo intakeLeft; // 1
+    CRServo intakeRight; // 0 (expansion)
+    CRServo beltLeft; // 0
+    CRServo beltRight; // 1 (expansion)
+    CRServo beltVertical; // 2
+//    CRServo turret; // 2 (expansion)
+    DcMotor flywheelMotor; // 3 (expansion)
     // CRServo clawIntake;
     IMU imu;
     DistanceSensor rightDistanceSensor;
