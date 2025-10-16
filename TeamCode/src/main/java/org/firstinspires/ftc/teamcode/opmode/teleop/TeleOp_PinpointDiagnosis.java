@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.component.drive.GoBildaPinpointDriver;
@@ -22,10 +23,15 @@ public class TeleOp_PinpointDiagnosis extends OpMode
     final String FRONT_RIGHT_DRIVE_MOTOR_NAME = "front_right";
     final String REAR_LEFT_DRIVE_MOTOR_NAME = "rear_left";
     final String REAR_RIGHT_DRIVE_MOTOR_NAME = "rear_right";
+    final String SHOOTER_MOTOR_NAME = "shooter";
+    final String INTAKE_MOTOR_NAME = "intake";
 
     private final ElapsedTime runtime = new ElapsedTime();
     private MecanumDrive mecanumDrive = null;
     private GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
+
+    private DcMotor shooter = null;
+    private DcMotor intake = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -49,12 +55,8 @@ public class TeleOp_PinpointDiagnosis extends OpMode
 
         // INIT PINPOINT
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-
-        // new values
         odo.setOffsets(-84.1, 117.5, DistanceUnit.MM);
-
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-
         odo.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.REVERSED,
                 GoBildaPinpointDriver.EncoderDirection.FORWARD
@@ -62,6 +64,11 @@ public class TeleOp_PinpointDiagnosis extends OpMode
         odo.resetPosAndIMU();
 
         // INIT OTHER MECHANISMS - SHOOTER, INTAKE, LIFT, LIMELIGHT, ETC.
+        shooter = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR_NAME);
+        shooter.setDirection(DcMotor.Direction.FORWARD);
+
+        intake = hardwareMap.get(DcMotor.class, INTAKE_MOTOR_NAME);
+        intake.setDirection(DcMotor.Direction.REVERSE);
 
         // PRINT TELEMETRY
         telemetry.addData("Status", "Initialized");
@@ -98,6 +105,9 @@ public class TeleOp_PinpointDiagnosis extends OpMode
         if (gamepad1.b) {
             odo.recalibrateIMU();
         }
+
+        shooter.setPower(gamepad1.right_trigger);
+        intake.setPower(gamepad1.left_trigger);
 
         double forward = -gamepad1.left_stick_y;
         double strafe = gamepad1.left_stick_x;
