@@ -57,7 +57,7 @@ public class TeleOp_PinpointDiagnosis extends OpMode
 
         odo.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.REVERSED,
-                GoBildaPinpointDriver.EncoderDirection.REVERSED
+                GoBildaPinpointDriver.EncoderDirection.FORWARD
         );
         odo.resetPosAndIMU();
 
@@ -99,19 +99,24 @@ public class TeleOp_PinpointDiagnosis extends OpMode
             odo.recalibrateIMU();
         }
 
-        if ( gamepad1.left_bumper ) {
-            mecanumDrive.drive(0, 0, 1, 0.25);
-        } else {
-            double forward = -gamepad1.left_stick_y;
-            double strafe = gamepad1.left_stick_x;
-            double rotate = gamepad1.right_stick_x;
-            double speed = 0.5;
+        double forward = -gamepad1.left_stick_y;
+        double strafe = gamepad1.left_stick_x;
+        double rotate = gamepad1.right_stick_x;
+        double speed = 0.5;
 
-            // Actuate - execute robot functions
-            mecanumDrive.drive(forward, strafe, rotate, speed);
-        }
+        // Actuate - execute robot functions
+        mecanumDrive.drive(forward, strafe, rotate, speed);
 
         // Print telemetry
+        String controls = String.format(
+                Locale.US,
+                "{forward: %.3f, strafe: %.3f, rotate: %.3f}",
+                forward,
+                strafe,
+                rotate
+        );
+        telemetry.addData("Controls", controls);
+
         Pose2D pos = odo.getPosition();
         String position = String.format(
                 Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",
