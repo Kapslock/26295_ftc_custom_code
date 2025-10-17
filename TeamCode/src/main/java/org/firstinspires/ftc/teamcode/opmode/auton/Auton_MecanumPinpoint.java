@@ -42,6 +42,7 @@ public class Auton_MecanumPinpoint extends OpMode
     @Override
     public void init() {
         telemetry.addData("Status", "Initializing");
+        telemetry.update();
 
         // INIT DRIVETRAIN
         DcMotor frontLeft  = hardwareMap.get(DcMotor.class, FRONT_LEFT_DRIVE_MOTOR_NAME);
@@ -75,6 +76,7 @@ public class Auton_MecanumPinpoint extends OpMode
         );
         telemetry.addData("Position", position);
         telemetry.addData("Status", "Initialized");
+        telemetry.update();
     }
 
     /*
@@ -131,6 +133,14 @@ public class Auton_MecanumPinpoint extends OpMode
             strafe = -speed;
         } else {
             strafe = speed;
+        }
+
+        if (Math.abs(errorA) < errorToleranceA) {
+            rotate = 0.0;
+        } else if (errorA > 0) {
+            rotate = -speed;
+        } else {
+            rotate = speed;
         }
 
         // determine angle error and how to rotate
