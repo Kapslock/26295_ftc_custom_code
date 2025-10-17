@@ -130,29 +130,36 @@ public class TeleOp_PinpointDiagnosis extends OpMode
             double errorY = currentY - targetY;
             double errorH = currentH - targetH;
 
-            double forward;
-            double strafe;
-            double rotate;
-            double speed = 0.2;
+            double forward = 0.0;
+            double strafe = 0.0;
+            double rotate = 0.0;
+            double speed = 0.5;
+            double rotateSpeed = 0.3;
 
-            if (Math.abs(errorX) < errorToleranceX) {
-                forward = 0.0;
-            } else if (errorX > 0) {
-                forward = -speed;
+            rotate = 0.0;
+            if (Math.abs(errorH) > errorToleranceH) {
+                if ( currentH < targetH ) {
+                    rotate = -rotateSpeed;
+                } else if ( currentH > targetH ) {
+                    rotate = rotateSpeed;
+                }
             } else {
-                forward = speed;
-            }
+                if (Math.abs(errorX) < errorToleranceX) {
+                    forward = 0.0;
+                } else if (errorX > 0) {
+                    forward = -speed;
+                } else {
+                    forward = speed;
+                }
 
-            if (Math.abs(errorY) < errorToleranceY) {
-                strafe = 0.0;
-            } else if (errorY > 0) {
-                strafe = -speed;
-            } else {
-                strafe = speed;
+                if (Math.abs(errorY) < errorToleranceY) {
+                    strafe = 0.0;
+                } else if (errorY > 0) {
+                    strafe = -speed;
+                } else {
+                    strafe = speed;
+                }
             }
-
-            // for now
-            rotate = 0;
 
             mecanumDrive.drive(forward, strafe, rotate);
 
