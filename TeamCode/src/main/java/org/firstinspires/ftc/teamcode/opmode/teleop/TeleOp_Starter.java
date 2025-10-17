@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.component.drive.TankDrive;
 
 @TeleOp(name="TeleOp_TankStarter", group="Iterative OpMode")
+@Disabled
 public class TeleOp_Starter extends OpMode
 {
     final String LEFT_DRIVE_MOTOR_NAME = "left_drive";

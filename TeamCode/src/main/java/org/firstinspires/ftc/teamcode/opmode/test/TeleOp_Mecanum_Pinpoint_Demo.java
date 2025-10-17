@@ -1,11 +1,13 @@
-package org.firstinspires.ftc.teamcode.opmode.teleop;
+package org.firstinspires.ftc.teamcode.opmode.test;
 
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.component.drive.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.component.sensor.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.component.drive.MecanumDrive;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -16,7 +18,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import java.util.Locale;
 
 @TeleOp(name="TeleOp_MecanumStarter", group="Iterative OpMode")
-public class TeleOp_MecanumPinpoint extends OpMode
+@Disabled
+public class TeleOp_Mecanum_Pinpoint_Demo extends OpMode
 {
     final String FRONT_LEFT_DRIVE_MOTOR_NAME = "front_left";
     final String FRONT_RIGHT_DRIVE_MOTOR_NAME = "front_right";
@@ -57,6 +60,7 @@ public class TeleOp_MecanumPinpoint extends OpMode
         // INIT OTHER MECHANISMS - SHOOTER, INTAKE, LIFT, LIMELIGHT, ETC.
 
         // PRINT TELEMETRY
+
         telemetry.addData("Status", "Initialized");
         System.out.println("TeleOp_Starter: Initializing Logging"); // TODO: where does this go?
     }
