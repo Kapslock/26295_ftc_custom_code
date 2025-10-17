@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.opmode.teleop;
+package org.firstinspires.ftc.teamcode.opmode.test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,7 +9,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.component.drive.MecanumDrive;
 
 
-@TeleOp(name="TeleOp_MecanumStarter", group="Iterative OpMode")
+@TeleOp(name="TeleOp_Mecanum", group="Test")
+@Disabled
 public class TeleOp_Mecanum extends OpMode
 {
     final String FRONT_LEFT_DRIVE_MOTOR_NAME = "front_left";

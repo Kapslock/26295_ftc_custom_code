@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.opmode.teleop;
+package org.firstinspires.ftc.teamcode.opmode.test;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,7 +18,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import java.util.Locale;
 
 @TeleOp(name="TeleOp_MecanumStarter", group="Iterative OpMode")
-public class TeleOp_MecanumPinpoint extends OpMode
+@Disabled
+public class TeleOp_Mecanum_Pinpoint_Demo extends OpMode
 {
     final String FRONT_LEFT_DRIVE_MOTOR_NAME = "front_left";
     final String FRONT_RIGHT_DRIVE_MOTOR_NAME = "front_right";
