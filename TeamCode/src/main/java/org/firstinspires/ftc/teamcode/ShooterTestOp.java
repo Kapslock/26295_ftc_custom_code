@@ -63,14 +63,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
 public class ShooterTestOp extends LinearOpMode{
-    DcMotor frontLeftMotor;
-    DcMotor backLeftMotor;
-    DcMotor frontRightMotor;
-    DcMotor backRightMotor;
-    CRServo bottomBelt;
-    CRServo angledBelt;
-    CRServo intakeLeft;
-    CRServo intakeRight;
     DcMotor flywheelMotor;
     // CRServo clawIntake;
     IMU imu;
