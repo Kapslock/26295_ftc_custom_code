@@ -33,6 +33,14 @@ public class TeleOp_PinpointDiagnosis extends OpMode
     private DcMotor shooter = null;
     private DcMotor intake = null;
 
+    private double targetX = 0.0;
+    private double targetY = 0.0;
+    private double targetH = 0.0;
+
+    double errorToleranceX = 20.0;
+    double errorToleranceY = 20.0;
+    double errorToleranceH = 20.0;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -72,7 +80,7 @@ public class TeleOp_PinpointDiagnosis extends OpMode
 
         // PRINT TELEMETRY
         telemetry.addData("Status", "Initialized");
-        System.out.println("TeleOp_Starter: Initializing Logging"); // TODO: where does this go?
+        telemetry.update();
     }
 
     /*
@@ -95,39 +103,96 @@ public class TeleOp_PinpointDiagnosis extends OpMode
      */
     @Override
     public void loop() {
-
         // Read sensors and inputs
         odo.update();
-
-        if (gamepad1.a) {
-            odo.resetPosAndIMU();
-        }
-        if (gamepad1.b) {
-            odo.recalibrateIMU();
-        }
-
-        shooter.setPower(gamepad1.right_trigger);
-        intake.setPower(gamepad1.left_trigger);
-
-        double forward = -gamepad1.left_stick_y;
-        double strafe = gamepad1.left_stick_x;
-        double rotate = gamepad1.right_stick_x;
-        double speed = 0.5;
-
-        // Actuate - execute robot functions
-        mecanumDrive.drive(forward, strafe, rotate, speed);
-
-        // Print telemetry
-        String controls = String.format(
-                Locale.US,
-                "{forward: %.3f, strafe: %.3f, rotate: %.3f}",
-                forward,
-                strafe,
-                rotate
-        );
-        telemetry.addData("Controls", controls);
-
         Pose2D pos = odo.getPosition();
+        double currentX = pos.getX(DistanceUnit.MM);
+        double currentY = pos.getY(DistanceUnit.MM);
+        double currentH = pos.getHeading(AngleUnit.DEGREES);
+
+        if (gamepad1.left_bumper) {
+            // save current pos
+            targetX = currentX;
+            targetY = currentY;
+            targetH = currentH;
+
+            String savedTargetPosition = String.format(
+                    Locale.US,
+                    "{X: %.3f, Y: %.3f, H: %.3f}",
+                    targetX,
+                    targetY,
+                    targetH
+            );
+            telemetry.addData("Saved Target Position: ", savedTargetPosition );
+        } else if (gamepad1.right_bumper) {
+            double errorX = currentX - targetX;
+            double errorY = currentY - targetY;
+            double errorH = currentH - targetH;
+
+            double forward;
+            double strafe;
+            double rotate;
+            double speed = 0.2;
+
+            if (Math.abs(errorX) < errorToleranceX) {
+                forward = 0.0;
+            } else if (errorX > 0) {
+                forward = -speed;
+            } else {
+                forward = speed;
+            }
+
+            if (Math.abs(errorY) < errorToleranceY) {
+                strafe = 0.0;
+            } else if (errorY > 0) {
+                strafe = -speed;
+            } else {
+                strafe = speed;
+            }
+
+            // for now
+            rotate = 0;
+
+            mecanumDrive.drive(forward, strafe, rotate);
+
+            String headingToTarget = String.format(
+                    Locale.US,
+                    "{X: %.3f, Y: %.3f, H: %.3f}",
+                    targetX,
+                    targetY,
+                    targetH
+            );
+            telemetry.addData("Heading to Target: ", headingToTarget );
+        } else {
+            if (gamepad1.a) {
+                odo.resetPosAndIMU();
+            }
+            if (gamepad1.b) {
+                odo.recalibrateIMU();
+            }
+
+            shooter.setPower(gamepad1.right_trigger);
+            intake.setPower(gamepad1.left_trigger);
+
+            double forward = -gamepad1.left_stick_y;
+            double strafe = gamepad1.left_stick_x;
+            double rotate = gamepad1.right_stick_x;
+            double speed = 0.5;
+
+            // Actuate - execute robot functions
+            mecanumDrive.drive(forward, strafe, rotate, speed);
+
+            // Print telemetry
+            String controls = String.format(
+                    Locale.US,
+                    "{forward: %.3f, strafe: %.3f, rotate: %.3f}",
+                    forward,
+                    strafe,
+                    rotate
+            );
+            telemetry.addData("Controls", controls);
+        }
+
         String position = String.format(
                 Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",
                 pos.getX(DistanceUnit.MM),
