@@ -63,7 +63,8 @@ public class TeleOp_PinpointDiagnosis extends OpMode
 
         // INIT PINPOINT
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-        odo.setOffsets(-84.1, 117.5, DistanceUnit.MM);
+        odo.setOffsets(-84.1, -117.5, DistanceUnit.MM);
+
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.REVERSED,
