@@ -78,7 +78,16 @@ public class Task_DriveToPose implements Task {
         }
 
         //TODO: determine angle error and how to rotate
-
+        if (Math.abs(errorH) < toleranceH) {
+            rotate = 0.0;
+        } else if (errorH > 0) {
+            rotate = -rotatePower;
+        } else {
+            rotate = rotatePower;
+        }
+        if (Math.abs(errorH) > 180.0) {
+            rotate = -rotate;
+        }
         // Actuate - execute robot functions
         drive.drive(forward, strafe, rotate);
 

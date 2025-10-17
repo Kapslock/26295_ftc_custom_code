@@ -141,6 +141,9 @@ public class Auton_MecanumPinpoint extends OpMode
         } else {
             rotate = speed;
         }
+        if (Math.abs(errorA) > 180.0) {
+            rotate = -rotate;
+        }
 
         // determine angle error and how to rotate
 
