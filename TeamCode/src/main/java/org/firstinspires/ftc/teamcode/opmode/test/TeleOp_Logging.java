@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmode.test;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.component.util.SparkLogger;
 
 import java.io.Console;
 import java.util.Locale;
@@ -14,16 +15,11 @@ import java.util.logging.Logger;
 @TeleOp(name="TeleOp_Logging", group="Iterative OpMode")
 public class TeleOp_Logging extends OpMode {
 
-    private final Locale locale = Locale.US;
-    private final Logger logger = Logger.getLogger("SparkSquadLogger");
+    private final SparkLogger logger = SparkLogger.getLogger();
     private final ElapsedTime runtime = new ElapsedTime();
 
     @Override
-    public void init() {
-        ConsoleHandler consoleHandler = new ConsoleHandler();
-        logger.addHandler(consoleHandler);
-        logger.setLevel(Level.ALL);
-    }
+    public void init() {}
 
     @Override
     public void start() {
@@ -32,6 +28,6 @@ public class TeleOp_Logging extends OpMode {
 
     @Override
     public void loop() {
-        logger.info("Elapsed Time:" + runtime.milliseconds());
+        logger.log("Elapsed Time:" + runtime.milliseconds());
     }
 }
