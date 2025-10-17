@@ -76,7 +76,7 @@ public class TeleOp_No_Cap extends OpMode
     @Override
     public void loop() {
         // Setup a variable for each drive wheel to save power level for telemetry
-        double forward = -gamepad1.left_stick_y;
+        double forward = -gamepad1.left_stick_y; // TODO: why is this negative?
         double strafe = gamepad1.left_stick_x;
         double rotate = -gamepad1.right_stick_x;
 
