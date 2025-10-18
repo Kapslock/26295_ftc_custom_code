@@ -12,7 +12,6 @@ public class TeleopMain extends LinearOpMode{
 
     //private static final double TICKS_PER_REVOLUTION = 1538.0;
     private ElapsedTime runtime = new ElapsedTime();
-    System.out.println("s");
     public TeleopMain() {
 
     }
@@ -20,8 +19,8 @@ public class TeleopMain extends LinearOpMode{
    // @Override
     public void runOpMode() throws InterruptedException {
         TeleopDrivetrain drivetrain = new TeleopDrivetrain(this);
-        Mechanisms mech = new Mechanisms();
-        mech.initTelemetry(telemetry);
+       // Mechanisms mech = new Mechanisms();
+        //mech.initTelemetry(telemetry);
 
         drivetrain.initDriveTrain((hardwareMap));
         // mech.initMechanisms();

@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
@@ -61,7 +62,7 @@ public class Mechanisms {
         intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-    }*/
+    }
 
     public void initOuttakeSystem(HardwareMap hardwareMap) {
         outtakeMotor1 = hardwareMap.get(DcMotorEx.class, "outtakeMotor1"); // 1150 rpm dc motor
@@ -96,7 +97,7 @@ public class Mechanisms {
         raiserRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         raiserRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         raiserRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }*/
+    }
 
     public void initMechanisms(){
 //        initIntakeSystem(hardwareMap);
@@ -146,7 +147,7 @@ public class Mechanisms {
             telemetry.addData("Status:", "in cycleArtifacts, invalid input");
         }
 
-    }*/
+    }
 
     public void outtakeMotorStart(double power) {
         outtakeMotor1.setVelocity(power*MAX_TICKS_PER_SEC);
@@ -164,7 +165,8 @@ public class Mechanisms {
 
 
 
-}
 
+}
+*/
 
 

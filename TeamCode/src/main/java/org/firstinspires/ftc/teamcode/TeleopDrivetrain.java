@@ -126,6 +126,7 @@ public class TeleopDrivetrain {
         backLeft.setPower(power);
         backRight.setPower(power);
 
+
        // opMode.sleep(targetInSeconds);
     }
 
@@ -151,7 +152,7 @@ public class TeleopDrivetrain {
         opMode.telemetry.addData("Status", "Moving Left");
         opMode.telemetry.update();
 
-       frontLeft.setPower(-power);
+        frontLeft.setPower(-power);
         frontRight.setPower(power);
         backLeft.setPower(power);
         backRight.setPower(-power);
@@ -176,8 +177,8 @@ public class TeleopDrivetrain {
 
         frontLeft.setPower(power);
         frontRight.setPower(-power);
-        backLeft.setPower(power);
-        backRight.setPower(-power);
+        backLeft.setPower(-power);
+        backRight.setPower(power);
 
 *//*        double velocity = power * MAX_TICKS_PER_SEC;
 
@@ -231,28 +232,28 @@ public class TeleopDrivetrain {
         targetBL = power;
         targetBR = -power;
     }
-    public void rotate(double power, long targetInMilis) {
-        opMode.telemetry.addData("Status", "Rotating");
-        opMode.telemetry.update();
-
-        frontLeft.setPower(power);
-        frontRight.setPower(-power);
-        backLeft.setPower(power);
-        backRight.setPower(-power);
-
-        opMode.sleep(targetInMilis);
-    }
-
-    public void rotateRight(double power, long targetInMilis) {
+    public void rotateLeft(double power) {
         opMode.telemetry.addData("Status", "Rotating");
         opMode.telemetry.update();
 
         frontLeft.setPower(-power);
-        frontRight.setPower(power);
         backLeft.setPower(-power);
+        frontRight.setPower(power);
         backRight.setPower(power);
 
-        opMode.sleep(targetInMilis);
+       // opMode.sleep(targetInMilis);
+    }
+
+    public void rotateRight(double power) {
+        opMode.telemetry.addData("Status", "Rotating");
+        opMode.telemetry.update();
+
+        frontLeft.setPower(power);
+        backLeft.setPower(power);
+        frontRight.setPower(-power);
+        backRight.setPower(-power);
+
+        //opMode.sleep(targetInMilis);
     }
 
 /*    public void rotateToAngle(double targetAngle, double power) {
@@ -283,7 +284,7 @@ public class TeleopDrivetrain {
             double direction = angleDiff > 0 ? 1 : -1; // Clockwise if positive, counterclockwise if negative
 
             // Rotate with the calculated power and direction
-            rotate(direction * power, 50); // Rotate for a small increment (e.g., 50 ms)
+         //   rotate(direction * power, 50.0); // Rotate for a small increment (e.g., 50 ms)
 
             // Telemetry for debugging
             opMode.telemetry.addData("Target Angle", targetAngle);
