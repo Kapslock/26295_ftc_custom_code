@@ -16,7 +16,6 @@ import org.firstinspires.ftc.robotcore.external.JavaUtil;
 public class ServoTest2025RobotCode_TeleOp extends OpMode {
 
     NormalizedColorSensor colorSensor0;
-    double hue;
     Servo carousel;
     Servo kicker;
     TouchSensor touchSensor;
@@ -44,6 +43,7 @@ public class ServoTest2025RobotCode_TeleOp extends OpMode {
     public void loop() {
         testTouchSensor();
         testColorSensors();
+
         if (gamepad1.x) {
             carousel.setPosition(0.5);
         }
@@ -55,12 +55,12 @@ public class ServoTest2025RobotCode_TeleOp extends OpMode {
             kicker.setPosition(0.5);
         }
         kicker.setPosition(0.0);
+        telemetry.update();
     }
 
     public void testColorSensors() {
         telemetry.addData("Light Detected", ((OpticalDistanceSensor) colorSensor0).getLightDetected());
         NormalizedRGBA colors = colorSensor0.getNormalizedColors();
-        hue = JavaUtil.colorToHue(colors.toColor()); // <------ New code
 
         //Determining the amount of red, green, and blue
         telemetry.addData("Red", "%.3f", colors.red);
@@ -68,49 +68,34 @@ public class ServoTest2025RobotCode_TeleOp extends OpMode {
         telemetry.addData("Blue", "%.3f", colors.blue);
 
         //Determining HSV and alpha
-        telemetry.addData("Hue", JavaUtil.colorToHue(colors.toColor()));
         telemetry.addData("Saturation", "%.3f", JavaUtil.colorToSaturation(colors.toColor()));
         telemetry.addData("Value", "%.3f", JavaUtil.colorToValue(colors.toColor()));
         telemetry.addData("Alpha", "%.3f", colors.alpha);
+        telemetry.addData("Hue", JavaUtil.colorToHue(colors.toColor()));
 
+        double hue = JavaUtil.colorToHue(colors.toColor());
         String color;
-        if(hue < 30){
-            color = "Red";
-        }
-        else if (hue < 60) {
-            color = "Orange";
-        }
-        else if (hue < 90){
-            color = "Yellow";
-        }
-        else if (hue < 150){
-            color = "Green";
-        }
-        else if (hue < 225){
-            color = "Blue";
-        }
-        else if (hue < 350){
-            color = "Purple";
-        }
-        else{
-            color = "Red";
-        }
+        if(hue < 30) color = "Red";
+        else if (hue < 60) color = "Orange";
+        else if (hue < 90) color = "Yellow";
+        else if (hue < 150) color = "Green";
+        else if (hue < 225) color = "Blue";
+        else if (hue < 350) color = "Purple";
+        else color = "Red";
 
         telemetry.addData("Color Hue", color);
 
-        //now we determine if the color hue is closer to green or purple
         double greenDistance = Math.abs(hue - 150);
         double purpleDistance = Math.abs(hue - 225);
 
         // now we can compare the two distances and determine which is the smallest
         if (greenDistance < purpleDistance){
-            telemetry.addData("Color is closest to", "Green");
+            telemetry.addData("Color is closer to", "Green");
         }
         else{
-            telemetry.addData("Color is closest to", "Purple");
+            telemetry.addData("Color is closer to", "Purple");
         }
 
-        telemetry.update();
     }
 }
 
