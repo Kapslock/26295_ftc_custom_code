@@ -1,14 +1,15 @@
-package org.firstinspires.ftc.teamcode.teleOp.driveTrain;
+package org.firstinspires.ftc.teamcode.testSystems;
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.dashboard.config.Config;
+
+import org.firstinspires.ftc.teamcode.teleOp.driveTrain.MecanumDrive;
 
 @Config
-@TeleOp(name = "DriveOpModePIDTest", group = "OpModes")
+@TeleOp(name = "DriveOpModePIDTest", group = "TestModes")
 public class DriveOpModePIDTest extends OpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     MecanumDrive drive = new MecanumDrive();
@@ -36,7 +37,7 @@ public class DriveOpModePIDTest extends OpMode {
             slow = 0.5;
         } else if (gamepad1.right_trigger > 0.4) {
             slow = 2;
-        } else{
+        } else {
             slow = 1;
         }
 
@@ -54,9 +55,5 @@ public class DriveOpModePIDTest extends OpMode {
 
         //TODO: CHANGE 0 TO ROTATE ONCE CODE WORKS
         drive.turnToHeading(0, slow, telemetry, pidP, pidI, pidD);
-
-        //drive.driveFieldOriented(forward, strafe, rotate, slow, telemetry);
-        //drive.drive(forward, strafe, rotate, slow, telemetry);
-
     }
 }

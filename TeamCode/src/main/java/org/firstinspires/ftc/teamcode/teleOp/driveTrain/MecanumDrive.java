@@ -95,11 +95,6 @@ public class MecanumDrive {
         backLeftMotor.setPower(slow * maxSpeed * (frontRightPower / maxPower));
         backRightMotor.setPower(slow * maxSpeed * (backRightPower / maxPower));
 
-        frontLeftMotor.setPower(slow * maxSpeed * (frontLeftPower));
-        frontRightMotor.setPower(slow * maxSpeed * (frontRightPower));
-        backLeftMotor.setPower(slow * maxSpeed * (backLeftPower));
-        backRightMotor.setPower(slow * maxSpeed * (backRightPower));
-
         telemetry.addData("Front Left Motor Power", maxSpeed * (frontLeftPower));
         telemetry.addData("Front Right Motor Power", maxSpeed * (frontRightPower));
         telemetry.addData("Back Left Motor Power", maxSpeed * (backLeftPower));
@@ -162,6 +157,7 @@ public class MecanumDrive {
         String data = String.format(Locale.US, "{KP: %.3f, KI: %.3f, KD: %.3f}", kp, ki, kd);
 
         odo.update();
+
         double currentHeading = odo.getPosition().getHeading(AngleUnit.DEGREES);
         double time = System.nanoTime() / 1e9; //Seconds
 
@@ -190,13 +186,12 @@ public class MecanumDrive {
         telemetry.update();
     }
 
-    public void OdoReset(Telemetry tele) {
+    public void OdoReset(Telemetry telemetry) {
 
         //Resets Heading and Position -STAY STILL FOR AT LEAST 0.25 SECONDS WHILE DOING SO FOR ACCURACY-
         odo.resetPosAndIMU();
         odo.update();
-        tele.update();
-
+        telemetry.update();
     }
 
 }

@@ -25,12 +25,15 @@ public class PIDController {
     public void setKP(double kp) {
         this.kp = kp;
     }
+
     public void setKI(double ki) {
         this.ki = ki;
     }
+
     public void setKD(double kd) {
         this.kd = kd;
     }
+
     public void setTarget(double target) {
         this.target = target;
     }
@@ -40,7 +43,6 @@ public class PIDController {
         double error = target - current;
         double deltaTime = time - previousTime;
 
-        // Avoid division by zero if deltaTime is very small
         double derivative = (deltaTime > 0) ? (error - previousError) / deltaTime : 0.0;
 
         integral += error * deltaTime;
@@ -53,6 +55,5 @@ public class PIDController {
 
         this.output = output;
         return output;
-
     }
 }

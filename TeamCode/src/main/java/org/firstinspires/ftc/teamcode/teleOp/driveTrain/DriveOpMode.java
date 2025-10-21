@@ -6,11 +6,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "DriveOpMode", group = "OpModes")
 public class DriveOpMode extends OpMode {
-    private ElapsedTime matchTimer = new ElapsedTime();
-    private boolean endgameRumbleDone;
-    private double recenterTime = 0;
     MecanumDrive drive = new MecanumDrive();
     double forward, strafe, rotate, slow;
+    private final ElapsedTime matchTimer = new ElapsedTime();
+    private boolean endgameRumbleDone;
+    private double recenterTime = 0;
 
     @Override
     public void init() {
@@ -31,14 +31,14 @@ public class DriveOpMode extends OpMode {
     @Override
     public void loop() {
 
-        //Keep Robot still while recentering ODO
+        //Keep Robot still while re-centering ODO
         if (recenterTime > 0) {
             // If 0.25 seconds have passed, end freeze
             if (matchTimer.seconds() - recenterTime >= 0.25) {
                 recenterTime = 0; // done freezing
             } else {
                 // Still in freeze period: stop motors and skip input processing
-                drive.drive(0,0,0,0, telemetry);
+                drive.drive(0, 0, 0, 0, telemetry);
                 telemetry.addLine("Recalibrating IMU...");
                 telemetry.update();
                 return; // skip the rest of loop for now
@@ -55,7 +55,7 @@ public class DriveOpMode extends OpMode {
             slow = 0.5;
         } else if (gamepad1.right_trigger > 0.4) {
             slow = 2;
-        } else{
+        } else {
             slow = 1;
         }
 
