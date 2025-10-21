@@ -73,6 +73,7 @@ public class omniTeleOP extends LinearOpMode{
     CRServo beltRight; // 1 (expansion)
     CRServo beltVertical; // 2
 //    CRServo turret; // 2 (expansion)
+    DcMotor flywheelRotateMotor; // 2 (expansion)
     DcMotor flywheelMotor; // 3 (expansion)
     // CRServo clawIntake;
     IMU imu;
@@ -139,7 +140,8 @@ public class omniTeleOP extends LinearOpMode{
         intakeLeft.setDirection(CRServo.Direction.REVERSE);
         beltLeft.setDirection(CRServo.Direction.REVERSE);
 
-        // Flywheel Motor
+        // Flywheel Motor and Rotation
+        flywheelRotateMotor = hardwareMap.dcMotor.get("rotatShot");
         flywheelMotor = hardwareMap.dcMotor.get("flywheelMotor");
 
         // Reverse some of the drive motors depending on physical setup
@@ -272,38 +274,42 @@ public class omniTeleOP extends LinearOpMode{
             if (gamepad1.a) {
                 intakeLeft.setPower(1);
                 intakeRight.setPower(1);
-            } else if (gamepad1.a) {
+                beltLeft.setPower(1);
+                beltRight.setPower(1);
+                beltVertical.setPower(-1);
+            }
+            else if (gamepad2.a) {
                 intakeLeft.setPower(-1);
                 intakeRight.setPower(-1);
+                beltLeft.setPower(-1);
+                beltRight.setPower(-1);
+                beltVertical.setPower(1);
             }
             else {
                 intakeLeft.setPower(0);
                 intakeRight.setPower(0);
-            }
-
-            if (gamepad1.a) {
-                beltLeft.setPower(1);
-                beltRight.setPower(1);
-                beltVertical.setPower(1);
-            }
-            else if (gamepad1.a) {
-                beltLeft.setPower(-1);
-                beltRight.setPower(-1);
-                beltVertical.setPower(-1);
-            }
-            else {
                 beltLeft.setPower(0);
                 beltRight.setPower(0);
                 beltVertical.setPower(0);
             }
 
             // Controller 2 Flywheel
+            if (gamepad1.left_trigger > 0.1) {
+                flywheelRotateMotor.setPower(gamepad1.left_trigger * 0.85);
+            }
+            else if (gamepad1.right_trigger > 0.1) {
+                flywheelRotateMotor.setPower(gamepad1.right_trigger * -0.85);
+            }
+            else {
+                flywheelRotateMotor.setPower(0);
+            }
+
             if (gamepad1.x) {
                 flywheelMotor.setPower(1);
             }
-//            if (gamepad2.y) {
-//                flywheelMotor.setPower(-1);
-//            }
+            if (gamepad2.x) {
+                flywheelMotor.setPower(-1);
+            }
             else {
                 flywheelMotor.setPower(0);
             }
