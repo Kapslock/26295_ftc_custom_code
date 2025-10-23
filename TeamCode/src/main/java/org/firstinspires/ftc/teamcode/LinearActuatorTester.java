@@ -47,3 +47,5 @@ public class LinearActuatorTester extends LinearOpMode {
         };
     }
 }
+
+System.out.println("g");
