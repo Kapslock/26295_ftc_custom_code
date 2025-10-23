@@ -10,14 +10,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class LaunchSystem {
     private DcMotor launcherMotor, intakeMotor;
     private Servo liftServo;
-    private final int MIN_STEP = 0;
+    private final int MIN_STEP = 1;
     private int maxStep = 0;
     int currentStep = MIN_STEP;
     private double[] powerSteps;
     boolean launcherOn = false;
     boolean intakeOn = false;
-    boolean servoUp = false;
-    private ElapsedTime time = new ElapsedTime();
+    private final ElapsedTime time = new ElapsedTime();
 
     public void init(double servoMin, double servoMax, double[] steps, HardwareMap hwMap, Telemetry telemetry) {
         powerSteps = steps;
@@ -59,8 +58,12 @@ public class LaunchSystem {
     }
 
     public void toggleLauncher() {
+        if (launcherOn) {
+            setLauncherPower(currentStep);
+        } else {
+            launcherMotor.setPower(0.0);
+        }
         launcherOn = !launcherOn;
-        setLauncherPower(currentStep);
     }
 
     public void stepUpPower() {
@@ -82,10 +85,6 @@ public class LaunchSystem {
         intakeOn = !intakeOn;
     }
 
-    public void setServoLimits(double min, double max) {
-        liftServo.scaleRange(min, max);
-    }
-
     public void liftUp() {
         liftServo.setPosition(0.0);
     }
@@ -100,5 +99,8 @@ public class LaunchSystem {
         telemetry.addData("Power Step", currentStep);
         telemetry.addData("Intake", intakeMotor.getPower());
         telemetry.addData("Lift Servo Position", liftServo.getPosition());
+        telemetry.addLine();
+        telemetry.addData("Outtake", launcherOn);
+        telemetry.addLine();
     }
 }

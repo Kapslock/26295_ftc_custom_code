@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class DriveLaunchMode extends OpMode {
     MecanumDrive drive = new MecanumDrive();
     private final ElapsedTime matchTime = new ElapsedTime();
-    private final double[] powerSteps = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0, 7, 0.8, 0.9, 1.0};
+    private final double[] powerSteps = {0.1, 0.67, 0.72};
     LaunchSystem launchSystem = new LaunchSystem();
     double startWait = 0.0;
     boolean lastDpadUp = false;
@@ -78,6 +78,6 @@ public class DriveLaunchMode extends OpMode {
         telemetry.addData("speed", slow);
         launchSystem.updateTelemetry(telemetry);
 
-        drive.drive(forward, strafe, rotate, slow, telemetry);
+        drive.driveFieldOriented(forward, strafe, rotate, slow, telemetry);
     }
 }

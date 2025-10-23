@@ -91,8 +91,8 @@ public class MecanumDrive {
         maxPower = Math.max(maxPower, Math.abs(backRightPower));
 
         frontLeftMotor.setPower(slow * maxSpeed * (frontLeftPower / maxPower));
-        frontRightMotor.setPower(slow * maxSpeed * (backLeftPower / maxPower));
-        backLeftMotor.setPower(slow * maxSpeed * (frontRightPower / maxPower));
+        frontRightMotor.setPower(slow * maxSpeed * (frontRightPower / maxPower));
+        backLeftMotor.setPower(slow * maxSpeed * (backLeftPower / maxPower));
         backRightMotor.setPower(slow * maxSpeed * (backRightPower / maxPower));
 
         telemetry.addData("Front Left Motor Power", maxSpeed * (frontLeftPower));
